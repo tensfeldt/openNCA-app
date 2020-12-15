@@ -1,4 +1,4 @@
-# openNCA_app
+# openNCAapp
 openNCA Pharmacokinetic Data Repository and R-based Non-Compartmental PK Analysis System
 
 License type is MIT
