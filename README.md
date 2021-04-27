@@ -17,3 +17,7 @@ Highcharts is used for the analysis module, and requires a developer license to 
   - [openNCA Pharmacokinetic Data Repository and Non-compartmental Analysis System](https://youtu.be/Dw6HrBUdcmU?t=0)
 - AAPS 2020 PharmSci 360 Poster Presentation  
   - **openNCA - New Open-Source Non-Compartmental Analysis System and Pharmacokinetic Results Repository** (link to pdf in preparation)
+
+## Current Status
+- 27-apr-2021
+  - Begin loading of source code.
