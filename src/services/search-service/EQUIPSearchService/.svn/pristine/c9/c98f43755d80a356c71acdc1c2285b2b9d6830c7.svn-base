@@ -1,0 +1,427 @@
+package com.pfizer.equip.searchservice.search;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.pfizer.elasticsearch.api.client.ElasticSearchClient;
+import com.pfizer.elasticsearch.api.client.ElasticSearchClientException;
+import com.pfizer.elasticsearch.dto.Query;
+import com.pfizer.equip.searchable.dto.InstantDeserializer;
+import com.pfizer.equip.searchable.dto.InstantSerializer;
+import com.pfizer.equip.searchable.dto.SearchableData;
+import com.pfizer.equip.searchservice.dto.CommentsSearchResult;
+import com.pfizer.equip.searchservice.dto.FileDataSearchResult;
+import com.pfizer.equip.searchservice.dto.MetaDataSearchResult;
+import com.pfizer.equip.searchservice.dto.SearchResponse;
+import com.pfizer.equip.searchservice.dto.SearchResults;
+import com.pfizer.equip.searchservice.exception.SearchException;
+import com.pfizer.equip.service.client.ServiceCallerException;
+
+/**
+ * Encapsulates data for a search against elasticsearch.
+ * 
+ * @author HeinemanWP
+ *
+ */
+public class Search extends BaseSearch {
+	private static final String SEARCHES_NDX = "searchesndx-nca";
+	public static final String TYPE = "nca";
+	private static final String CONTENT_NDX = "contentndx-nca";
+	private static final String FILEDATA_NDX = "filedatandx-nca";
+	private static final String COMMENTS_NDX = "escommentndx-nca";
+	private static final String SEARCHABLE_NDX = "esvalndx-nca";
+	public static Searches searches = new Searches();
+	private int count;
+	private String server;
+	private String index;
+	private String type;
+	private Query query;
+	private Map<String, SearchableData> results = new LinkedHashMap<>();
+	
+	public Search() {}
+	
+	public static Searches getSearches() {
+		return searches;
+	}
+
+	public static void setSearches(Searches searches) {
+		Search.searches = searches;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+	
+	
+	public String getServer() {
+		return server;
+	}
+
+	public void setServer(String server) {
+		this.server = server;
+	}
+
+	public String getIndex() {
+		return index;
+	}
+
+	public void setIndex(String index) {
+		this.index = index;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public Query getQuery() {
+		return query;
+	}
+
+	public void setQuery(Query query) {
+		this.query = query;
+	}
+
+//	public SearchResponse initiateSearchOriginal(
+//			String server, 
+//			String username, 
+//			String password, 
+//			String index, 
+//			String type, 
+//			Query query) throws SearchException {
+//		this.server = server;
+//		this.index = index;
+//		this.query = query;
+//		SearchResponse returnValue = new SearchResponse();
+//		query.setFrom(0);
+//		query.setSize(0);
+//		try {
+//			ElasticSearchClient esc = new ElasticSearchClient(server, username, password);
+//			String result = esc.searchIndex(index, type, query.toJson());
+//			searchId = UUID.randomUUID().toString();
+//			expires = computeExpirationTime();
+//			count = getCount(result);
+//			searches.addSearch(searchId, this);
+//			returnValue.setSearchId(searchId);
+//			returnValue.setExpires(expires.toString());
+//			returnValue.setCount(count);
+//			returnValue.setQuery(query);
+//			returnValue.setIndex(index);
+//			return returnValue;
+//		} catch (ServiceCallerException | ElasticSearchClientException e) {
+//			throw new SearchException(e);
+//		}
+//	}
+	
+	public SearchResponse initiateSearch(
+			String searchUser,
+			String server, 
+			String username, 
+			String password, 
+			String index, 
+			String type, 
+			Query query) throws SearchException {
+		this.server = server;
+		this.index = index;
+		this.query = query;
+		SearchResponse returnValue = new SearchResponse();
+		query.setFrom(0);
+		query.setSize(10000);
+		try {
+			ElasticSearchClient esc = new ElasticSearchClient(server, username, password);
+			count = processResults(searchUser, esc.searchIndex(index,  type,  query.toJson()));
+			String result = esc.searchIndex(index, type, query.toJson());
+			searchId = UUID.randomUUID().toString();
+			expires = computeExpirationTime();
+			returnValue.setSearchId(searchId);
+			returnValue.setExpires(expires.toString());
+			returnValue.setCount(count);
+			returnValue.setQuery(query);
+			returnValue.setIndex(index);
+			storeSearch(esc, searchId, this);
+			return returnValue;
+		} catch (ServiceCallerException | ElasticSearchClientException e) {
+			throw new SearchException(e);
+		}
+	}
+	
+	private int processResults(String searchUser, String searchResultsJson) {
+		int totalCount = getCount(searchResultsJson);
+		List<Object> searchResults = marshallResults(searchResultsJson);
+		for (Object o : searchResults) {
+			SearchableData sd = (SearchableData) o;
+			String indexKey = sd.getDuplicateId();
+			if ((results.containsKey(indexKey)) 
+				&& (!shouldReplace(searchUser, sd, results.get(indexKey)))) {
+				continue;
+			}
+			results.put(indexKey, sd);
+		}
+		return totalCount == results.size() ? totalCount : results.size();
+	}
+
+	private boolean shouldReplace(String searchUser, SearchableData newSd, SearchableData currentSd) {
+		String newUser = newSd.getEquipModifiedBy();
+		Long newVersionNumber = newSd.getEquipVersionNumber();
+		Long currentVersionNumber = currentSd.getEquipVersionNumber();
+		Boolean newVersionCommitted = newSd.getEquipVersionCommitted();
+		Boolean currentVersionCommitted = currentSd.getEquipVersionCommitted();
+		Boolean newVersionSuperceded = newSd.getEquipVersionSuperseded();
+		Boolean currentVersionSuperceded = currentSd.getEquipVersionSuperseded();
+		if ((currentVersionNumber == null) && (newVersionNumber != null)) {
+			return true;
+		}
+		if ((currentVersionNumber == null) && (newVersionNumber == null)) {
+			if (((currentSd.getEquipModified() == null) &&
+					(newSd.getEquipModified() != null))
+					|| (newSd.getEquipModified().isAfter(currentSd.getEquipModified()))) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		if (newVersionNumber.equals(currentVersionNumber)
+				&& (newVersionCommitted == currentVersionCommitted)
+				&& (newVersionSuperceded == currentVersionSuperceded)) {
+			if (newSd.getEquipModified().isAfter(currentSd.getEquipModified())) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return (newUser.equalsIgnoreCase(searchUser) && (newVersionNumber > currentVersionNumber)) 
+				|| (!newUser.equalsIgnoreCase(searchUser) && newVersionCommitted && !newVersionSuperceded); 
+	}
+
+	public SearchResults searchResultsOriginal(
+			String server, 
+			String username, 
+			String password, 
+			String type, 
+			int offset,
+			int count) throws SearchException{
+		this.server = server;
+		query.setFrom(offset);
+		query.setSize(count);
+		ElasticSearchClient esc;
+		try {
+			esc = new ElasticSearchClient(server, username, password);
+			String result = esc.searchIndex(index, type, query.toJson());
+			List<Object> searchResults = marshallResults(result);
+			expires = computeExpirationTime();
+			int resultCount = getCount(result);
+			SearchResults returnValue = new SearchResults();
+			returnValue.setSearchId(searchId);
+			returnValue.setExpires(expires.toString());
+			returnValue.setCount(resultCount);
+			returnValue.setResults(searchResults);
+			return returnValue;
+		} catch (ServiceCallerException | ElasticSearchClientException  e) {
+			throw new SearchException(e);
+		}
+	}
+	
+	public SearchResults searchResults(
+			String searchUser,
+			String server, 
+			String username, 
+			String password, 
+			String type, 
+			int offset,
+			int count) throws SearchException{
+		List<Object> searchResults = results.values().stream().skip(offset).limit(count).collect(Collectors.toList());
+		expires = computeExpirationTime();
+		int resultCount = results.size();
+		SearchResults returnValue = new SearchResults();
+		returnValue.setSearchId(searchId);
+		returnValue.setExpires(expires.toString());
+		returnValue.setCount(resultCount);
+		returnValue.setResults(searchResults);
+		return returnValue;
+	}
+	
+	public void resetExpiration() {
+		expires = computeExpirationTime();
+	}
+
+	private Date computeExpirationTime() {
+		Date current = new Date();
+		return new Date(current.getTime() + 5L * 60L * 1000L);
+	}
+	
+	private int getCount(String result) {
+		String s = "\"hits\":{\"total\":";
+		int start = result.indexOf(s) + s.length();
+		int stop = result.indexOf(',', start);
+		String hitCount = result.substring(start, stop);
+		return Integer.parseInt(hitCount);
+	}
+
+	private List<Object> marshallResults(String result) {
+		switch(index) {
+		case SEARCHABLE_NDX:
+			return marshallMetaDataSearchResults(result);
+		case COMMENTS_NDX:
+			return marshallCommentsSearchResults(result);
+		case FILEDATA_NDX:
+			return marshallFileDataSearchResults(result);
+		case CONTENT_NDX:
+			return marshallFileTextSearchResults(result);
+		default:
+			break;
+		}
+		return new ArrayList<>();
+	}
+
+	private List<Object> marshallMetaDataSearchResults(String result) {
+		List<Object> returnValue = new ArrayList<>();
+		Gson gson = new GsonBuilder().registerTypeAdapter(Instant.class, new InstantDeserializer()).create();
+		JsonParser jp = new JsonParser();
+		JsonElement jelem = jp.parse(result);
+		JsonArray hits = jelem.getAsJsonObject().get("hits").getAsJsonObject().get("hits").getAsJsonArray();
+		for (int i = 0, n = hits.size(); i < n; i++) {
+			JsonElement re = hits.get(i).getAsJsonObject().get("_source");
+			MetaDataSearchResult mdsr = gson.fromJson(re, MetaDataSearchResult.class);
+			returnValue.add(mdsr);
+		}
+		
+		return returnValue;
+	}
+
+	private List<Object> marshallCommentsSearchResults(String result) {
+		List<Object> returnValue = new ArrayList<>();
+		Gson gson = new GsonBuilder().registerTypeAdapter(Instant.class, new InstantDeserializer()).create();
+		JsonParser jp = new JsonParser();
+		JsonElement jelem = jp.parse(result);
+		JsonArray hits = jelem.getAsJsonObject().get("hits").getAsJsonObject().get("hits").getAsJsonArray();
+		for (int i = 0, n = hits.size(); i < n; i++) {
+			JsonElement re = hits.get(i).getAsJsonObject().get("_source");
+			CommentsSearchResult mdsr = gson.fromJson(re, CommentsSearchResult.class);
+			returnValue.add(mdsr);
+		}
+		
+		return returnValue;
+	}
+
+	private List<Object> marshallFileDataSearchResults(String result) {
+		List<Object> returnValue = new ArrayList<>();
+		Gson gson = new GsonBuilder().registerTypeAdapter(Instant.class, new InstantDeserializer()).create();
+		JsonParser jp = new JsonParser();
+		JsonElement jelem = jp.parse(result);
+		JsonArray hits = jelem.getAsJsonObject().get("hits").getAsJsonObject().get("hits").getAsJsonArray();
+		for (int i = 0, n = hits.size(); i < n; i++) {
+			JsonElement re = hits.get(i).getAsJsonObject().get("_source");
+			FileDataSearchResult fdsr = gson.fromJson(re, FileDataSearchResult.class);
+			returnValue.add(fdsr);
+		}
+		
+		return returnValue;
+	}
+
+	private List<Object> marshallFileTextSearchResults(String result) {
+		List<Object> returnValue = new ArrayList<>();
+		Gson gson = new GsonBuilder().registerTypeAdapter(Instant.class, new InstantDeserializer()).create();
+		JsonParser jp = new JsonParser();
+		JsonElement jelem = jp.parse(result);
+		JsonArray hits = jelem.getAsJsonObject().get("hits").getAsJsonObject().get("hits").getAsJsonArray();
+		for (int i = 0, n = hits.size(); i < n; i++) {
+			String fileId = hits.get(i).getAsJsonObject().get("_id").getAsString();
+			JsonElement re = hits.get(i).getAsJsonObject().get("_source");
+			SearchableData sr = gson.fromJson(re, SearchableData.class);
+			sr.setFileId(fileId);
+			returnValue.add(sr);
+		}
+		
+		return returnValue;
+	}
+
+	public static void storeSearch(ElasticSearchClient esc, String searchId, Search search) throws ElasticSearchClientException {
+		Gson gson = new GsonBuilder().registerTypeAdapter(Instant.class, new InstantSerializer()).create();
+		String json = gson.toJson(search);
+		esc.putIndex(SEARCHES_NDX, TYPE, searchId, json);
+	}
+
+	public static Search retrieveSearch(ElasticSearchClient esc, String searchId) throws ElasticSearchClientException {
+		Map<String, String> parameters = new HashMap<>();
+		String json = esc.getIndexValue(SEARCHES_NDX, TYPE, searchId, parameters);
+		Gson gson = new GsonBuilder().registerTypeAdapter(Instant.class, new InstantDeserializer()).create();
+		JsonParser jp = new JsonParser();
+		JsonElement jelem = jp.parse(json);
+		return gson.fromJson(jelem.getAsJsonObject().get("_source"), Search.class);
+	}
+	
+	public static Search retrieveSearch(String elServer, String elUsername, String elPassword, String searchId) throws ElasticSearchClientException {
+		ElasticSearchClient esc;
+		try {
+			esc = new ElasticSearchClient(elServer, elUsername, elPassword);
+			return retrieveSearch(esc, searchId);
+		} catch (ServiceCallerException ex) {
+			throw new ElasticSearchClientException(ex);
+		}
+	}
+	
+	public static Map<String, Instant> retrieveAllSearches(ElasticSearchClient esc) throws ElasticSearchClientException, ParseException {
+		Map<String, Instant> returnValue = new HashMap<>();
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("_source", "searchId,expires");
+		String json = esc.getIndex(SEARCHES_NDX, parameters);
+		Gson gson = new GsonBuilder().registerTypeAdapter(Instant.class, new InstantDeserializer()).create();
+		JsonParser jp = new JsonParser();
+		JsonElement jelem = jp.parse(json);
+		JsonElement resultsElem = jelem.getAsJsonObject().get("hits");
+		DateFormat df = DateFormat.getDateTimeInstance();
+		JsonArray hits = resultsElem.getAsJsonObject().get("hits").getAsJsonArray();
+		for (int i = 0, n = hits.size(); i < n; i++) {
+			JsonObject sourceObj = hits.get(i).getAsJsonObject().get("_source").getAsJsonObject();
+			String id = sourceObj.get("searchId").getAsString();
+			String expires = sourceObj.get("expires").getAsString();
+			returnValue.put(sourceObj.get("searchId").getAsString(), Instant.ofEpochMilli(df.parse(sourceObj.get("expires").getAsString()).getTime()));
+		}
+		return returnValue;
+	}
+	
+	public static void updateSearch(ElasticSearchClient esc, Search search) throws ElasticSearchClientException {
+		Gson gson = new GsonBuilder().registerTypeAdapter(Instant.class, new InstantSerializer()).create();
+		String json = gson.toJson(search);
+		esc.updateIndex(SEARCHES_NDX, TYPE, search.getSearchId(), json);
+	}
+	
+	public static void updateSearch(String elServer, String elUsername, String elPassword, Search search) throws ElasticSearchClientException {
+		ElasticSearchClient esc;
+		try {
+			esc = new ElasticSearchClient(elServer, elUsername, elPassword);
+			updateSearch(esc, search);
+		} catch (ServiceCallerException ex) {
+			throw new ElasticSearchClientException(ex);
+		}
+	}
+	
+	public static void deleteSearch(ElasticSearchClient esc, String searchId) throws ElasticSearchClientException {
+		esc.deleteIndex(SEARCHES_NDX, TYPE, searchId);
+	}
+
+}
+
+

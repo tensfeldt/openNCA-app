@@ -1,0 +1,51 @@
+package com.pfizer.equip.searchservice.search;
+
+import com.pfizer.elasticsearch.dto.Query;
+
+/**
+ * Encapsulates data for search results.
+ * 
+ * @author HeinemanWP
+ *
+ */
+public class SearchResult {
+	private Query query;
+	private String id;
+	private long offset;
+	private long count;
+	
+	public SearchResult() {}
+
+	public Query getQuery() {
+		return query;
+	}
+
+	public void setQuery(Query query) {
+		this.query = query;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public long getOffset() {
+		return offset;
+	}
+
+	public void setOffset(long offset) {
+		this.offset = offset;
+	}
+
+	public long getCount() {
+		return count;
+	}
+
+	public void setCount(long count) {
+		this.count = count;
+	}
+
+}
