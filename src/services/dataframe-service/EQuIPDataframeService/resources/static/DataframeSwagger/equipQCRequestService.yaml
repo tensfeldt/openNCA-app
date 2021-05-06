@@ -1,0 +1,612 @@
+swagger: '2.0'
+info:
+  title: EQUIP QC Request Services REST API
+  description: Service endpoints and examples relating to QC Requests
+  version: 1.0.0
+basePath: /EQuIPDataframeService
+paths:
+  /qcrequests:
+    post:
+      summary: Add a new QCRequest related to either a dataframe or an Assembly
+      parameters:
+        - in: body
+          name: bodyData
+          description: |
+            QCRequest in JSON format
+          required: true
+          schema:
+            $ref: '#/definitions/newQCRequest'
+      tags:
+        - 1. QC Requests
+      operationId: qcrequestPost
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      responses:
+        '200':
+          description: Unique id of the new qc request
+          schema:
+            type: string
+        '401':
+          description: Authentication Error
+        '403':
+          description: Forbidden for unauthorized users
+        '404':
+          description: Not Found or Invalid URI
+        '405':
+          description: Methods not implemented
+        '500':
+          description: Internal Server Error
+  /qcrequests/{qcrequestid}:
+    get:
+      summary: Returns the qcrequest associated with the ID
+      description: |
+        No files will be returned.
+      tags:
+        - 1. QC Requests
+      operationId: QCRequestByID
+      produces:
+        - application/json
+      parameters:
+        - name: qcrequestid
+          in: path
+          type: string
+          description: unique id of the request
+          required: true
+          default: "894bd87c-61a4-46c9-bf06-7a5f1aece492"
+      responses:
+        '200':
+          description: 'Execution successful, data is returned'
+          schema:
+            $ref: '#/definitions/QCRequest'
+        '401':
+          description: Authentication Error
+        '403':
+          description: Forbidden for unauthorized users
+        '404':
+          description: Not Found or Invalid URI
+        '405':
+          description: Methods not implemented
+        '500':
+          description: Internal Server Error
+    put:
+      summary: Updates the qcrequest associated with the ID
+      description: |
+        Allows qcrequest status and qcrequest due date to be updated
+      tags:
+        - 1. QC Requests
+      operationId: QCRequestUpdateByID
+      produces:
+        - application/json
+      parameters:
+        - name: qcrequestid
+          in: path
+          type: string
+          description: unique id of the request
+          required: true
+          default: "894bd87c-61a4-46c9-bf06-7a5f1aece492"
+        - name: bodydata
+          in: body
+          type: string
+          description: field name and new value for properties
+          required: true
+          default: "qcStatus:Completed"          
+      responses:
+        '200':
+          description: 'Execution successful, updated qcrequest is returned'
+          schema:
+            $ref: '#/definitions/QCRequest'
+        '401':
+          description: Authentication Error
+        '403':
+          description: Forbidden for unauthorized users
+        '404':
+          description: Not Found or Invalid URI
+        '405':
+          description: Methods not implemented
+        '500':
+          description: Internal Server Error
+  /qcrequests/{qcrequestid}/qcworkflowitems:
+    get:
+      summary: >-
+        Returns all QC workflow items for a specified QC
+        request object
+      description: tbd
+      tags:
+        - 2. QC Request Workflow
+      operationId: qcRequestWorkflowByID
+      produces:
+        - application/json
+      parameters:
+        - name: qcrequestid
+          in: path
+          type: string
+          description: unqiue id of the qc request
+          required: true
+          default: "894bd87c-61a4-46c9-bf06-7a5f1aece492"
+      responses:
+        '200':
+          description: 'Execution successful, data is returned'
+          schema:
+            $ref: '#/definitions/QCWorkflowItem'
+        '401':
+          description: Authentication Error
+        '403':
+          description: Forbidden for unauthorized users
+        '404':
+          description: Not Found or Invalid URI
+        '405':
+          description: Methods not implemented
+        '500':
+          description: Internal Server Error
+    post:
+      summary: >-
+         Adds a new qc request workflow item for a specified
+             QC request object
+      description: tbd
+      tags:
+        - 2. QC Request Workflow
+      operationId: qcRequestWorkflowPost
+      produces:
+        - application/json
+      parameters:
+        - name: qcrequestid
+          in: path
+          type: string
+          description: unqiue id of the qc request
+          required: true
+          default: "6d6600be-5415-4843-a769-d93aa9fdaf0e"
+        - in: body
+          name: bodyData
+          description: |
+            metadata in JSON format
+          schema:
+            $ref: '#/definitions/newQCWorkflowItem'
+          required: true
+      responses:
+        '200':
+          description: Unique id of the new workflow item
+          schema:
+            type: string
+        '401':
+          description: Authentication Error
+        '403':
+          description: Forbidden for unauthorized users
+        '404':
+          description: Not Found or Invalid URI
+        '405':
+          description: Methods not implemented
+        '500':
+          description: Internal Server Error
+  /qcrequests/qcworkflowitems/{qcworkflowitemid}:
+    put:
+      summary: Update the status of the QC Workflow item
+      description: ''
+      tags:
+        - 2. QC Request Workflow
+      operationId: qcRequestWorkflowStatus
+      produces:
+        - application/json
+      parameters:   
+        - name: qcworkflowitemid
+          in: path
+          type: string
+          description: unqiue id of the workflow item
+          required: true
+        - in: body
+          name: bodyData
+          description: |
+            new status
+          required: true
+          default: "qcworkflowstatus:Completed"
+      responses:
+        '200':
+          description: Updated workflow item
+          schema:
+            $ref: '#/definitions/QCWorkflowItem'
+        '401':
+          description: Authentication Error
+        '403':
+          description: Forbidden for unauthorized users
+        '404':
+          description: Not Found or Invalid URI
+        '405':
+          description: Methods not implemented
+        '500':
+          description: Internal Server Error
+  '/qcrequests/{qcrequestid}/qcchecklistsummaryitems':
+    get:
+      summary: >-
+        Returns the QC checklist summary items for a
+        specified QC request object
+      description: ''
+      tags:
+        - 3. QC Request Checklist Summary
+      operationId: checklistSummaryforQCRequest
+      produces:
+        - application/json
+      parameters:
+        - name: qcrequestid
+          in: path
+          type: string
+          description: unqiue id of the qc request
+          required: true
+          default: "6d6600be-5415-4843-a769-d93aa9fdaf0e"          
+      responses:
+        '200':
+          description: 'Execution successful, data is returned'
+          schema:
+            $ref: '#/definitions/qcChecklistSummaryItem'
+        '401':
+          description: Authentication Error
+        '403':
+          description: Forbidden for unauthorized users
+        '404':
+          description: Not Found or Invalid URI
+        '405':
+          description: Methods not implemented
+        '500':
+          description: Internal Server Error
+  '/qcrequests/qcchecklistsummaryitems/{qcchecklistsummaryitemid}':
+    put:
+      summary: >-
+        Populates the answer field of a checklist summary
+        item
+      description: ''
+      tags:
+        - 3. QC Request Checklist Summary
+      operationId: qcrequestChecklistSummaryByIdAnswer
+      produces:
+        - application/json
+      parameters:
+        - name: qcchecklistsummaryitemid
+          in: path
+          type: string
+          description: unqiue id of the checklist summary item
+          required: true
+        - name: bodyData
+          in: body
+          type: string
+          description: the answer to the summary item
+          required: true
+          default: "checklistSummaryItemAnswer:This is my answer"
+      responses:
+        '200':
+          description: 'Id of the updated item'
+          schema:
+            type: string
+        '401':
+          description: Authentication Error
+        '403':
+          description: Forbidden for unauthorized users
+        '404':
+          description: Not Found or Invalid URI
+        '405':
+          description: Methods not implemented
+        '500':
+          description: Internal Server Error
+  '/qcrequests/{qcrequestid}/qcchecklistitems':
+    get:
+      summary: >-
+        Returns all QC checklist items for a specified QC
+        request object
+      description: ''
+      tags:
+        - 4. QC Request Checklist Items
+      operationId: checklistItemsByID
+      produces:
+        - application/json
+      parameters:
+        - name: qcrequestid
+          in: path
+          type: string
+          description: unqiue id of the request
+          default: "6d6600be-5415-4843-a769-d93aa9fdaf0e"
+          required: true
+        - in: body
+          name: bodyData
+          description: |
+            metadata in JSON format
+          schema:
+            $ref: '#/definitions/newQCChecklistItem'
+          required: true        
+      responses:
+        '200':
+          description: 'List of QC request checklist items is returned'
+          schema:
+            $ref: '#/definitions/QCChecklistItem'
+        '401':
+          description: Authentication Error
+        '403':
+          description: Forbidden for unauthorized users
+        '404':
+          description: Not Found or Invalid URI
+        '405':
+          description: Methods not implemented
+        '500':
+          description: Internal Server Error
+  '/qcrequests/qcchecklistitems/{qcchecklistitemid}':
+    put:
+      summary: >-
+        Populates the comments field of a checklist item
+      description: ''
+      tags:
+        - 4. QC Request Checklist Items
+      operationId: qcrequestChecklistItemByIdComments
+      produces:
+        - application/json
+      parameters:
+        - name: qcchecklistitemid
+          in: path
+          type: string
+          description: unqiue id of the checklist item
+          required: true
+        - name: bodyData
+          in: body
+          type: string
+          description: the qc comment or source comment
+          required: true
+          default: "qcComment:This is my comment"
+      responses:
+        '200':
+          description: 'the updated item'
+          schema:
+            $ref: '#/definitions/QCChecklistItem'
+        '401':
+          description: Authentication Error
+        '403':
+          description: Forbidden for unauthorized users
+        '404':
+          description: Not Found or Invalid URI
+        '405':
+          description: Methods not implemented
+        '500':
+          description: Internal Server Error       
+definitions:
+  newQCRequest:
+    type: object
+    required:
+      - checklistTemplateId
+      - qcDueDate
+    properties:
+      type:
+        type: string
+        example: "qcRequest"
+      dataframeId:
+        type: string
+        example: 89076dc9-7ea7-4299-8b3c-0727c412da33
+      assemblyId:
+        type: string
+        example: 539bb774-46e4-41a7-b0a0-e812a9ba85bd
+      qcDueDate:
+        type: string
+        format: date-time
+      checklistTemplateId:
+        type: object
+        $ref: '#/definitions/LibraryReference'
+      qcStatus:
+        type: string
+        example: Not QC'd
+  QCRequest:
+    type: object
+    properties:
+      id:
+        type: string
+      equipId:
+        type: string
+      createdBy:
+        type: string
+        example: QUINTJ16
+      created:
+        type: string
+        format: date-time
+      modifiedBy:
+        type: string
+      modified:
+        type: string
+        format: date-time
+      dataframeId:
+        type: string
+        example: 89076dc9-7ea7-4299-8b3c-0727c412da33
+      assemblyId:
+        type: string
+        example: 539bb774-46e4-41a7-b0a0-e812a9ba85bd
+      qcStatus:
+        type: string
+        example: Not QC'd
+      qcDueDate:
+        type: string
+        format: date-time
+      checklistTemplateId:
+        type: string
+      qcWorkflowItems:
+        type: array
+        items:
+          $ref: '#/definitions/QCWorkflowItem'
+      qcChecklistItems:
+        type: array
+        items:
+          $ref: '#/definitions/QCChecklistItem'
+      qcChecklistSummaryItems:
+        type: array
+        items:
+          $ref: '#/definitions/QCChecklistItem'
+  newQCWorkflowItem:
+    type: object
+    properties:
+      type:
+        type: string
+        example: qcWorkflowItem
+      dataframeId:
+        type: string
+        example: 89076dc9-7ea7-4299-8b3c-0727c412da33
+      assemblyId:
+        type: string
+        example: 539bb774-46e4-41a7-b0a0-e812a9ba85bd
+      assignedReviewer:
+        type: string
+        example: ''
+      qcWorkflowStatus:
+        type: string
+        example: New          
+      qcStatus:
+        type: string
+        example: Not QC'd
+  QCWorkflowItem:
+    type: object
+    properties:
+      id:
+        type: string
+      equipId:
+        type: string
+      createdBy:
+        type: string
+        example: QUINTJ16
+      created:
+        type: string
+        format: date-time
+      modifiedBy:
+        type: string
+      modified:
+        type: string
+        format: date-time
+      qcStatus:
+        type: string
+        example: Not QC'd
+      dataframeId:
+        type: string
+        example: 89076dc9-7ea7-4299-8b3c-0727c412da33
+      assemblyId:
+        type: string
+        example: 539bb774-46e4-41a7-b0a0-e812a9ba85bd
+      assignedReviewer:
+        type: string
+        example: ''
+      qcWorkflowStatus:
+        type: string
+        example: Review Requested
+      comments:
+        type: array
+        items:
+          $ref: '#/definitions/Comment'
+      metadata:
+        type: array
+        items:
+          $ref: '#/definitions/Entry'
+  QCChecklistSummaryItem:
+    type: object
+    properties:
+      id:
+        type: string
+      equipId:
+        type: string
+      createdBy:
+        type: string
+        example: QUINTJ16
+      created:
+        type: string
+        format: date-time
+      modifiedBy:
+        type: string
+      modified:
+        type: string
+        format: date-time
+      checklistTemplateSummaryItemId:
+        type: object
+        $ref: '#/definitions/LibraryReference'
+      checklistSummaryItemAnswer:
+        type: string
+        example: "Yes"     
+      metadata:
+        type: array
+        items:
+          $ref: '#/definitions/Entry'
+  QCChecklistItem:
+    type: object
+    properties:
+      id:
+        type: string
+      equipId:
+        type: string
+      createdBy:
+        type: string
+        example: QUINTJ16
+      created:
+        type: string
+        format: date-time
+      modifiedBy:
+        type: string
+      modified:
+        type: string
+        format: date-time
+      qcComment:
+        type: string
+      sourceComment:
+        type: string
+      checklistTemplateItemId:
+        type: object
+        $ref: '#/definitions/LibraryReference'
+      metadata:
+        type: array
+        items:
+          $ref: '#/definitions/Entry'
+  LibraryReference:
+    type: object
+    properties:
+      libraryRef:
+        type: string
+        example: '12345678'
+  newComment:
+    type: object
+    properties:
+      type:
+        type: string
+        example: Comment
+      commentType:
+        type: string
+        example: Data Load
+      body:
+        type: string
+        example: This was the intial load of the data
+      metadata:
+        type: array
+        items:
+          $ref: '#/definitions/Entry'
+  Comment:
+    type: object
+    properties:
+      id:
+        type: string
+      createdBy:
+        type: string
+        example: HIRSCM08
+      createdDate:
+        type: string
+        format: date-time
+      commentType:
+        type: string
+        example: DataLoad
+      body:
+        type: string
+        example: intial load of the data
+      metadata:
+        type: array
+        items:
+          $ref: '#/definitions/Entry'
+  Entry:
+     type: object
+     required:
+       - "key"
+     properties:
+      deleteFlag:
+        type: boolean
+        example: "false"    
+      key:
+        type: string
+        example: "Study ID"
+      value:
+        type: string
+        example: "12345"
+      complexValue:
+          type: file  

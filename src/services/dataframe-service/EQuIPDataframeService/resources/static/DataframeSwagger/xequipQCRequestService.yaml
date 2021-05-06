@@ -1,0 +1,729 @@
+swagger: '2.0'
+info:
+  title: EQUIP QC Request Services REST API
+  description: Service endpoints and examples relating to QC Requests
+  version: 1.0.0
+basePath: /EQuIPDataframeService
+################################################################################
+#                                           Paths                              #
+################################################################################
+paths:
+################################################################################
+#                       QC Request Lookup                      #
+################################################################################
+ /qcrequests:
+    post:
+      summary: Add a new QCRequest to either a Dataframe or and Assembly
+      parameters:
+       - in: "body"
+         name: "bodyData"
+         description: >
+            QCRequest in JSON format
+         required: true 
+         schema:
+          $ref: "#/definitions/newQCRequest"  
+      tags:
+        - 1. QC Requests
+      operationId: qcrequestPost
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      responses:
+        "200": 
+          description: Unique id of the new dataframe
+          schema:
+              type: string
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error              
+ /qcrequest/{qcrequestId}:
+    get:
+      summary: Returns the qcrequest associated with the ID
+      description: |
+        No files will be returned.
+      tags:
+        - 1. QC Requests
+      operationId: QCRequestByID
+      produces:
+        - application/json
+      parameters:
+        - name: qcrequestId
+          in: path
+          type: string
+          description: unique id of the request
+          required: true
+      responses:
+        "200":
+          description: Execution successful, data is returned
+          schema:
+             $ref: "#/definitions/QCRequest"  
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error    
+    put:
+      summary: NOT YET IMPLEMENTED. Updates the qcrequest associated with the ID
+      description: |
+        No files will be returned.
+      tags:
+        - 1. QC Requests
+      operationId: putQCRequestByID
+      produces:
+        - application/json
+      parameters:
+        - name: qcrequestId
+          in: path
+          type: string
+          description: unique id of the request
+          required: true
+        - in: "body"
+          name: "bodyData"
+          description: >
+            QCRequest in JSON format
+          required: true 
+          schema:
+            $ref: "#/definitions/newQCRequest"  
+      responses:
+        "200":
+          description: Execution successful, updated data is returned
+          schema:
+            $ref: "#/definitions/QCRequest"  
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error  
+           ################################################################################
+#                      QC Request Search                      #
+################################################################################
+ /qcrequests/search:
+    post:
+      summary: NOT YET IMPLEMENTED. Retrieve the requests that match the search criteria
+      description: |
+        Upload search criteria via JSON. Returns the qc requests that match the provided search criteria.
+      tags:
+        - 2. QC Request Search
+      operationId: qcrequestSearch
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:       
+        - in: "body"
+          name: "searchData"
+          description: >
+            Search criteria in JSON format. 
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Execution successful, data is returned
+          schema:
+            $ref: "#/definitions/QCRequest"  
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error
+          ##############################################################################
+#                       QC Request Workflow Items                      #
+################################################################################
+ /qcrequest/{qcrequestId}/qcrequestworkflowitems:
+     get:
+      summary: NOT YET IMPLEMENTED. Returns all QC workflow items for a specified QC request object
+      description: |
+        
+      tags:
+        - 3. QC Request Workflow
+      operationId: qcRequestWorkflowByID
+      produces:
+        - application/json
+      parameters:
+        - name: qcrequestId
+          in: path
+          type: string
+          description: unqiue id of the qc request
+          required: true
+      responses:
+        "200":
+          description: Execution successful, data is returned
+          schema:
+               $ref: "#/definitions/QCRequestWorkflowItem"  
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error
+     post:
+      summary: NOT YET IMPLEMENTED. Adds a new qc request workflow item for a specified QC request object
+      description: |
+        
+      tags:
+        - 3. QC Request Workflow
+      operationId: qcRequestWorkflowPost
+      produces:
+        - application/json
+      parameters:
+        - name: qcrequestId
+          in: path
+          type: string
+          description: unqiue id of the qc request
+          required: true
+        - in: "body"
+          name: "bodyData"
+          description: >
+            metadata in JSON format
+          schema:
+               $ref: "#/definitions/newQCRequestWorkflowItem"  
+          required: true 
+          default: > 
+                    tbd
+      responses:
+        "200":
+          description: Execution successful, data is returned
+          schema:
+               $ref: "#/definitions/QCRequestWorkflowItem"  
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error
+          ##############################################################################
+#                       QC Request Checklist Summary                   #
+################################################################################    
+ /qcrequests/{qcrequestId}/qcchecklistsummaryitems:
+    get:
+      summary: NOT YET IMPLEMENTED. Returns all QC checklist summary items for a specified QC request object
+      description: |
+        
+      tags:
+        - 4. QC Request Checklist Summary
+      operationId: dataframeScriptByID
+      produces:
+        - application/json
+      parameters:
+        - name: qcrequestId
+          in: path
+          type: string
+          description: unqiue id of the dataframe
+          required: true
+      responses:
+        "200":
+          description: Execution successful, data is returned
+          schema:
+             $ref: "#/definitions/QCChecklistSummaryItem"  
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error 
+          
+ /qcrequests/{qcrequestId}/qcchecklistsummaryitems/{qcchecklistsummaryitemid}:
+    get:
+      summary: NOT YET IMPLEMENTED. Return the checklist summary item matching this qc checklist summary item id
+      description: |
+        
+      tags:
+        - 4. QC Request Checklist Summary
+      operationId: qcrequestChecklistSummaryByID
+      produces:
+        - application/json
+      parameters:
+        - name: qcrequestId
+          in: path
+          type: string
+          description: unqiue id of the reqeust
+          required: true
+        - name: qcchecklistsummaryitemid
+          in: path
+          type: string
+          description: unqiue id of the checklist summary item
+          required: true
+      responses:
+        "200":
+          description: Execution successful, data is returned
+          schema:
+             $ref: "#/definitions/QCChecklistSummaryItem"  
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error 
+ /qcrequests/{qcrequestId}/qcchecklistsummaryitems/{qcchecklistsummaryitemId}/metadata:
+    get:
+      summary: NOT YET IMPLEMENTED. Return the metadata matching this checklist summary item mand qc request id
+      description: |
+        
+      tags:
+        - 4. QC Request Checklist Summary
+      operationId: qcrequestChecklistSummaryMetadataByID
+      produces:
+        - application/json
+      parameters:
+        - name: qcrequestId
+          in: path
+          type: string
+          description: unqiue id of the reqeust
+          required: true
+        - name: qcchecklistsummaryitemId
+          in: path
+          type: string
+          description: unqiue id of the checklist summary item
+          required: true
+      responses:
+        "200":
+          description: Execution successful, data is returned
+          schema:
+               $ref: "#/definitions/Metadata"  
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error 
+    post:
+      summary: NOT YET IMPLEMENTED. Add new metadata to the item matching this checklist summary item mand qc request id
+      description: Existing metadata with this key will be updated to the new value
+        
+      tags:
+        - 4. QC Request Checklist Summary
+      operationId: qcrequestChecklistSummaryMetadataPost
+      produces:
+        - application/json
+      parameters:
+        - name: qcchecklistsummaryitemId
+          in: path
+          type: string
+          description: unqiue id of the reqeust
+          required: true
+        - name: qcrequestId
+          in: path
+          type: string
+          description: unqiue id of the checklist summary item
+          required: true
+        - in: "body"
+          name: "bodyData"
+          description: >
+            metadata in JSON format
+          schema:
+               $ref: "#/definitions/Metadata"  
+          required: true 
+          default: > 
+                    tbd
+      responses:
+        "200":
+          description: Execution successful, data is returned
+          schema:
+               $ref: "#/definitions/Metadata"  
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error   
+   ##############################################################################
+#                       QC Request Checklist Items                 #
+################################################################################    
+ /qcrequests/{qcrequestId}/qcchecklistitems:
+   get:
+      summary: NOT YET IMPLEMENTED. Returns all QC checklist items for a specified QC request object
+      description: |
+        
+      tags:
+        - 5. QC Request Checklist Items
+      operationId: checklistItemsByID
+      produces:
+        - application/json
+      parameters:
+        - name: qcrequestid
+          in: path
+          type: string
+          description: unqiue id of the request
+          required: true
+      responses:
+        "200":
+          description: Execution successful, data is returned
+          schema:
+               $ref: "#/definitions/QCChecklistItem"  
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error         
+ /qcrequests/{qcrequestId}/qcchecklistitems/{qcchecklistitemid}:
+    get:
+      summary: NOT YET IMPLEMENTED. Return the checklist item matching this qc crequest id and checklist item id
+      description: |
+        
+      tags:
+        - 5. QC Request Checklist Items
+      operationId: qcrequestChecklistItemByID
+      produces:
+        - application/json
+      parameters:
+        - name: qcrequestid
+          in: path
+          type: string
+          description: unqiue id of the reqeust
+          required: true
+        - name: qcchecklistitemid
+          in: path
+          type: string
+          description: unqiue id of the checklist item
+          required: true
+      responses:
+        "200":
+          description: Execution successful, data is returned
+          schema:
+               $ref: "#/definitions/QCChecklistItem"  
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error
+          
+definitions:
+  newQCRequest:  
+      type: object
+      required:
+      - "checklistTemplateId"
+      - "qcDueDate"
+      - "qcRequestorId"
+      properties:
+        dataframeIds: 
+         type: array
+         items: 
+              type: string
+              example: "f6e87419-199d-49c0-8107-92f0226e2fcf"
+         assemblyIds:
+          type: array
+          items: 
+              type: string
+              example: "8c657759-3211-4ee1-9f64-a69268be9e98"    
+        qcDueDate:
+          type: string
+          format: "date-time"
+        checklistTemplateId:
+          type: string
+          example: ""
+  QCRequest:  
+      type: object
+      properties:
+        id:
+          type: string
+        equipId:
+          type: string
+        createdBy:
+          type: string
+          example: "QUINTJ16"
+        created:
+          type: string
+          format: "date-time"
+        modifiedBy:
+          type: string
+        modified:
+          type: string
+          format: "date-time"
+        dataframeIds: 
+         type: array
+         items: 
+              type: string
+              example: "f6e87419-199d-49c0-8107-92f0226e2fcf"
+         assemblyIds:
+          type: array
+          items: 
+              type: string
+              example: "8c657759-3211-4ee1-9f64-a69268be9e98"    
+        qcStatus:
+          type: string
+          example: "Not QC'd"
+        qcDueDate:
+          type: string
+          format: "date-time"
+        checklistTemplateId:
+          type: string
+        metadata:
+          type: array
+          items: 
+               $ref: '#/definitions/Metadata' 
+        comments:
+           type: array
+           items: 
+                 $ref: '#/definitions/Comment'   
+  newQCRequestWorkflowItem:  
+      type: object
+      required:
+      - "qcRequestId"
+      properties:
+        qcRequestId:
+          type: string
+        dataframeId:
+          type: string
+          example: "f6e87419-199d-49c0-8107-92f0226e2fcf"
+        assemblyId:
+          type: string
+        assignedReviewer:
+          type: string
+          example: "HIRSCM08"
+        qcStatus:
+          type: string
+          example: "Findings Addressed"
+        metadata:
+          type: array
+          items: 
+               $ref: '#/definitions/Metadata' 
+  QCRequestWorkflowItem:  
+      type: object
+      properties:
+        equipId:
+          type: string
+        createdBy:
+          type: string
+          example: "QUINTJ16"
+        created:
+          type: string
+          format: "date-time"
+        modifiedBy:
+          type: string
+        modified:
+          type: string
+          format: "date-time"
+        qcRequestId:
+          type: string
+        dataframeId:
+          type: string
+          example: "f6e87419-199d-49c0-8107-92f0226e2fcf"
+        assemblyId:
+          type: string
+        assignedReviewer:
+          type: string
+          example: "HIRSCM08"
+        qcStatus:
+          type: string
+          example: "Review Requested"
+        metadata:
+          type: array
+          items: 
+               $ref: '#/definitions/Metadata' 
+        comments:
+           type: array
+           items: 
+                 $ref: '#/definitions/Comment'   
+  newQCqcChecklistSummaryItem:  
+      type: object
+      properties:
+        qcRequestId:
+          type: string
+        checklistSummaryItemAnswer:
+          type: string
+        checklistTemplateSummaryItemId:
+           type: array
+           items: 
+               $ref: '#/definitions/LibraryReference'
+        metadata:
+          type: array
+          items: 
+               $ref: '#/definitions/Metadata' 
+  QCChecklistSummaryItem:  
+      type: object
+      properties:
+        id:
+          type: string
+        equipId:
+          type: string
+        createdBy:
+          type: string
+          example: "QUINTJ16"
+        created:
+          type: string
+          format: "date-time"
+        modifiedBy:
+          type: string
+        modified:
+          type: string
+          format: "date-time"
+        qcRequestId:
+          type: string
+        checklistSummaryItemAnswer:
+          type: string
+        checklistTemplateSummaryItemId:
+           type: array
+           items: 
+               $ref: '#/definitions/LibraryReference'
+        metadata:
+          type: array
+          items: 
+               $ref: '#/definitions/Metadata' 
+  newQCChecklistItem:  
+      type: object
+      required:
+      - "qcRequestId"
+      - "qcComment"
+      - "sourceComment"
+      - "checklistTemplateItemId"
+      properties:
+        qcRequestId:
+          type: string
+        qcComment:
+          type: string
+        sourceComment:
+          type: string
+        checklistTemplateSItemId:
+           type: array
+           items: 
+               $ref: '#/definitions/LibraryReference'
+        metadata:
+          type: array
+          items: 
+               $ref: '#/definitions/Metadata' 
+  QCChecklistItem:  
+      type: object
+      properties:
+        id:
+          type: string
+        equipId:
+          type: string
+        createdBy:
+          type: string
+          example: "QUINTJ16"
+        created:
+          type: string
+          format: "date-time"
+        modifiedBy:
+          type: string
+        modified:
+          type: string
+          format: "date-time"
+        qcRequestId:
+          type: string
+        qcComment:
+          type: string
+        sourceComment:
+          type: string
+        checklistTemplateSItemId:
+           type: array
+           items: 
+               $ref: '#/definitions/LibraryReference'
+        metadata:
+          type: array
+          items: 
+               $ref: '#/definitions/Metadata'               
+  LibraryReference:
+   type: object
+   properties:
+      libraryReference:
+        type: string
+  ParentId:
+   type: object
+   properties:
+     parentId:
+       type: string
+  Metadata:
+     type: object
+     required:
+       - "key"
+     properties:
+      key:
+        type: string
+      value:
+        type: string
+      complexValue:
+        type: string
+  newComment:
+    type: object
+    properties:
+      commentType:
+        type: string
+        example: "DataLoad"
+      body:
+        type: string
+        example: "intial load of the data"
+      metadata:
+          type: array
+          items: 
+           $ref: '#/definitions/Metadata' 
+  Comment:
+    type: object
+    properties:
+      id:
+        type: string
+      createdBy:
+        type: string
+        example: "HIRSCM08"
+      createdDate:
+        type: string
+        format: date-time
+      commentType:
+        type: string
+        example: "DataLoad"
+      body:
+        type: string
+        example: "intial load of the data"
+      metadata:
+          type: array
+          items: 
+           $ref: '#/definitions/Metadata' 
+  
+  

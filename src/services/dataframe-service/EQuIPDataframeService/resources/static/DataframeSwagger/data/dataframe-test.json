@@ -1,0 +1,24 @@
+{
+   "type" : "dataframe",
+   "metadata" : [ {
+      "deleted" : false,
+      "key" : "Study Parameter",
+      "value" : [ "12345" ],
+      "valueType" : "java.lang.string"
+   } ],
+   "assemblyIds" : [ ],
+   "comments" : [ ],
+   "dataBlindingStatus" : "Unblinded",
+   "dataStatus" : "Draft",
+   "dataframeIds" : [ ],
+   "dataframeType" : "Data Transformation",
+   "deleteFlag" : false,
+   "obsoleteFlag" : false,
+   "programIds" : [ ],
+   "projectIds" : [ ],
+   "promotionStatus" : "Promoted",
+   "promotions" : [ ],
+   "protocolIds" : [ ],
+   "qcStatus" : "Not QC'd",
+   "restrictionStatus" : "Not Restricted"
+}

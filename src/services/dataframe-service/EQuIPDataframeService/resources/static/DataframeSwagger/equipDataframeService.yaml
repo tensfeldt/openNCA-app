@@ -1,0 +1,3790 @@
+swagger: '2.0'
+info:
+  title: EQUIP Dataframe Services REST API
+  description: Service endpoints and examples relating to Dataframes
+  version: 1.0.0
+basePath: /EQuIPDataframeService
+      
+########################################################
+#                       DATAFRAME                      #
+########################################################
+paths:
+  /{systemId}/dataframes:
+    get:
+      summary: DEBUG only (will not be deployed to prod). Retrieve all top-level dataframes and their datasets and metadata.
+      description: No children or files will be returned.
+      tags:
+        - 01. Dataframes
+      operationId: dataframesGet
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca"
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true
+          type: string     
+      responses:
+        "200":
+          description: An array of dataframes
+          schema:
+              $ref: '#/definitions/Dataframe'
+    post:
+      summary: Add a new Dataframe.
+      parameters:
+       - name: systemId
+         in: path
+         type: string
+         description: unique system ID
+         required: true
+         default: "nca"
+       - in: "body"
+         name: "bodyData"
+         description: >
+            Dataframe in JSON format.
+         schema:
+          $ref: "#/definitions/newDataframe"
+       - name: IAMPFIZERUSERCN
+         in: header
+         description: Pfizer common name used for authorization
+         required: true
+         type: string 
+         default: hirscm08         
+      tags:
+          - 01. Dataframes
+      operationId: dataframesPost
+      produces:
+        - text/plain
+      consumes:
+        - application/json
+        - multipart/form-data
+      responses:
+        "200": 
+          description: Unique id of the new dataframe
+          schema:
+              type: string
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error              
+  /{systemId}/dataframes/{dataframeId}:
+    get:
+      summary: Returns the dataframe associated with the dataframe ID along with its children and all of their datasets and metadata.
+      description: |
+        No files will be returned.
+      tags:
+          - 01. Dataframes
+      operationId: DataframeByID
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca"
+        - name: dataframeId
+          in: path
+          type: string
+          description: unique id of the dataframe
+          required: true
+          default: "838c9698-6fb7-49f2-9710-f2f8b243241f"
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true
+          type: string        
+      responses:
+        "200":
+          description: Execution successful, dataframe is returned from Modeshape
+          schema:
+            $ref: '#/definitions/Dataframe'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error 
+  /{systemId}/dataframes/list:
+    post:
+      summary: Retrieve a list of dataframes after posting a list of IDs
+      description: |
+        Post ids in a JSON list format
+      tags:
+          - 01. Dataframes
+      operationId: dataframeList
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca"
+        - in: "body"
+          name: "bodyData"
+          description: JSON Array of IDs
+          default:  '["9708aecc-23ba-4c1c-970a-e846826e6b7d", "838c9698-6fb7-49f2-9710-f2f8b243241f"]'
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true
+          type: string             
+      responses:
+        "200":
+         description: OK
+         schema:
+                $ref: '#/definitions/Dataframe'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error            
+#####################################################
+#                       SEARCH                      #
+##################################################### 
+  /{systemId}/dataframes/search:
+    post:
+      summary: NOT YET IMPLEMENTED. Retrieve the dataframes that match the search criteria
+      description: |
+         Upload search criteria via JSON. Returns the dataframes that match the provided search criteria along with their datasets and metadata. No children or files will be returned.
+      tags:
+         - 02. Dataframe Search
+      operationId: dataframeSearch
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters: 
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca"      
+        - in: "body"
+          name: "searchData"
+          description:  Search criteria in JSON format. 
+          schema:
+            type: string
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200":
+          description: Execution successful, dataframes are returned from ModeShape
+          schema:
+                  $ref: '#/definitions/Dataframe'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error
+############################################################
+#                       DATAFRAME DATA                     #
+############################################################
+  /{systemId}/dataframes/{dataframeId}/data:
+    get:
+      summary: Returns the dataset object including metadata, string data and id of the file location.
+      description: |
+        
+      tags:
+        - 03. Dataframe Data
+      operationId: dataframeDataByID
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: dataframeId
+          in: path
+          type: string
+          description: unqiue id of the dataframe
+          required: true
+          default: "52f5b1f0-b8a8-476a-a795-7c541d467870"
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200":
+          description: Execution successful, dataset is returned
+          schema:
+              $ref: '#/definitions/Dataset'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error  
+    post:
+      summary: Add a new dataset to this dataframe in Json format, file is added later
+      description: Returns the id of the "complex data" node
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - in: "path"
+          name: "dataframeId"
+          type: "string"
+          required: true
+          default: "52f5b1f0-b8a8-476a-a795-7c541d467870"
+          description: >
+             unique id of the dataframe to add data to
+        - in: "body"
+          name: "dataset"
+          schema:
+              $ref: '#/definitions/newDataset'
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      tags:
+          - 03. Dataframe Data
+      operationId: datasetPost
+      produces:
+        - text/plain
+      consumes:
+        - application/json
+      responses:
+        "200": 
+          description: Unique id of the complex data node
+          schema:
+              type: string
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error              
+  /{systemId}/dataframes/data/{complexDataId}:
+    get:
+      summary: Returns the the contents of the file associated with the dataframe's dataset.
+      description: |
+        
+      tags:
+        - 03. Dataframe Data
+      operationId: dataframeDataFileByID
+      produces:
+        - text/plain
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: complexDataId
+          in: path
+          type: string
+          description: unqiue id of the file data in the dataset
+          required: true
+          default: "f8425d59-a0c4-4f69-b655-fb3c8acfb0f6"
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true
+          type: string   
+      responses:
+        "200":
+          description: File is downloaded
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error  
+  /{systemId}/dataframes/data/{datasetId}: 
+    post:
+      summary: Upload a file to the dataset location
+      description: |
+        
+      tags:
+        - 03. Dataframe Data
+      operationId: dataframeUploadDataFile
+      produces:
+        - text/plain
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: datasetId
+          in: path
+          type: string
+          description: unqiue id of the dataset
+          required: true
+          default: "ede1e03f-de37-4739-bcf9-d0aea0f450cb"
+        - name: file
+          in: formData
+          type: file
+          description: the file to upload
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200":
+          description: File is uploaded
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error            
+  /{systemId}/dataframes/data/list:
+    post:
+      summary: NOT YET IMPLEMENTED. Returns list of data objects based on list of dataframe ids
+      description: |
+        
+      tags:
+        - 03. Dataframe Data
+      operationId: dataframeDataByID
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - in: "body"
+          name: "bodyData"
+          description:    list of Ids in JSON format 
+          schema: 
+            type: string
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200":
+          description: Execution successful, dataframes are returned from ModeShape
+          schema:
+                 $ref: '#/definitions/Dataset'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error 
+##########################################################
+#                       DATAFRAME SCRIPT                 #
+##########################################################  
+  /{systemId}/dataframes/{dataframeId}/script:
+    get:
+      summary: Returns the script that was used for the dataframe creation.
+      description: |
+        
+      tags:
+        - 04. Dataframe Script
+      operationId: dataframeScriptByID
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: dataframeId
+          in: path
+          type: string
+          description: unique id of the dataframe
+          required: true
+          default: "9708aecc-23ba-4c1c-970a-e846826e6b7d"
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true
+          type: string     
+      responses:
+        "200":
+          description: Execution successful, data is returned
+          schema: 
+               $ref: '#/definitions/Script'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error
+    post:
+      summary: Posts a link to the script that was used for the dataset creation.
+      description: |
+      tags:
+        - 04. Dataframe Script
+      operationId: dataframeScriptPost
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: dataframeId
+          in: path
+          type: string
+          description: unique id of the dataframe
+          required: true
+          default: "9708aecc-23ba-4c1c-970a-e846826e6b7d"
+        - name: script
+          in: body
+          type: object
+          schema: 
+               $ref: '#/definitions/newScript'
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200":
+          description: Execution successful, data is returned
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error
+################################################################
+#                       DATAFRAME PROMOTIONS                   #
+################################################################
+  /{systemId}/dataframes/{dataframeId}/promotions:
+    get:
+      summary:  All promotion records for a specified dataframe id
+      description:    There is no description   
+      tags:
+        - 05. Dataframe Promotions
+      operationId: dataframePromotionsGet
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: dataframeId
+          in: path
+          type: string
+          description: id of the dataframe
+          required: true
+          default: "9708aecc-23ba-4c1c-970a-e846826e6b7d"
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true
+          type: string     
+      responses:
+        "200":
+          description: Execution successful, data is returned
+          schema:
+              $ref: '#/definitions/Promotion'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error    
+    post:
+      summary:  Add a new promotion record to a specified datafarme id and updates the dataframe
+      description: Dataframe statuses will be updated   
+      tags:
+        - 05. Dataframe Promotions
+      operationId: dataframePromotionsPost
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: dataframeId
+          in: path
+          type: string
+          description: id of the dataframe
+          required: true
+          default: "9708aecc-23ba-4c1c-970a-e846826e6b7d"
+        - name: bodyData
+          description: dataframe promotion in JSON format
+          in: body
+          schema:
+            $ref: '#/definitions/newPromotion'  
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200":
+          description: Execution successful, data is returned
+          schema:
+            $ref: '#/definitions/Promotion'  
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error 
+############################################################
+#                     ENTITY ATTACHMENTS                   #
+############################################################
+  /{systemId}/entities/{nodeId}/attachments:
+    get:
+      summary: For the input node return latest version of all child attachments per equip id
+      description: |
+        
+      tags:
+        - 07. Common Methods
+      operationId: nodeChildAttachmentsGetById
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca"
+        - name: nodeId
+          in: path
+          type: string
+          description: unqiue id of the node
+          required: true
+          default: "0aa79e1e-acdb-4566-99c9-a20fe55c178b"
+        - name: userId
+          in: query
+          description: User id filter for attachments
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Execution successful, dataframes are returned from ModeShape
+          schema:
+                 $ref: '#/definitions/Dataframes'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error 
+############################################################
+#                     ENTITY COMMENTS                      #
+############################################################
+  /{systemId}/entities/{nodeId}/comments:
+    get:
+      summary: All comments for a specified node (dataframe, assembly, promotion, reporting event item, published item)
+      description: |
+        
+      tags:
+        - 07. Common Methods
+      operationId: nodeCommentsGetById
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: nodeId
+          in: path
+          type: string
+          description: unqiue id of the node
+          required: true
+          default: "9708aecc-23ba-4c1c-970a-e846826e6b7d"
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200":
+          description: Execution successful, dataframes are returned from ModeShape
+          schema:
+                 $ref: '#/definitions/Comment'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error 
+    post:
+      summary: Add a new comment to a specified node id
+      description: |
+        
+      tags:
+        - 07. Common Methods
+      operationId: nodeCommentsPost
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - in: "body"
+          description: Comment in JSON format. 
+          name: bodyData
+          schema:
+              $ref: '#/definitions/newComment'
+        - name: nodeId
+          in: path
+          type: string
+          description: unqiue id of the node
+          required: true
+          default: "9708aecc-23ba-4c1c-970a-e846826e6b7d"
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200": 
+          description: Unique id of the new comment
+          schema:
+              type: string
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error   
+  /{systemId}/entities/{commentId}/comments:
+     put:
+      summary: Updates a specific comment
+      description: |
+        
+      tags:
+        - 07. Common Methods
+      operationId: nodeCommentsUpdateById
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: commentId
+          in: path
+          type: string
+          description: unqiue id of the comment
+          required: true
+          default: "3d7b00b3-3c00-4a53-ad11-3c00e72c8e7c"    
+        - in: "body"
+          name: "bodyData"
+          description:  Comment in JSON format. 
+          schema:
+              $ref: '#/definitions/newComment'
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200": 
+          description: Id of the updated comment
+          schema:
+              type: string
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error 
+############################################################
+#                      ENTITY METADATA                     #
+############################################################
+  /{systemId}/entities/{nodeId}/metadata:
+    get:
+      summary:  All metadata related to the node ID
+      description: |
+        
+      tags:
+        - 07. Common Methods
+      operationId: nodeMetadataGet
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: nodeId
+          in: path
+          type: string
+          description: id of the node
+          required: true
+          default: "9708aecc-23ba-4c1c-970a-e846826e6b7d"
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200":
+          description: Execution successful, data is returned
+          schema:
+              $ref: '#/definitions/Entry'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error    
+    post:
+      summary:  Add new metadata to the node
+      description: |
+        
+      tags:
+        - 07. Common Methods
+      operationId: nodeMetadataPost
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: nodeId
+          in: path
+          type: string
+          description: id of the node
+          required: true
+          default: "9708aecc-23ba-4c1c-970a-e846826e6b7d"
+        - in: "body"
+          name: "bodyData"
+          description: >
+            Node metadata in JSON format. 
+          required: true
+          schema:
+            $ref: '#/definitions/newEntry'
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200":
+          description: Execution successful, data is returned
+          schema:
+              $ref: '#/definitions/Entry'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+    put:
+      summary:  Updates existing metadatum node
+      description: |
+        
+      tags:
+        - 07. Common Methods
+      operationId: nodeMetadataPut
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: nodeId
+          in: path
+          type: string
+          description: id of the metadata node
+          required: true
+          default: "26c16852-e4e7-476a-9cba-88db441e2f4a"          
+        - in: "body"
+          name: "bodyData"
+          description: >
+            Node metadata in JSON format. 
+          required: true
+          schema:
+            $ref: '#/definitions/Entry'
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200":
+          description: Execution successful, data is returned
+          schema:
+              $ref: '#/definitions/Entry'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented          
+##############################################################
+#                      ENTITY VERSIONING                     #
+##############################################################
+  /{systemId}/entities/{nodeId}/commit:
+    put:
+      summary:  Commits a node 
+      description: |
+        
+      tags:
+        - 07. Common Methods
+      operationId: nodeCommit
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: nodeId
+          in: path
+          type: string
+          description: id of the node
+          required: true
+          default: "9708aecc-23ba-4c1c-970a-e846826e6b7d"
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200":
+          description: Success or failure message
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error    
+  /{systemId}/entities/{nodeId}/delete:
+    put:
+      summary:  Sets the delete flag on a node (soft delete)
+      description: |
+        
+      tags:
+        - 07. Common Methods
+      operationId: nodeDelete
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: nodeId
+          in: path
+          type: string
+          description: id of the node
+          required: true
+          default: "9708aecc-23ba-4c1c-970a-e846826e6b7d"
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200":
+          description: Success or failure message
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+  /{systemId}/entities/{nodeId}/obsolete:
+    put:
+      summary:  Sets the obsolete flag on a node 
+      description: |
+        
+      tags:
+        - 07. Common Methods
+      operationId: nodeObsolete
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: nodeId
+          in: path
+          type: string
+          description: id of the node
+          required: true
+          default: "9708aecc-23ba-4c1c-970a-e846826e6b7d"
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200":
+          description: Success or failure message
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+  /{systemId}/entities/{nodeId}/supersede:
+    put:
+      summary:  Sets the supersede flag on a node
+      description: |
+        
+      tags:
+        - 07. Common Methods
+      operationId: nodeSupersede
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: nodeId
+          in: path
+          type: string
+          description: id of the node
+          required: true
+          default: "9708aecc-23ba-4c1c-970a-e846826e6b7d"
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200":
+          description: Success or failure message
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+  /{systemId}/entities/{nodeId}/setLock:
+    put:
+      summary:  Sets/unsets the lock flag on a node
+      description: |
+        
+      tags:
+        - 07. Common Methods
+      operationId: nodeLock
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: nodeId
+          in: path
+          type: string
+          description: id of the node
+          required: true
+          default: "9708aecc-23ba-4c1c-970a-e846826e6b7d"
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200":
+          description: Success or failure message
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+  /{systemId}/entities/equipid/{equipId}/delete:
+    put:
+      summary:  | #INCOMPLETE
+        Sets the delete flag on the item associated with the equip ID.
+      description: | 
+        
+      tags:
+        - 07. Common Methods
+      operationId: itemByEquipIdAction
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: equipId
+          in: path
+          type: string
+          description: unique equip ID of the item
+          required: true
+          default: "TEST1532349019262"
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200":
+          description: Success or failure message
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+  /{systemId}/entities/equipid/{equipId}/versions:
+    get:
+      summary:  | 
+        Gets the versions of this Equip Id.
+      description: | 
+        Returns all the committed versions of this equip Id. If a user Id is specified, also returns the most recent uncommitted version.
+      tags:
+        - 07. Common Methods
+      operationId: itemByEquipIdVersions
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: equipId
+          in: path
+          type: string
+          description: unique equip ID of the item
+          required: true
+          default: "DT16050"
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+        - in: query
+          name: userId
+          type: string
+          description: ID of user who created the nodes
+          required: false         
+      responses:
+        "200":
+          description: Success, objects are returned
+          schema:
+            $ref: '#/definitions/Dataframe'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented          
+##########################################################
+#                      ENTITY UPDATE                     #
+##########################################################
+  /{systemId}/entities/{nodeId}/update:
+    put:
+      summary:  Updates properties for a node 
+      description: |
+        
+      tags:
+        - 07. Common Methods
+      operationId: nodeUpdate
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: nodeId
+          in: path
+          type: string
+          description: id of the node
+          required: true
+          default: "f4d8c9ad-5e43-4899-bfe1-4255006b9ad3"
+        - name: bodyData
+          in: body
+          type: object
+          description: Json property names and values
+          required: true
+          schema:
+            type: object
+            properties:
+              'equip:profileConfig':
+                 type: array
+                 example: ["test 1","test 2","test 3"]
+              'equip:restrictionStatus':
+                 type: string
+                 example: "Restricted"
+              'equip:dataframeIds':
+                 type: array
+                 example: ["40239850-2c7a-4fe2-b01d-4a262c09c6ec", "91076f63-0437-4d87-8522-52aa77c81334"]
+              'equip:versionCommitted':
+                 type: boolean
+                 example: true
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+          default: hirscm08
+      responses:
+        "200":
+          description: Success or failure message
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error    
+##########################################################
+#                      ENTITY COPY                       #
+##########################################################
+  /{systemId}/entities/{nodeId}/copy:
+    post:
+      summary: Copies a node
+      description: |
+        The nodeId must refer to an analysis, a non-data load assembly, or a dataframe.
+      tags:
+        - 07. Common Methods
+      operationId: nodeCopy
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: nodeId
+          in: path
+          type: string
+          description: id of the node
+          required: true
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+          default: hirscm08
+      responses:
+        "200":
+          description: Success or failure message
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error  
+########################################################
+#                       ASSEMBLIES                     #
+########################################################
+  /{systemId}/assemblies:
+    post:
+      summary: Add a new Assembly for Data Load
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - in: "body"
+          name: "bodyData"
+          description: Assembly in JSON format.
+          schema:
+            $ref: "#/definitions/newAssembly"  
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      tags:
+          - 06. Assemblies
+      operationId: assemblyPost
+      produces:
+        - text/plain
+      consumes:
+        - application/json
+      responses:
+        "200": 
+          description: Unique id of the new assembly
+          schema:
+              type: string
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error              
+  /{systemId}/assemblies/{assemblyId}:
+    get:
+      summary: Returns the assembly associated with the assembly ID along with its children and all of their datasets and metadata.
+      description: |
+        No files will be returned.
+      tags:
+          - 06. Assemblies
+      operationId: AssemblyByID
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: assemblyId
+          in: path
+          type: string
+          description: unqiue id of the assembly
+          required: true
+          default: "f038cc66-a334-4175-b0cb-86f468f3169b"  
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string     
+      responses:
+        "200":
+          description: Execution successful, dataframe is returned from Modeshape
+          schema:
+            $ref: '#/definitions/Assembly'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error    
+  /{systemId}/assemblies/list:
+    post:
+      summary: Retrieve a list of assemblies after posting a list of IDs
+      description: |
+      tags:
+          - 06. Assemblies
+      operationId: assembliesList
+      parameters: 
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - in: "body"
+          name: "bodyData"
+          description: JSON array of assembly IDs
+          default:  '["f038cc66-a334-4175-b0cb-86f468f3169b", "cecfbaaa-cf71-48e3-a6b9-28323bd429f5"]' 
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+                $ref: '#/definitions/Assembly'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error
+########################################################
+#                  REPORTING EVENTS SECTION            #
+########################################################
+  /{systemId}/reportingevents/list:
+    post:
+      summary: Post a list of reporting event ids and receive reporting events back
+      tags:
+          - 08. Reporting Events
+      operationId: reportingEventsPostList
+      produces:
+        - application/json
+      consumes:
+        - application/json
+        - multipart/form-data
+      parameters: 
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca"       
+        - in: "body"
+          name: "bodyData"
+          description: JSON Array of IDs
+          default:  '["436724e4-a33a-454a-baff-e7e95901e504", "8f35b2f2-73ea-4a6c-97b6-a31401bf6b4c"]'
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200":
+         description: OK
+         schema:
+                $ref: '#/definitions/ReportingEvent'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error
+  /{systemId}/reportingevents:
+    post:
+      summary: Post a reporting event and receive a newly created reporting event back
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - in: "body"
+          name: "bodyData"
+          description: >
+            Reporting Event in JSON format.
+          schema:
+                $ref: "#/definitions/ReportingEventNew"  
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      tags:
+          - 08. Reporting Events
+      operationId: reportingEventsPost
+      produces:
+        - application/json
+      consumes:
+        - application/json
+        - multipart/form-data
+      responses:
+        "200":
+         description: OK
+         schema:
+                $ref: '#/definitions/ReportingEvent'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error
+  /{systemId}/reportingevents/studyids:          
+    post:
+      summary: Post a list of study ids and receive reporting events back
+      tags:
+          - 08. Reporting Events
+      operationId: reportingEventsPostStudyIds
+      produces:
+        - application/json
+      consumes:
+        - application/json
+        - multipart/form-data
+      parameters: 
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca"       
+        - in: "body"
+          name: "bodyData"
+          description: JSON Array of IDs
+          default:  '["B152:B1521005"]'
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200":
+         description: OK
+         schema:
+                $ref: '#/definitions/ReportingEvent'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error
+  /{systemId}/reportingevents/releasestatus:
+    put:
+      summary: Update release status (unreleased, released) 
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - in: "body"
+          name: "bodyData"
+          description: >
+             Reporting Event in JSON format.
+          schema:
+               $ref: "#/definitions/ReleaseStatusNew"  
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      description: |
+        
+      tags:
+        - 08. Reporting Events
+      operationId: reportingEventsReleaseStatus
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200": 
+          description: success or failure message
+          schema:
+                $ref: '#/definitions/ReportingEvent'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error 
+  /{systemId}/reportingevents/{eventId}:
+    post:
+      summary: NOT IMPLEMENTED. Update the reporting event associated with the event ID.
+      description: |
+      tags:
+          - 08. Reporting Events
+      operationId: ReportingEventByID
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: eventId
+          in: path
+          type: string
+          description: unique id of the reporting event
+          required: true
+          default: "06d4874b-72a8-4fe1-a06c-85c9ff0db8f2"
+        - in: "body"
+          name: "bodyData"
+          description: Reporting Event in JSON format
+          schema:
+            $ref: "#/definitions/ReportingEvent"  
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true
+          type: string 
+          default: hirscm08 
+      responses:
+        "200":
+          description: Execution successful, reporting event is returned
+          schema:
+            $ref: '#/definitions/ReportingEvent'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error
+########################################################
+#             REPORTING ITEM EVENTS SECTION            #
+########################################################
+  /{systemId}/reportingeventitems/list:
+    post:
+      summary: Post a list of reporting item event ids and receive reporting items back
+      description: |
+        Post ids in a JSON list format
+      tags:
+          - 08. Reporting Events
+      operationId: reportingEventItemsList
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:   
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca"     
+        - in: body
+          name: "bodyData"
+          description: JSON Array of IDs
+          default:  '["8cb38084-613d-4128-9d09-46b7ae87337e", "c9bb01ef-17d9-43aa-90c0-38fd6a1effb0"]'
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200":
+         description: OK
+         schema:
+                $ref: '#/definitions/ReportingEventItem'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error 
+  /{systemId}/reportingeventitems:
+    post:
+      summary: Post a list of reporting event items and receive back a list of new created reporting event items.
+      description: |
+        Post ids in a JSON list format
+      tags:
+          - 08. Reporting Events
+      operationId: reportingEventItemsPost
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - in: "body"
+          name: "bodyData"
+          description: >
+             Reporting Event in JSON format.
+          schema:
+                $ref: "#/definitions/ReportingEventItemNew"  
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200":
+         description: OK
+         schema:
+                $ref: '#/definitions/ReportingEventItem'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error 
+  /{systemId}/reportingeventitems/{itemId}:
+    post:
+      summary: NOT IMPLEMENTED. Update the reporting event item associated with the item ID.
+      description: |
+      tags:
+          - 08. Reporting Events
+      operationId: ReportingEventItemByID
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: itemId
+          in: path
+          type: string
+          description: unique id of the reporting event item
+          required: true
+          default: "122d137a-bb87-4383-992e-4b78676b5703"
+        - in: "body"
+          name: "bodyData"
+          description: Reporting Event Item in JSON format
+          schema:
+                $ref: '#/definitions/ReportingEventItem'
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true
+          type: string 
+          default: hirscm08           
+      responses:
+        "200":
+          description: Execution successful, reporting event item is returned
+          schema:
+            $ref: '#/definitions/ReportingEventItem'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error
+########################################################
+#             PUBLISH ITEM PUBLISH STATUS              #
+########################################################
+  /{systemId}/publishitems/publishstatus:
+     put:
+      summary: Allows status to be set ('Published','UnPublished')
+      description: |
+        
+      tags:
+        - 08. Reporting Events
+      operationId: publishingItemEventsStatus
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - in: "body"
+          name: "bodyData"
+          description: >
+             Publish item status in JSON format.
+          schema:
+                $ref: "#/definitions/PublishItemStatusNew"  
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200": 
+          description: success or failure message
+          schema:
+            $ref: '#/definitions/PublishingItemEvent'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error 
+########################################################
+#                       LINEAGE                        #
+########################################################
+  /{systemId}/lineage/dataload:
+    get:
+      summary: Retrieve dataload lineage of the provided study IDs and/or user ID.
+      description: The data load lineage will contain all data loads for the provided study IDs and/or user ID including their member 
+        and child dataframes and will halt at all promoted items. The lineage will start with all data load assemblies related to the 
+        provided study IDs and created by the provided user ID, if supplied, or all data load assemblies created by the user ID if no study IDs are provided.
+      tags:
+        - 09. Lineage
+      operationId: lineageDataloadGet
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string  
+        - name: studyId
+          in: query
+          description: id of the Study
+          required: false
+          type: string 
+          default: "B152:B1521005" 
+        - name: userId
+          in: query
+          description: id of the user who created the entities
+          required: false 
+          type: string 
+          default: "quintj"                    
+      responses:
+        "200":
+          description: Success, dataload lineage is returned
+          schema:
+            $ref: '#/definitions/AssemblyLineageItem'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error 
+  /{systemId}/lineage/promotion:
+    get:
+      summary: Return promotion lineage of the provided study IDs and/or user ID.
+      description: The data load lineage will contain all data loads for the provided study IDs and/or user ID including their member 
+        and child dataframes and will halt at all promoted items. The lineage will start with all data load assemblies related to the 
+        provided study IDs and created by the provided user ID, if supplied, or all data load assemblies created by the user ID if no study IDs are provided.
+      tags:
+        - 09. Lineage
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string  
+        - name: studyId
+          in: query
+          description: id of the Study
+          required: false
+          type: string 
+          default: "B152:B1521005" 
+        - name: userId
+          in: query
+          description: id of the user who created the entities
+          required: false 
+          type: string 
+          default: "quintj"                       
+      operationId: lineagePromotionGet
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success, promotion lineage is returned
+          schema:
+              $ref: '#/definitions/AssemblyLineageItem'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error 
+  /{systemId}/lineage/analysisprep:
+    get:
+      summary: Retrieve analysis prep lineage of the provided study IDs and/or user ID.
+      description: Returns a JSON representation of objects representing the analysis lineage of the provided study IDs and/or user ID. The analysis lineage will contain all data load assemblies along with their member and child dataframes and will halt at all analysis assemblies and subset dataframes. The lineage will start with all data load assemblies related to the provided study IDs and created by the provided user ID, if supplied, or all data load assemblies created by the user ID if no study IDs are provided.
+      tags:
+        - 09. Lineage
+      operationId: lineageAnalysisPrepGet
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string  
+        - name: studyId
+          in: query
+          description: id of the Study
+          required: false
+          type: string 
+          default: "B152:B1521005" 
+        - name: userId
+          in: query
+          description: id of the user who created the entities
+          required: false 
+          type: string 
+          default: "quintj"             
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success, analysis prep lineage is returned
+          schema:
+              $ref: '#/definitions/AssemblyLineageItem'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error
+  /{systemId}/lineage/equipId/{equipId}:
+    get:
+      summary: Returns analysis lineage of the provided Equip ID.
+      description: The analysis lineage will contain all data loads related to the provided EQuIP ID, including their member
+        and child dataframes and will halt at all analysis assemblies and subset dataframes.
+      tags:
+        - 09. Lineage
+      operationId: lineageByEquipId
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string   
+        - name: equipId
+          in: path
+          type: string
+          description: unique equip id
+          required: true
+          default: "TEST1532614129801"
+        - name: userId
+          in: query
+          description: id of the user who created the entities
+          required: false 
+          type: string 
+          default: "quintj"                 
+      responses:
+        "200":
+          description: Success, all lineage associated with equip ID is returned
+          schema:
+              $ref: '#/definitions/AssemblyLineageItem'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error 
+  /{systemId}/lineage/{startId}/copy:
+    post:
+      summary: Copy lineage
+      description: Copy lineage
+      tags:
+        - 09. Lineage
+      operationId: lineageCopy
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - in: path
+          name: startId
+          type: string
+          description: start ID for lineage copy
+          required: true
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200":
+          description: Success, all lineage associated with equip ID is returned
+          schema:
+              $ref: '#/definitions/AssemblyLineageItem'
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error
+  /{systemId}/lineage/re-execute:
+    post:
+      summary: Re-executes all scripts on all data within the lineage containing the provided element ID.
+      description: The re-execution will either start at the indicated element or its child, depending on the 
+        provided parameters, using the data contained in a specified dataframe.
+      tags:
+        - 09. Lineage
+      operationId: lineageRe-Execute
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - in: "body"
+          name: "bodyData"
+          description: Lineage re-execution parameters in JSON format.
+          schema:
+              $ref: "#/definitions/LineageReExecutionParameters" 
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Successful completion message "Complete"
+          schema:
+              type: string
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error
+  /{systemId}/lineage/{startId}/re-execute:
+    post:
+      summary: Re-executes all scripts starting with the node matching the startId using the provided dataframe IDs as the new data. Instead of
+               creating brand new items, this will create new versions of the re-executed items.
+      description: The re-execution will start at the indicated element using the data contained in a specified dataframe. This URI ignores 
+                the startId and skipInitialItem parameters of the request body.
+      tags:
+        - 09. Lineage
+      operationId: lineageRe-ExecuteVersion
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - in: path
+          name: startId
+          type: string
+          description: start ID for lineage version re-execute
+          required: true
+        - in: "body"
+          name: "bodyData"
+          description: Lineage re-execution parameters in JSON format.
+          schema:
+              $ref: "#/definitions/LineageReExecutionVersionParameters" 
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+      responses:
+        "200":
+          description: Successful completion message "Complete"
+          schema:
+              type: string
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error
+########################################################
+#                       ANALYSIS                       #
+########################################################
+  /{systemId}/analyses:
+    post:
+      summary: Create analysis assembly
+      description: |
+      tags:
+        - 10. Analyses
+      operationId: analysisCreate
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - in: "body"
+          name: "bodyData"
+          description: New analysis in JSON format.
+          schema:
+              $ref: "#/definitions/newAnalysis" 
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true
+          type: string 
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+                  $ref: "#/definitions/Analysis"
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error 
+  /{systemId}/analyses/{analysisId}:
+    get:
+      summary: Returns analysis associated with the provided ID.
+      description: |
+      tags:
+        - 10. Analyses
+      operationId: analysisById
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - in: path
+          name: analysisId
+          description: Unique ID of the analysis
+          type: string
+          default: "5f87d0e5-095f-486e-8672-a054ea82cff9"
+          required: true
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+                  $ref: "#/definitions/Analysis"
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error 
+########################################################
+#                        PIMS                          #
+########################################################
+  /{systemId}/pims/{studyId}/planneddose:
+    get:
+      summary: Get planned dose by study ID
+      description: |
+      tags:
+        - 11. PIMS
+      operationId: getPlannedDose
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - in: path
+          name: studyId
+          description: Unique stuyd ID
+          type: string
+          default: "A0531083"
+          required: true
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Planned dose information is returned
+          schema:
+            type: array
+            example: ["AMLODIPINE"]
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error 
+  /{systemId}/pims/{studyId}/loaddata:
+    post:
+      summary: Load data from pims and merge with pkdef file
+      description: |
+      tags:
+        - 11. PIMS
+      operationId: loadPIMSData
+      produces:
+        - application/json
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - in: "body"
+          name: "bodyData"
+          description: PIMS dataload
+          schema:
+            $ref: "#/definitions/PIMSData"
+        - in: path
+          name: studyId
+          description: Unique study ID
+          type: string
+          default: "A053:A0531083"
+          required: true
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      responses:
+        "200":
+          description: Dataframe containing demography and vital signs information is returned
+          schema:
+                  $ref: "#/definitions/Dataframe"
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error 
+  /{systemId}/pims/{studyId}/studypimsstatus:
+    get:
+      summary: Get PIMS or NON-PIMS study status
+      description: |
+      tags:
+        - 11. PIMS
+      operationId: getStudyPIMSStatus
+      parameters:
+        - name: systemId
+          in: path
+          type: string
+          description: unique system ID
+          required: true
+          default: "nca" 
+        - in: path
+          name: studyId
+          description: Unique stuyd ID
+          type: string
+          default: "A0531083"
+          required: true
+        - name: IAMPFIZERUSERCN
+          in: header
+          description: Pfizer common name used for authorization
+          required: true 
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: PIMS or NON-PIMS is returned
+          schema:
+            type: string
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error 
+          
+definitions:
+  newDataframe:  
+      type: object
+      required:
+      - "dataframeType"
+      - "dataStatus"
+      - "promotionStatus"
+      - "restrictionStatus"
+      - "dataBlindingStatus"
+      properties:
+        type:
+          type: string
+          example: "dataframe"
+        dataframeType:
+          type: string
+          example: "Data Transformation"
+        subType:
+          type: string
+          example: "Merge"
+        dataStatus: 
+          type: string
+          example: "Draft"
+        promotionStatus:
+          type: string
+          example: "Promoted"
+        restrictionStatus:
+          type: string
+          example: "Not Restricted"
+        dataBlindingStatus:
+          type: string
+          example: "Unblinded"
+        deleteFlag:
+          type: boolean
+          example: false
+        obsoleteFlag:
+          type: boolean
+          example: false 
+        studyIds:
+          type: array
+          items:
+            type: string
+          example: ["B152:B1521005"] 
+        profileConfig:
+          type: array
+          items:
+            type: string
+          example: ["STUDYID", "SITEID"]                                 
+  Dataframe:  
+      type: object
+      properties:
+        type:
+          type: string
+          example: "dataframe" 
+        id:
+          type: string
+          example: "bb254580-58b2-4cdc-aafa-0e2b6e4ebeb4"
+        dataframeType:
+          type: string
+          example: "Dataset"
+        subType:
+          type: string
+          example: "Merge"
+        createdBy:
+          type: string
+          example: "QUINTJ16"
+        created:
+          type: string
+          format: "date-time"
+        modifiedBy:
+          type: string
+          example: "user01"
+        modifiedDate:
+          type: string
+          format: date-time 
+        equipId:
+          type: string  
+          example: "DS11919"
+        dataStatus: 
+          type: string
+          example: "Draft"
+        promotionStatus:
+          type: string
+          example: "Pending Review"
+        restrictionStatus:
+          type: string
+          example: "Not Restricted"
+        dataBlindingStatus:
+          type: string
+          example: "Unblinded"
+        qcStatus:
+          type: string
+          example: "Not QC'd"
+        name:
+          type: string
+          example: "DF-1530761950842"
+        itemType:
+          type: string 
+        versionNumber:
+          type: number
+          format: int64
+        versionSuperSeded:
+          type: boolean                
+        deleteFlag:
+          type: boolean
+          example: false
+        obsoleteFlag:
+          type: boolean
+        isCommitted:
+          type: boolean
+        isLocked:
+          type: boolean
+        profileConfig:
+          type: array
+          items: 
+              type: string
+        script:
+           type: object
+           items: 
+               $ref: '#/definitions/Script'
+        dataset:
+          $ref: '#/definitions/Dataset'
+        metadata:
+          type: array
+          items: 
+               $ref: '#/definitions/Entry' #Metadatum.java?
+        dataframeIds:
+          type: array
+          items: 
+              type: string
+              example: "6f9ee495-1db0-4d7e-a209-57de470f03b6"
+        assemblyIds:
+          type: array
+          items: 
+              type: string
+              example: "8c657759-3211-4ee1-9f64-a69268be9e98"      
+        protocolIds:
+          type: array
+          items: 
+              type: string
+              example: "13cf2833-1ce6-43b6-9a81-8e515efc452f"
+        projectIds:
+          type: array
+          items: 
+              type: string
+              example: "f1ad6574-c441-4a94-ac15-20b8498a74ff"
+        programIds:
+          type: array
+          items: 
+              type: string
+              example: "535bd4b6-359f-44ba-88ec-62db426f2526"    
+        comments:
+           type: array
+           items: 
+                 $ref: '#/definitions/Comment' 
+        promotions:
+           type: array
+           items: 
+                 $ref: '#/definitions/Promotion'  
+        studyIds:
+          type: array
+          items:
+            type: string
+  Dataframes:  
+    type: array
+    items:
+      $ref: '#/definitions/Dataframe'
+  LibraryReference:
+    type: object
+    properties:
+      libraryRef:
+        type: string
+        example: "12345678"
+  newDataset:
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+        example: "dataset"
+      data:
+        type: string
+      stdIn:
+        type: string 
+      stdOut:
+        type: string
+      stdErr:
+        type: string           
+      complexData:
+        type: file
+      metadata:
+          type: array
+          items: 
+           $ref: '#/definitions/newEntry'
+  Dataset:
+    type: object
+    properties:
+      id:
+        type: string
+        example: "8dfe4828-e64a-459b-bef1-3bed42ca0168"
+      data:
+        type: string
+      dataSize:
+        type: number
+        format: int64
+      mimeType:
+        type: string
+      stdIn:
+        type: string 
+      stdOut:
+        type: string
+      stdErr:
+        type: string                        
+      complexDataId:
+        type: string
+        example: "f7182bf8-2781-4f61-9e6e-32ecb12faeb3"
+      columns:
+        type: array
+        items:
+          $ref: '#/definitions/Column'
+      metadata:
+        type: array
+        items: 
+          $ref: '#/definitions/Entry'
+  Column:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      rows:
+        type: array
+        items:
+          $ref: '#/definitions/Row'
+  Row:
+    type: object
+    properties:
+      id:
+        type: string
+      data:
+        type: string
+  newScript:
+    type: object
+    properties:
+      type:
+          type: string
+          example: "script" 
+      scriptBody:
+        type: object
+        $ref: '#/definitions/LibraryReference' 
+      metadata:
+          type: array
+          items: 
+           $ref: '#/definitions/newEntry' 
+  Script:
+    type: object
+    properties:
+      id:
+        type: string
+      createdBy:
+        type: string
+        example: "HIRSCM08"
+      created:
+        type: string
+        format: date-time
+      scriptBody:
+        type: object
+        $ref: '#/definitions/LibraryReference' 
+      computeContainer:
+        type: string
+      environment:
+        type: string
+      scriptCriteria:
+        type: string
+      metadata:
+        type: array
+        items: 
+           $ref: '#/definitions/Entry'   
+      comments:
+         type: array
+         items: 
+                 $ref: '#/definitions/Comment'   
+  newComment:
+    type: object
+    properties:
+      type:
+        type: string
+        example: "comment" 
+      commentType:
+        type: string
+        example: "Data Load"
+      body:
+        type: string
+        example: "This was the intial load of the data"
+      metadata:
+          type: array
+          items: 
+           $ref: '#/definitions/newEntry' 
+  Comment:
+    type: object
+    properties:
+      id:
+        type: string
+        example: "25b443cd-de5b-44a1-b5cc-39e2d1d6a6f7"
+      createdBy:
+        type: string
+        example: "saraw"
+      created:
+        type: string
+        format: date-time
+      modifiedBy:
+        type: string
+        example: "user01"
+      modifiedDate:
+        type: string
+        format: date-time  
+      commentType:
+        type: string
+        example: "DataLoad"
+      body:
+        type: string
+        example: "intial load of the data"
+      metadata:
+          type: array
+          items: 
+           $ref: '#/definitions/Entry' 
+  newPromotion:
+    type: object
+    properties:
+      type:
+        type: string
+        example: "promotion" 
+      dataStatus: 
+        type: string
+        example: "Final Draft"
+      promotionStatus:
+        type: string
+        example: "Pending Review"
+      restrictionStatus:
+        type: string
+        example: "Restricted"
+      metadata:
+        type: array
+        items: 
+               $ref: '#/definitions/newEntry' 
+      comment:
+        type: array
+        items: 
+               $ref: '#/definitions/newComment'                
+  Promotion:
+    type: object
+    properties:
+      type:
+       type: string
+       example: "promotion" 
+      id:
+        type: string
+      createdBy:
+        type: string
+      created:
+        type: string
+        format: date-time
+      modifiedBy:
+        type: string
+      modifiedDate:
+        type: string
+        format: date-time
+      equipId:
+        type: string
+      dataStatus: 
+        type: string
+        example: "Final Draft"
+      promotionStatus:
+        type: string
+        example: "Pending Review"
+      restrictionStatus:
+        type: string
+        example: "Restricted"
+      dataBlindingStatus:
+        type: string
+        example: "Blinded" 
+      metadata:
+        type: array
+        items: 
+               $ref: '#/definitions/Entry'   
+      comments:
+        type: array
+        items: 
+               $ref: '#/definitions/Comment'                    
+  newAssembly:
+    type: object
+    properties:
+      type:
+        type: string
+        example: "assembly" 
+      assemblyType:
+        type: string
+        example: "Data Load"
+      deleteFlag:
+        type: boolean
+        example: false
+      obsoleteFlag:
+        type: boolean
+        example: false  
+      studyIds:
+        type: array
+        items:
+          type: string
+          example: "B152:B1521005"          
+  Assembly:
+    type: object
+    properties:
+      id:
+        type: string
+        example: "21c41eb7-62dc-4b27-94cb-07566099f15c"
+      createdBy:
+        type: string
+        example: "user01"
+      created:
+        type: string
+        format: date-time
+      modifiedBy:
+        type: string
+        example: "user01"
+      modifiedDate:
+        type: string
+        format: date-time
+      equipId:
+        type: string
+        example: "DL11953"
+      assemblyType:
+        type: string
+        example: "Data Load"
+      qcStatus:
+        type: string
+        example: "Not QC'd"
+      loadStatus:
+        type: string
+        example: "Initial"  
+      script:
+        type: object
+        schema:
+          $ref: '#/definitions/Script'
+      name:
+        type: string
+      itemType:
+        type: string
+      dataframeIds:
+        type: array
+        items: 
+            type: string
+            example: "6f9ee495-1db0-4d7e-a209-57de470f03b6"
+      assemblyIds:
+        type: array
+        items: 
+            type: string
+            example: "8c657759-3211-4ee1-9f64-a69268be9e98"     
+      studyIds:
+        type: array
+        items:
+            type: string
+            example: "B152:B1521002" 
+      reportingItemIds:
+        type: array
+        items: 
+            type: string
+            example: "6f9ee495-1db0-4d7e-a209-57de470f03b6"
+      publishItemIds:
+        type: array
+        items: 
+            type: string
+            example: "8c657759-3211-4ee1-9f64-a69268be9e98"    
+      libraryReferences:
+        type: array
+        items:
+          type: string
+      reportingEventStatusChangeWorkflows:
+        type: array
+        items:
+              $ref: '#/definitions/reportingEventStatusChangeWorkflow'
+      protocolIds:
+        type: array
+        items: 
+          type: string
+          example: "8c657759-3211-4ee1-9f64-a69268be9e98"   
+      programIds:
+        type: array
+        items: 
+          type: string
+          example: "8c657759-3211-4ee1-9f64-a69268be9e98"              
+      parentIds:
+        type: array
+        items: 
+          type: string
+          example: "8c657759-3211-4ee1-9f64-a69268be9e98"  
+      projectIds:
+        type: array
+        items:
+          type: string 
+          example: "8c657759-3211-4ee1-9f64-a69268be9e98"  
+      versionNumber:
+        type: number
+        format: int64
+      versionSuperSeded:
+        type: boolean
+        example: false
+      deleteFlag:
+        type: boolean
+        example: false  
+      obsoleteFlag:
+        type: boolean
+        example: false 
+      isCommitted:
+        type: boolean
+        example: false
+      isLocked:
+        type: boolean 
+        example: false    
+      metadata:
+        type: array
+        items:
+              $ref: '#/definitions/Entry'  
+      comments:
+        type: array
+        items: 
+              $ref: '#/definitions/Comment' 
+  reportingEventStatusChangeWorkflow:
+    type: object
+    properties:
+      id:
+        type: string
+        example: "4e8746a5-351a-415a-9e9d-685d8249f049"
+      reportingEventId:
+        type: string
+        example: "43b1a8a6-123e-44db-a20d-7398d424a082"
+      reportingEventStatusWorkflowDescription:
+        type: string
+        example: "Reporting Event Created"
+      reportingEventReleaseStatus:
+        type: string
+        example: "Unreleased"
+      reportingEventReopenReasonKey:
+        type: string
+      reportingEventReopenReasonAttachmentId:
+        type: string
+      createdBy:
+        type: string
+        example: "user01"
+      created:
+        type: string
+        format: date-time
+      modifiedBy:
+        type: string
+        example: "user01"
+      modifiedDate:
+        type: string
+        format: date-time
+      metadata:
+        type: array
+        items:
+              $ref: '#/definitions/Entry'  
+      comments:
+        type: array
+        items: 
+              $ref: '#/definitions/Comment' 
+  newEntry:
+     type: object
+     required:
+       - "key"
+     properties:
+       isDeleted:
+         type: boolean
+         example: false    
+       key:
+         type: string
+         example: "Study Parameter 1"
+       value:
+         type: array
+         items:
+           type: string
+           example: "12345"
+       complexValue:
+         type: file
+       complexValueId:
+         type: string
+       valueType:
+         type: string   
+  Entry:
+     type: object
+     required:
+       - "key"
+     properties:
+       id:
+         type: string
+         example: "b234e5a5-3e69-4238-8810-223f56852a8f"
+       isDeleted:
+         type: boolean
+         example: false    
+       key:
+         type: string
+         example: "Study Parameter 1"
+       value:
+         type: array
+         items:
+           type: string
+           example: "12345"
+       complexValue:
+         type: file
+       complexValueId:
+         type: string
+       valueType:
+         type: string                                  
+########################################################
+#              PUBLISH ITEM DEFINITION                 #
+########################################################
+  newPublishingItemEvent:  
+      type: object
+      properties:
+        publishingItemTemplateId:
+          type: string
+        expirationDate:
+          type: string
+          format: "date-time"
+        publishedViewTemplateId:
+          type: string
+        publishedViewFilterCriteria:
+          type: string
+        publishedViewSubFilter:
+          type: string
+        publishStatus:
+          type: string
+          example: "Unpublished"
+        publishedDate:
+          type: string
+          format: "date-time"
+        createdBy:
+          type: string
+          example: "QUINTJ16"
+        created:
+          type: string
+          format: "date-time"
+        publishedTags:
+          type: array
+          items: 
+              type: string
+              example: "tag"
+        comments:
+           type: array
+           items: 
+                 $ref: '#/definitions/newComment'
+        metadata:
+          type: array
+          items: 
+               $ref: '#/definitions/newEntry'   
+  PublishingItemEvent:
+    type: object
+    properties:      
+      id:
+        type: string
+        example: "c4bb787c-774f-4dbf-9f74-a7cbb28330b5"
+      equipId:
+        type: string  
+        example: "TEST1532539115905"
+      name:
+        type: string
+      versionNumber:
+        type: number
+        format: int64
+        example: 1
+      publishItemTemplateId:
+        type: string
+      reportingEventItemId:
+        type: string
+      expirationDate:
+        type: string
+        format: "date-time"
+      publishedViewTemplateId:
+        type: string
+      publishedViewFilterCriteria:
+        type: string
+        example: "string"
+      publishedViewSubFilter:
+        type: string
+        example: "string"
+      publishStatus:
+        type: string
+        example: "Unpublished"
+      publishedDate:
+        type: string
+        format: "date-time"
+      publishEventId:
+        type: string
+        example: "28224542-20c7-4af0-93d5-f42fe0362de5"
+      createdBy:
+        type: string
+        example: "QUINTJ16"
+      created:
+        type: string
+        format: "date-time"
+      modifiedBy:
+        type: string
+        example: "user01"
+      modifiedDate:
+        type: string
+        format: date-time
+      publishedTags:
+        type: array
+        items: 
+            type: string
+            example: "tag"
+      workflowItems:
+        type: array
+        items:
+          $ref: '#/definitions/PublishItemPublishStatusChangeWorkflow'
+      comments:
+         type: array
+         items: 
+               $ref: '#/definitions/Comment'
+      metadata:
+        type: array
+        items: 
+               $ref: '#/definitions/Entry'   
+      deleteFlag:
+        type: boolean
+        example: false
+      obsoleteFlag:
+        type: boolean
+        example: false          
+      versionSuperSeded:
+        type: boolean
+        example: false          
+      isCommitted:
+        type: boolean
+        example: false
+  PublishItemPublishStatusChangeWorkflow:
+    type: object
+    properties:
+      id:
+        type: string
+        example: "c7fcc0cb-8e1d-4e3f-bd4e-7111f6b81326"
+      publishItemPublishStatusChangeDescription:
+        type: string
+      publishStatus:
+        type: string
+        example: "Unpublished"
+      publishItemId:
+        type: string
+        example: "86367de1-d6f7-4b67-a703-150c948468a3"
+      createdBy:
+        type: string
+        example: "QUINTJ16"
+      created:
+        type: string
+        format: "date-time"
+      modifiedBy:
+        type: string
+        example: "user001"
+      modifiedDate:
+        type: string
+        format: "date-time"
+      comments:
+        type: array
+        items: 
+              $ref: '#/definitions/Comment'
+      metadata:
+        type: array
+        items: 
+              $ref: '#/definitions/Entry'  
+  PublishItemStatusNew:  
+      type: object
+      properties:
+        publishItemId:
+          type: string
+          example: "88b17585-462d-4ce8-8ddf-628bf0e14cb8"
+        publishStatus:
+          type: string
+          example: "Unpublished"
+        publishedDate:
+          type: string
+          format: "date-time"
+        modifiedBy:
+          type: string
+          example: "QUINTJ16"
+        modifiedDate:
+          type: string
+          format: "date-time"
+        comments:
+           type: array
+           items: 
+                 $ref: '#/definitions/Comment'   
+########################################################
+#              PUBLISH EVENT DEFINITION                #
+########################################################
+  PublishingEvent:  
+      type: object
+      properties:
+        id:
+          type: string
+        equipId:
+          type: string  
+        name:
+          type: string
+        publishingEventName:
+          type: string
+        publishingEventPublishStatusKey:
+          type: string
+        publishingEventPublishedDate:
+          type: string
+          format: "date-time"
+        publishingEventExpirationDate:
+          type: string
+          format: "date-time"
+        publishItemIds:
+          type: array
+          items: 
+              type: string
+              example: "122d137a-bb87-4383-992e-4b8888888888"
+        createdBy:
+          type: string
+          example: "QUINTJ16"
+        created:
+          type: string
+          format: "date-time"
+        comments:
+           type: array
+           items: 
+                 $ref: '#/definitions/Comment'   
+  PublishingEventNew:  
+      type: object
+      properties:
+        equipId:
+          type: string  
+        createdBy:
+          type: string
+          example: "QUINTJ16"
+        created:
+          type: string
+          format: "date-time"
+        publishingEventPublishedDate:
+          type: string
+          format: "date-time"
+        publishingEventName:
+          type: string
+        comments:
+           type: array
+           items: 
+                 $ref: '#/definitions/Comment'   
+########################################################
+#               REPORTING ITEM DEFINITION              #
+########################################################
+  ReportingEventItem:  
+      type: object
+      properties:
+        id:
+          type: string
+          example: "68d83113-c73f-414f-b148-e8cca1b42608"
+        equipId:
+          type: string  
+          example: "TEST1532539115905"
+        name:
+          type: string
+        versionNumber:
+          type: number
+          format: int64
+          example: 1
+        createdBy:
+          type: string
+          example: "QUINTJ16"
+        created:
+          type: string
+          format: "date-time"
+        modifiedBy:
+          type: string
+          example: "user01"
+        modifiedDate:
+          type: string
+          format: date-time 
+        comments:
+          type: array
+          items: 
+                $ref: '#/definitions/Comment'   
+        metadata:
+          type: array
+          items: 
+               $ref: '#/definitions/Entry'   
+        reportingEventId:
+          type: string
+          example: "459d3051-22e6-4082-b7b8-00c49f1b1745"
+        dataFrameId:
+          type: string
+        assemblyId:
+          type: string
+        publishItem:
+          $ref: '#/definitions/PublishingItemEvent'
+        obsoleteFlag:
+          type: boolean
+          example: false
+        versionSuperSeded:
+          type: boolean
+        isCommitted:
+          type: boolean
+        deleteFlag:
+          type: boolean
+          example: false
+        included:
+          type: boolean
+          example: false
+  ReportingEventItemNew:  
+      type: object
+      properties:
+        metadata:
+          type: array
+          items: 
+               $ref: '#/definitions/newEntry' 
+        comments:
+           type: array
+           items: 
+                 $ref: '#/definitions/newComment'   
+        createdBy:
+          type: string
+          example: "QUINTJ16"
+        created:
+          type: string
+          format: "date-time"
+        reportingEventId:
+          type: string
+        dataFrameId:
+          type: string
+        assemblyId:
+          type: string
+        publishItem:
+          $ref: '#/definitions/newPublishingItemEvent'
+########################################################
+#              REPORTING EVENT DEFINITION              #
+########################################################
+  ReportingEvent:  
+      type: object
+      properties:
+        id:
+          type: string
+          example: "459d3051-22e6-4082-b7b8-00c49f1b1745"
+        equipId:
+          type: string 
+          example: "TEST1532535249597" 
+        versionNumber:
+          type: number
+          format: int64
+          example: 1
+        reportingEventTemplateId:
+          type: string
+        reportingEventName:
+          type: string
+        resportEventTypeId:
+          type: string
+        resportEventReleaseStatusKey:
+          type: string
+        resportEventReleaseDate:
+          type: string
+          format: "date-time"
+        reportingEventItemIds:
+          type: array
+          items:
+            type: string
+          example: []
+        reportingEventStatusChangeWorkflows:
+          type: array
+          items:
+                $ref: '#/definitions/ReportingEventStatusChangeWorkflow'
+        name:
+          type: string
+        studyIds:
+          type: array
+          items:
+            type: string
+          example: ["B152:B1521005"] 
+        itemType:
+          type: string
+        createdBy:
+          type: string
+          example: "QUINTJ16"
+        created:
+          type: string
+          format: "date-time"
+        modifiedBy:
+          type: string
+        modifiedDate:
+          type: string
+          format: date-time 
+        comments:
+          type: array
+          items: 
+                 $ref: '#/definitions/Comment' 
+        metadata:
+          type: array
+          items:
+                 $ref: '#/definitions/Entry'
+        obsoleteFlag:
+          type: boolean
+          example: false
+        versionSuperSeded:
+          type: boolean
+          example: false
+        isCommitted:
+          type: boolean
+          example: false
+        deleteFlag:
+          type: boolean
+          example: false
+  ReportingEventNew:  
+      type: object
+      properties:
+        reportingEventName:
+          type: string
+        resportEventTypeId:
+          type: string
+        reportingEventTemplateId:
+          type: string
+        name:
+          type: string
+        studyIds:
+          type: array
+          items:
+            type: string
+          example: ["B152:B1521005"] 
+        createdBy:
+          type: string
+          example: "QUINTJ16"
+        created:
+          type: string
+          format: "date-time"
+        comments:
+           type: array
+           items: 
+                 $ref: '#/definitions/Comment'  
+        metadata:
+          type: array
+          items:
+                 $ref: '#/definitions/newEntry'
+  ReportingEventStatusChangeWorkflow:
+    type: object
+    properties:
+      id:
+        type: string
+        example: "4e8746a5-351a-415a-9e9d-685d8249f049"
+      reportingEventId:
+        type: string
+        example: "43b1a8a6-123e-44db-a20d-7398d424a082"
+      reportingEventStatusWorkflowDescription:
+        type: string
+      reportingEventReleaseStatus:
+        type: string
+        example: "Unreleased"
+      reportingEventReopenReasonKey:
+        type: string
+      reportingEventReopenReasonAttachmentId:
+        type: string
+      createdBy:
+        type: string
+        example: "QUINTJ16"
+      created:
+        type: string
+        format: "date-time"
+      modifiedBy:
+         type: string
+         example: "user01"
+      modifiedDate:
+        type: string
+        format: date-time 
+      comments:
+        type: array
+        items: 
+               $ref: '#/definitions/Comment' 
+      metadata:
+        type: array
+        items:
+               $ref: '#/definitions/Entry'
+  ReleaseStatusNew:
+      type: object
+      properties:
+        reportingEventId:
+          type: string
+          example: "06d4874b-72a8-4fe1-a06c-85c9ff0db8f2"
+        reportingEventReleaseStatusKey:
+          type: string
+          example: "Re-opened"
+        reopenReason:
+          type: string
+        reopenReasonAttachmentId:
+          type: string
+        modifiedBy:
+          type: string
+          example: "QUINTJ16"
+        modifiedDate:
+          type: string
+          format: "date-time"
+        comments:
+           type: array
+           items: 
+                 $ref: '#/definitions/Comment'   
+  OpDataNew:  
+      type: object
+      properties:
+        protocolIds:
+          type: array
+          items: 
+              type: string
+              example: "13cf2833-1ce6-43b6-9a81-8e515efc452f"
+        projectIds:
+          type: array
+          items: 
+              type: string
+              example: "f1ad6574-c441-4a94-ac15-20b8498a74ff"
+        programIds:
+          type: array
+          items: 
+              type: string
+              example: "535bd4b6-359f-44ba-88ec-62db426f2526"          
+#####################################################
+#              LINEAGE DEFINITIONS                  #
+#####################################################
+  LineageItem:
+    type: object
+    properties:
+      nodeType:
+        type: string
+      id:
+        type: string
+      equipId:
+        type: string
+      equipVersion:
+        type: number
+        format: int64
+        example: 1
+      lastModifiedDate:
+        type: string
+        format: "date-time"
+      lastModifiedBy:
+        type: string
+      createdDate:
+        type: string
+        format: "date-time"
+      createdBy:
+        type: string
+      childDataframes:
+        type: array
+        items:
+             $ref: "#/definitions/DataframeLineageItem"
+      childAssemblies:
+        type: array
+        items:
+             $ref: "#/definitions/AssemblyLineageItem"
+      versionSuperseded:
+        type: boolean
+        example: false
+      versionCommitted:
+        type: boolean
+        example: false
+      isLocked:
+        type: boolean
+        example: false
+      isDeleted:
+        type: boolean
+        example: false
+      comments:
+        type: array
+        items:
+          $ref: "#/definitions/Comment"
+  AssemblyLineageItem:
+    allOf:
+      - $ref: "#/definitions/LineageItem"
+      - type: object
+        properties:
+          assemblyType:
+            type: string
+          memberDataFrames:
+            type: array
+            items:
+                  $ref: "#/definitions/DataframeLineageItem"
+          parentIds:
+            type: array
+            items:
+              type: string
+          qcStatus:
+            type: string
+          releaseStatus:
+            type: string
+          publishStatus:
+            type: string
+            example: "Published"
+  DataframeLineageItem:
+    allOf:
+      - $ref: "#/definitions/LineageItem"
+      - type: object
+        properties:
+          dataframeType:
+            type: string
+          promotionStatus:
+            type: string
+          memberOfAssemblyIds:
+            type: array
+            items:
+              type: string
+          parentAssemblyIds:
+            type: array
+            items:
+              type: string
+          parentDataframeIds:
+            type: array
+            items:
+              type: string
+          dataStatus:
+            type: string
+  LineageReExecutionParameters:
+    type: object
+    properties:
+      newDataIds:
+        type: array
+        items:
+          type: string
+        example: ["838c9698-6fb7-49f2-9710-f2f8b243241f"]
+      startId:
+        type: string
+        example: "838c9698-6fb7-49f2-9710-f2f8b243241f"
+      environment:
+        type: string
+      skipInitialItem:
+        type: boolean
+        example: false
+  LineageReExecutionVersionParameters:
+    type: object
+    properties:
+      newDataIds:
+        type: array
+        items:
+          type: string
+        example: ["838c9698-6fb7-49f2-9710-f2f8b243241f"]
+      environment:
+        type: string
+        example: "Server"
+#####################################################
+#              ANALYSIS DEFINITION                  #
+#####################################################
+  Analysis:
+    allOf:
+      - $ref: "#/definitions/Assembly"
+      - type: object
+        properties:
+          analysisType:
+            type: string
+            example: "Primary"
+          subsetDataframeIds:
+            type: array
+            items:
+              type: string
+          kelFlagsDataframeId:
+            type: string
+          parametersDataframeId:
+            type: string
+          modelConfigurationDataframeId:
+            type: string
+          configurationTemplateId:
+            type: string
+  newAnalysis:
+    type: object
+    properties:
+      deleteFlag:
+        type: boolean
+        example: false
+      obsoleteFlag:
+        type: boolean
+        example: false
+      studyIds:
+        type: array
+        items:
+          type: string
+        example: ["B152:B1521001"]
+      parentIds:
+        type: array
+        items:
+          type: string
+        example: ["2ca44655-5c7a-4ed2-9e30-eb9806f157e7"]
+      dataframeIds:
+        type: array
+        items:
+          type: string
+        example: ["2ca44655-5c7a-4ed2-9e30-eb9806f157e7"]
+      protocolIds:
+        type: array
+        items:
+          type: string
+        example: ["3e62ee16-c317-4a97-bd0c-80216e0427a5"]
+      projectIds:
+        type: array
+        items:
+          type: string
+        example: ["6b5b49c4-b01a-4294-910a-af915af4f590"]
+      programIds:
+        type: array
+        items:
+          type: string
+        example: ["8122b6f5-6914-4c93-89c4-d19a042488f4"]
+      analysisType:
+        type: string
+        example: "Primary"
+      subsetDataframeIds:
+        type: array
+        items:
+          type: string
+        example: []
+      configurationTemplateId:
+        type: string
+        example: "f6821a49-4678-47c5-88c6-734fd394f0a8"
+      kelFlagsDataframeId:
+        type: string
+        example: "14ac75d2-01b3-40ad-ae23-af86edf351ce"
+      modelConfigurationDataframeId:
+        type: string
+        example: "47358d33-5dfd-440e-acf4-0a4a69041596"
+      estimatedConcDataframeId:
+        type: string
+        example: "47358d33-5dfd-440e-acf4-0a4a69041596"
+      name:
+        type: string
+        example: "Svetlana's Analysis 2"
+#####################################################
+#                 PIMS DEFINITIONS                  #
+#####################################################
+  PIMSData:
+    type: object
+    properties:
+      dosepMapping:
+        type: array
+        items:
+          $ref: "#/definitions/DosePMapping"
+      assemblyId:
+        type: string
+      pkDefDataframeId:
+        type: string
+      createdBy:
+        type: string
+  DosePMapping:
+    type: object
+    properties:
+      pkTerm:
+        type: string
+        example: "<pkterm1>"
+      dosep:
+        type: array
+        items:
+          type: string
+        example: ["PLACEBO", "BLINDED" , "VENLAFAXINE ER"]
+
+

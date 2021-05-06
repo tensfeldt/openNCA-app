@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.pfizer.pgrd.cordis</groupId>
+  <artifactId>ClinicalDataServiceDTO</artifactId>
+  <versioning>
+    <versions>
+      <version>1.0_SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20210506121002</lastUpdated>
+  </versioning>
+</metadata>
