@@ -1,0 +1,342 @@
+# Swagger Implementation for EQUIP Compute Service
+################################################################################
+#                              API Information                                 #
+################################################################################
+swagger: '2.0'
+info:
+  title: EQUIP Compute Services REST API
+  description: list of service endpoints and examples relating to the Compute Service
+  version: 1.0.0
+  
+################################################################################
+#                  Host, Base Path, Schemes and Content Types                  #
+################################################################################
+# the domain of the service
+host:
+# array of all schemes that your API supports
+schemes:
+  - http
+  - https
+# will be prefixed to all paths
+basePath: /EQUIPComputeService
+
+################################################################################
+#                                    Paths                                     #
+################################################################################
+paths:
+################################################################################
+#                	    	      Compute URIs                                 #
+################################################################################
+  /version:
+    get:
+      summary: Retrieve the version of the Compute Service.
+      description: |
+        Returns the current version of the service as a String.
+      tags:
+        - 1. Compute
+      operationId: versionGet
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Execution successful, data is returned
+          schema:
+            type: text
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error              
+  /{system}/compute:
+    post:
+      summary: This is the synchronous call to the compute service to execute a computation.
+      description: |
+        Will wait until the computation is complete before returning the results.
+      parameters:       
+        - in: path
+          name: system
+          type: string
+          description: system (for example NCA).
+          required: true
+          default: NCA       
+        - in: query
+          name: virtual
+          type: boolean
+          description: If true, returns computed data in returned json field datasetData
+          required: false
+          default: false
+        - in: body
+          name: "bodyData"
+          description: request data in JSON format 
+          schema:
+            $ref: "#/definitions/newRequestBody"  
+      tags:
+        - 1. Compute
+      operationId: computePost
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      responses:
+        "200":
+          description: Execution successful, new child dataframe ids are returned
+          schema:
+            $ref: "#/definitions/computeResponse"  
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error
+  /{system}/compute/launch:
+    post:
+      summary: This is the call to the compute service to launch a computation. This is primarily used to launch R-Shiny instances.
+      description: |
+        Returns a message with an id, a URI, and a status.
+      parameters:       
+        - in: path
+          name: system
+          type: string
+          description: system (for example NCA).
+          required: true
+          default: NCA       
+        - in: body
+          name: "bodyData"
+          description: request data in JSON format 
+          schema:
+            $ref: "#/definitions/newLaunchRequestBody"  
+        - in: header
+          name: IAMPFIZERUSERCN
+          type: string
+          description: user's nt id.
+          required: true
+      tags:
+        - 1. Compute
+      operationId: launchPost
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      responses:
+        "200":
+          description: Execution successful, data is returned
+          schema:
+            $ref: "#/definitions/computeLaunchResponse"  
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error
+  /{system}/compute/launch/close/{id}:
+    put:
+      summary: This is the call to the compute service to stop a launched computation. This is primarily used to stop R-Shiny instances.
+      description: |
+        Returns a message with an id, a URI, and a status.
+      parameters:
+        - in: path
+          name: system
+          type: string
+          description: system (for example NCA).
+          required: true
+          default: NCA       
+        - in: path
+          name: id
+          type: string
+          description: id returned by previous launch call.
+          required: true       
+        - in: query
+          name: save
+          type: boolean
+          description: If false, results will not be saved to Modeshape.
+          required: false
+          default: true
+        - in: header
+          name: IAMPFIZERUSERCN
+          type: string
+          description: user's nt id.
+          required: true
+      tags:
+        - 1. Compute
+      operationId: launchPost
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      responses:
+        "200":
+          description: Execution successful, data is returned
+          schema:
+            $ref: "#/definitions/computeResponse"  
+        "401":
+          description: Authentication Error
+        "403":
+          description: Forbidden for unauthorized users
+        "404":
+          description: Not Found or Invalid URI
+        "405":
+          description: Methods not implemented
+        "500":
+          description: Internal Server Error
+################################################################################
+#                                 Definitions                                  #
+################################################################################
+definitions:
+  newRequestBody:  
+      type: object
+      required:
+      - "user"
+      - "computeContainer"
+      - "environment"
+      - "scriptId"
+      properties:
+        user:
+          type: string
+          example: "heinemanwp"
+        computeContainer:
+          type: string
+          example: "R"
+        environment:
+          type: string
+          example: "Server"
+        scriptId:
+          type: string
+          example: "1"
+        parameters:
+          type: array
+          items: 
+            $ref: "#/definitions/params"
+        dataframes:
+          type: array
+          items: 
+              type: string
+              example: "7b4cd47f-f20f-4684-8b93-3c7d3eda2f24"
+  params:
+    type: object
+    required:
+      - "key"
+    properties:
+      key:
+        type: string
+        example: "Study ID"
+      type:
+        type: string
+        example: "string"
+      value:
+        type: string
+        example: "12345"
+  dataframes:
+    type: array
+    items: 
+      type: string
+      example: "3e17dc72-cf41-43cc-ae3f-45ad19f30461"
+  computeResponse:
+    type: object
+    properties:
+      id:
+        type: string
+        example: "3e17dc72-cf41-43cc-ae3f-45ad19f30461"
+      status:
+        type: string
+        example: "Success"
+      environment:
+        type: string
+        example: "Server"
+      started:
+        type: string
+        example: "2018-04-02T10:05:13.000-04:00"
+      completed:
+        type: string
+        example: "2018-04-02T10:05:15.000-04:00"
+      stdin:
+        type: string
+        example: ""
+      stdout:
+        type: string
+        example: ""
+      stderr:
+        type: string
+        example: ""
+      dataframes:
+        type: array
+        items: 
+          type: string
+          example: "7b4cd47f-f20f-4684-8b93-3c7d3eda2f24"
+  newLaunchRequestBody:  
+    type: object
+    required:
+    - "user"
+    - "computeContainer"
+    - "environment"
+    - "scriptId"
+    properties:
+      user:
+        type: string
+        example: "heinemanwp"
+      computeContainer:
+        type: string
+        example: "equip-r-shiny"
+      environment:
+        type: string
+        example: "Server"
+      scriptId:
+        type: string
+        example: "02e9888e-8a63-4036-9327-39e144933b12"
+      parameters:
+        type: array
+        items: 
+          $ref: "#/definitions/launchParams"
+      dataframes:
+        type: array
+        items: 
+            type: string
+            example: "7b4cd47f-f20f-4684-8b93-3c7d3eda2f24"
+    launchParams:
+      type: object
+      required:
+        - "key"
+      properties:
+        key:
+          type: string
+          example: "Study ID"
+        type:
+          type: string
+          example: "string"
+        value:
+          type: string
+          example: "12345"
+    dataframes:
+      type: array
+      items: 
+        type: string
+        example: "3e17dc72-cf41-43cc-ae3f-45ad19f30461"
+    computeLaunchResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "3e17dc72-cf41-43cc-ae3f-45ad19f30461"
+        status:
+          type: string
+          example: "Success"
+        environment:
+          type: string
+          example: "Server"
+        started:
+          type: string
+          example: "2018-04-02T10:05:13.000-04:00"
+        
+                 

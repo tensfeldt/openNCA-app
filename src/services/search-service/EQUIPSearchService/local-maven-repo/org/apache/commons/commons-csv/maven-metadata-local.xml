@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.apache.commons</groupId>
+  <artifactId>commons-csv</artifactId>
+  <versioning>
+    <versions>
+      <version>1.7_SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20210505150700</lastUpdated>
+  </versioning>
+</metadata>
