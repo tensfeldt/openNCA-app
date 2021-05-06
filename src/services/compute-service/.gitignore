@@ -1,0 +1,13 @@
+# Eclipse files
+.metadata
+.recommenders
+.settings
+.project
+.classpath
+.settings
+RemoteSystemsTempFiles/
+node_modules/
+**/webapp/ngApp/
+
+# Maven build artifacts
+target/
