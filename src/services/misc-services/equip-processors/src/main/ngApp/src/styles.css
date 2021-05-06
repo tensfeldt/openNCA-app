@@ -1,0 +1,693 @@
+body
+{
+   margin: 0px;
+   padding: 0px;
+   font-family: Arial, Sans-Serif;
+   text-align: center;
+}
+
+div#title
+{
+   color: White;
+   background: #004080;
+   font: bold 16pt 'Arial';
+   text-align: center;
+   height: 40px;
+   padding-top: .5em;
+
+}
+
+
+
+span#title_caption
+{
+   position: absolute;
+   right: 110px;
+}
+
+span#title_queue
+{
+   position: absolute;
+   left: 10px;
+   color: #ffcc66;
+   font: 14pt Arial;
+}
+
+
+table#ControlPanel
+{
+   border-width: 1px;
+   border-spacing: 0px;
+   border-style: solid;
+   border-color: #ccc;
+   border-collapse: collapse;
+   margin-left: auto;
+   margin-right: auto;
+}
+
+table#ControlPanel tr th
+{
+   font: 10pt Tahoma;
+   color: white;
+   border-width: 1;
+   padding: .5em .5em .2em .5em;
+   border-style: none solid none solid;
+   border-color: #ccc;
+   background: url(/assets/images/bar.gif) repeat-x;
+}
+
+table#ControlPanel tr td
+{
+   font: 10pt Arial;
+   border-width: 1px 1px 1px 1px;
+   padding: .2em .5em .2em .5em;
+   border-style: none solid dotted solid;
+   border-color: #ccc;
+}
+
+div#RefreshDiv
+{
+   text-align: center;
+   background-color: #e7e7db;
+}
+
+.SubmitButton
+{
+    border: none;
+    font-weight: bold;
+    font-size: 10px;
+    font-family: Verdana, Tahoma, Arial;
+    text-align: left;
+    text-decoration: underline;
+    cursor: pointer;
+    color: #215486;
+    background-color: transparent;
+    display: inline-block;
+}
+
+.SubmitButton:active {
+  transform: translateY(1px);
+  background-color: rgb(195, 220, 241);
+}
+
+div#FinePrint
+{
+   text-align: center;
+   border: none;
+   font-weight: lighter;
+   font-size: 10px;
+   font-family: Verdana, Arial;
+}
+
+
+
+
+
+BODY
+{
+    MARGIN: 0px;
+}
+TEXTAREA
+{
+    BORDER-RIGHT: #215489 1px solid;
+    BORDER-TOP: #215489 1px solid;
+    FONT-SIZE: 10px;
+    background: #e7e7db;
+    OVERFLOW: auto;
+    BORDER-LEFT: #215489 1px solid;
+    COLOR: #215486;
+    BORDER-BOTTOM: #215489 1px solid;
+    FONT-FAMILY: verdana
+}
+TD
+{
+    FONT-SIZE: 10px;
+    FONT-FAMILY: verdana, arial
+}
+.MSG
+{
+       BACKGROUND-COLOR: #215486;
+       COLOR: #e7e7db;
+       FONT-WEIGHT: bolder;
+       TEXT-ALIGN: center;
+       FONT-FAMILY: tahoma
+}
+
+.DOCSEARCHLABEL
+{
+    FONT-SIZE: 10px;
+    FONT-FAMILY: verdana, arial
+}
+.ERROR
+{
+    FONT-WEIGHT: bolder;
+    COLOR: #c53d3d;
+    TEXT-ALIGN: center
+}
+H1
+{
+    TEXT-ALIGN: center
+}
+.GROUP
+{
+    FONT-WEIGHT: bolder;
+    FONT-SIZE: 11px;
+    CURSOR: pointer;
+    FONT-FAMILY: Verdana, Arial
+}
+.GROUPNOHAND
+{
+    FONT-WEIGHT: bolder;
+    FONT-SIZE: 11px;
+    FONT-FAMILY: Verdana, Arial
+}
+.QUEUE
+{
+    FONT-WEIGHT: bolder;
+    FONT-SIZE: 11px;
+    CURSOR: pointer;
+    FONT-FAMILY: Verdana, Arial
+}
+.QUEUENOHAND
+{
+    FONT-WEIGHT: bolder;
+    FONT-SIZE: 11px;
+    FONT-FAMILY: Verdana, Arial
+}
+.LINK
+{
+    CURSOR: pointer;
+    COLOR: blue;
+    TEXT-DECORATION: underline
+}
+
+.INTROTEXT
+{
+    FONT-SIZE: 14px;
+    FONT-FAMILY: Verdana, Arial;
+}
+
+
+
+.TABLE_CELL
+{
+    FONT-SIZE: 10px;
+    FONT-FAMILY: Verdana, Arial;
+    BACKGROUND-COLOR: white
+}
+.TABLE_CHDR
+{
+    BORDER-RIGHT: #215486 thin solid;
+    BORDER-TOP: #215486 thin solid;
+    FONT-WEIGHT: 900;
+    FONT-SIZE: 10px;
+    TEXT-TRANSFORM: uppercase;
+    BORDER-LEFT: #215486 thin solid;
+    COLOR: #215486;
+    PADDING-TOP: 10px;
+    BORDER-BOTTOM: #215486 thin solid;
+    FONT-FAMILY: Verdana, Tahoma;
+    BACKGROUND-COLOR: #d3dce4;
+    TEXT-ALIGN: center
+}
+.PROCESSTABLE
+{
+       border:1px solid #e7e7db;
+       border-collapse: collapse
+}
+
+.PROCESSHEADER
+{
+    BORDER-RIGHT: #e7e7db 1px solid;
+    BORDER-TOP: #e7e7db 1px solid;
+    FONT-SIZE: 12px;
+    BORDER-LEFT: #e7e7db 1px solid;
+    COLOR: white;
+    BORDER-BOTTOM: #e7e7db 1px solid;
+    FONT-FAMILY: Verdana, Arial;
+    BACKGROUND-COLOR: #6699cc;
+    TEXT-ALIGN: center;
+    TEXT-DECORATION: none
+}
+.ColumnSort
+{
+    BORDER-RIGHT: #e7e7db 1px solid;
+    BORDER-TOP: #e7e7db 1px solid;
+    FONT-WEIGHT: bolder;
+    FONT-SIZE: 9px;
+    TEXT-TRANSFORM: capitalize;
+    BORDER-LEFT: #e7e7db 1px solid;
+    CURSOR: pointer;
+    COLOR: white;
+    BORDER-BOTTOM: #e7e7db 1px solid;
+    FONT-FAMILY: Verdana, Arial;
+    BACKGROUND-COLOR: #6699cc;
+    TEXT-ALIGN: center;
+    TEXT-DECORATION: none
+}
+.APPTITLE
+{
+    FONT-SIZE: small;
+    FONT-FAMILY: Arial
+}
+.BUTTONBAR
+{
+    CURSOR: pointer;
+    TEXT-ALIGN: center
+}
+.USPBUTTONBAR
+{
+    CURSOR: auto;
+    COLOR: white;
+    BACKGROUND-COLOR: white;
+    TEXT-ALIGN: center
+}
+.BUTTON
+{
+    BORDER-RIGHT: #425668 1px solid;
+    PADDING-RIGHT: 4px;
+    BORDER-TOP: #a3c2e0 1px solid;
+    PADDING-LEFT: 4px;
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 10px;
+    BACKGROUND: #6699cc;
+    BORDER-LEFT: #a3c2e0 1px solid;
+    CURSOR: pointer;
+    COLOR: #ffffff;
+    BORDER-BOTTOM: #425668 1px solid;
+    FONT-FAMILY: verdana
+}
+TD.USPBUTTONBAR
+{
+    BORDER-RIGHT: #425668 1px solid;
+    PADDING-RIGHT: 4px;
+    BORDER-TOP: #a3c2e0 1px solid;
+    PADDING-LEFT: 4px;
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 10px;
+    BACKGROUND: #6699cc;
+    BORDER-LEFT: #a3c2e0 1px solid;
+    CURSOR: pointer;
+    COLOR: #ffffff;
+    BORDER-BOTTOM: #425668 1px solid;
+    FONT-FAMILY: verdana
+}
+.QUEUEBUTTON
+{
+    BORDER-RIGHT: #425668 1px solid;
+    PADDING-RIGHT: 2px;
+    BORDER-TOP: #a3c2e0 1px solid;
+    PADDING-LEFT: 2px;
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 10px;
+    BORDER-LEFT: #a3c2e0 1px solid;
+    CURSOR: pointer;
+    COLOR: #ffffff;
+    BORDER-BOTTOM: #425668 1px solid;
+    FONT-FAMILY: Verdana, arial;
+    BACKGROUND-COLOR: #6699cc
+}
+.BUTTON_DISABLED
+{
+    FONT-SIZE: 10px;
+    CURSOR: auto;
+    COLOR: #215486;
+    FONT-FAMILY: Verdana, Arial;
+    BACKGROUND-COLOR: #c3be9e
+}
+.TREE
+{
+    BORDER-RIGHT: #215486 thin;
+    BORDER-TOP: #215486 thin;
+    FONT-WEIGHT: bolder;
+    FONT-SIZE: 10px;
+    BORDER-LEFT: #215486 thin;
+    COLOR: #215486;
+    BORDER-BOTTOM: #215486 thin;
+    FONT-FAMILY: Verdana, Arial;
+    BACKGROUND-COLOR: #eeeeee;
+    TEXT-DECORATION: none
+}
+.SECTIONTITLE
+{
+    BORDER-RIGHT: #215486 2px;
+    BORDER-TOP: #215486 2px;
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 12px;
+    TEXT-TRANSFORM: uppercase;
+    BORDER-LEFT: #215486 2px;
+    COLOR: #215486;
+    BORDER-BOTTOM: #215486 1px solid;
+    FONT-FAMILY: Tahoma, Verdana, Arial;
+    BACKGROUND-COLOR: #d3dce4;
+    TEXT-ALIGN: center
+}
+.PAGETITLE
+{
+    BORDER-RIGHT: 1px;
+    BORDER-TOP: #215486 1px solid;
+    FONT-SIZE: medium;
+    BORDER-LEFT: 1px;
+    BORDER-BOTTOM: #215486 1px solid;
+    FONT-FAMILY: Tahoma;
+    BACKGROUND-COLOR: #c3be9e;
+    TEXT-ALIGN: center
+}
+
+.PAGETITLEITEM
+{
+    BORDER-RIGHT: 1px;
+    BORDER-TOP: #215486 1px solid;
+    FONT-SIZE: small;
+    BORDER-LEFT: 1px;
+    BORDER-BOTTOM: #215486 1px solid;
+    FONT-FAMILY: Verdana;
+    BACKGROUND-COLOR: #c3be9e;
+}
+.SECTIONBAR
+{
+    FONT-SIZE: small;
+    FONT-FAMILY: Tahoma;
+    HEIGHT: 10px;
+    BACKGROUND-COLOR: #e2e5b1;
+    TEXT-ALIGN: center
+}
+.INPUTBOX
+{
+    Z-INDEX: 1;
+    WIDTH: 200px
+}
+.MAILOPSHEADER
+{
+    FONT-SIZE: x-small;
+    COLOR: #a10060;
+    FONT-FAMILY: 'Arial Black';
+    BACKGROUND-COLOR: #e2e5b1;
+    TEXT-ALIGN: left
+}
+.MAILOPSCOLHEADER
+{
+    FONT-WEIGHT: bolder;
+    FONT-SIZE: xx-small;
+    FONT-FAMILY: Tahoma;
+    BACKGROUND-COLOR: #e2e5b1;
+    TEXT-ALIGN: center
+}
+.MAILOPSLABEL
+{
+    FONT-SIZE: xx-small;
+    VERTICAL-ALIGN: top;
+    FONT-FAMILY: Tahoma
+}
+.WOBVALUE
+{
+    BORDER-RIGHT: #215486 1pt;
+    BORDER-TOP: #215486 1pt;
+    FONT-WEIGHT: lighter;
+    FONT-SIZE: 10px;
+    BORDER-LEFT: #215486 1pt;
+    BORDER-BOTTOM: #215486 1pt;
+    FONT-FAMILY: Verdana, Arial;
+    TEXT-ALIGN: left
+}
+.WOBVALUECENTER
+{
+    FONT-WEIGHT: lighter;
+    FONT-SIZE: 10px;
+    FONT-FAMILY: Verdana, Arial;
+    TEXT-ALIGN: center
+}
+.DISABLED
+{
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 10px;
+    COLOR: #215486;
+    FONT-FAMILY: Verdana, Arial;
+    BACKGROUND-COLOR: #eeeeee
+}
+.WOBVALUERIGHT
+{
+    FONT-WEIGHT: lighter;
+    FONT-SIZE: 10px;
+    FONT-FAMILY: Verdana, Arial;
+    TEXT-ALIGN: right
+}
+.CENTERBOLDLABEL
+{
+    FONT-WEIGHT: bolder;
+    FONT-SIZE: 10px;
+    TEXT-TRANSFORM: capitalize;
+    COLOR: #215486;
+    FONT-FAMILY: Tahoma, Verdana, Arial;
+    BACKGROUND-COLOR: #d3dce4
+}
+.LEFTBOLDLABEL
+{
+    FONT-WEIGHT: bolder;
+    FONT-SIZE: 12px;
+    FONT-FAMILY: Verdana, Arial;
+    TEXT-ALIGN: left
+}
+.WOBLABELRIGHT
+{
+    PADDING-RIGHT: 6px;
+    FONT-WEIGHT: bolder;
+    FONT-SIZE: 12px;
+    COLOR: #215486;
+    FONT-FAMILY: Verdana, Arial;
+    TEXT-ALIGN: left
+}
+.WOBLABELLEFT
+{
+    PADDING-RIGHT: 6px;
+    FONT-WEIGHT: bolder;
+    FONT-SIZE: 12px;
+    FONT-FAMILY: Verdana, Arial;
+    BACKGROUND-COLOR: white;
+    TEXT-ALIGN: left
+}
+.WOBTEXT
+{
+    FONT-WEIGHT: bolder;
+    FONT-SIZE: 12px;
+    COLOR: #215486;
+    FONT-FAMILY: Verdana, Arial;
+
+}
+.WOBLABEL
+{
+    BORDER-RIGHT: #215486 1pt solid;
+    BORDER-TOP: #215486 1pt solid;
+    FONT-WEIGHT: bolder;
+    FONT-SIZE: 12px;
+    BORDER-LEFT: #215486 1pt solid;
+    COLOR: #215486;
+    BORDER-BOTTOM: #215486 1pt solid;
+    FONT-FAMILY: Verdana, Arial;
+    BACKGROUND-COLOR: #d3dce4;
+    TEXT-ALIGN: center
+}
+.WOBLABELALIGNLEFT
+{
+    BORDER-RIGHT: #215486 1pt solid;
+    BORDER-TOP: #215486 1pt solid;
+    FONT-WEIGHT: bolder;
+    FONT-SIZE: 12px;
+    BORDER-LEFT: #215486 1pt solid;
+    COLOR: #215486;
+    BORDER-BOTTOM: #215486 1pt solid;
+    FONT-FAMILY: Verdana, Arial;
+    BACKGROUND-COLOR: #d3dce4;
+    TEXT-ALIGN: left
+}
+.CUSTOMSELECT
+{
+    FONT-SIZE: 12px;
+    WIDTH: 270px;
+    FONT-FAMILY: Verdana, Arial
+}
+.LARGELABEL
+{
+    FONT-WEIGHT: 600;
+    FONT-SIZE: 10px;
+    FONT-FAMILY: Tahoma, Verdana, Arial
+}
+.SELECTSITE
+{
+    FONT-SIZE: 12px;
+    WIDTH: 150px;
+    FONT-WEIGHT: bolder;
+    FONT-FAMILY: Verdana, Arial;
+    COLOR: #215486
+}
+.SKILLSELECT
+{
+    FONT-SIZE: 10px;
+    FONT-WEIGHT: bolder;
+    FONT-FAMILY: Verdana, Arial;
+    COLOR: #215486
+}
+.SELECTCHANNEL
+{
+    FONT-SIZE: 12px;
+    WIDTH: 270px;
+    FONT-WEIGHT: bolder;
+    FONT-FAMILY: Verdana, Arial;
+    COLOR: #215486
+}
+.SELECTTEAM
+{
+    FONT-SIZE: 12px;
+    WIDTH: 150px;
+    FONT-WEIGHT: bolder;
+    FONT-FAMILY: Verdana, Arial;
+    COLOR: #215486
+}
+.SELECTUSER
+{
+    FONT-SIZE: 12px;
+    WIDTH: 270px;
+    FONT-WEIGHT: bolder;
+    FONT-FAMILY: Verdana, Arial;
+    COLOR: #215486
+}
+.OFF
+{
+    DISPLAY: none
+}
+
+.QMLABEL
+{
+    FONT-WEIGHT: bolder;
+    FONT-SIZE: 14px;
+    COLOR: #660000;
+    BORDER-BOTTOM: 1px;
+    FONT-FAMILY: Arial, Verdana
+}
+.QMQUEUE
+{
+    FONT-WEIGHT: bolder;
+    FONT-SIZE: 10px;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Arial
+}
+.QMVALUE
+{
+    FONT-WEIGHT: lighter;
+    FONT-SIZE: 12px;
+    FONT-FAMILY: Arial
+}
+TR.QMGROUP
+{
+    FONT-WEIGHT: bolder;
+    FONT-SIZE: 10px;
+    COLOR: #215486;
+    BORDER-BOTTOM: #b7936f 1px solid;
+    FONT-FAMILY: Verdana, Arial;
+    BACKGROUND-COLOR: #e7e7db
+}
+QM
+{
+    FONT-SIZE: 10px;
+    FONT-FAMILY: Verdana, Arial
+}
+TD.QMBARQUEUE
+{
+    CURSOR: pointer;
+    BACKGROUND-COLOR: #215486
+}
+TD.QMBAR1
+{
+    BACKGROUND-COLOR: #6699ff
+}
+TD.QMBAR2
+{
+    BACKGROUND-COLOR: #0000cc
+}
+TD.QMBAR3
+{
+    BACKGROUND-COLOR: #3366ff
+}
+TD.QMBARNODE
+{
+    BACKGROUND-COLOR: #b7c5d2
+}
+.USPBUTTON
+{
+    BORDER-RIGHT: 1px;
+    PADDING-RIGHT: 2px;
+    BORDER-TOP: 1px;
+    PADDING-LEFT: 2px;
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 10px;
+    BORDER-LEFT: 1px;
+    CURSOR: pointer;
+    COLOR: #215486;
+    BORDER-BOTTOM: 1px;
+    FONT-FAMILY: Tahoma, Verdana, arial;
+    TEXT-ALIGN: left;
+    TEXT-DECORATION: underline
+}
+DIV.USPBUTTON
+{
+    CURSOR: pointer;
+}
+.DISPLAYCENTER
+{
+    TEXT-ALIGN: center;
+}
+.BUTTONCELL
+{
+    BORDER-RIGHT: #215486 1px;
+    BORDER-TOP: #215486 1px;
+    BORDER-LEFT: #215486 1px;
+    BORDER-BOTTOM: #215486 1px;
+    BACKGROUND-COLOR: #e7e7db
+}
+.SECTIONFOOTER
+{
+    BORDER-BOTTOM: #215486 1px solid
+}
+.IFRAMESTYLE
+{
+    BORDER-RIGHT: #215486 1px solid;
+    BORDER-TOP: #215486 1px solid;
+    BORDER-LEFT: #215486 1px solid;
+    BORDER-BOTTOM: #215486 1px solid
+}
+.SUBMITBUTTON
+{
+    BORDER-RIGHT: medium none;
+    BORDER-TOP: medium none;
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 10px;
+    BORDER-LEFT: medium none;
+    CURSOR: pointer;
+    COLOR: #215486;
+    BORDER-BOTTOM: medium none;
+    FONT-FAMILY: Verdana, Tahoma, Arial;
+    BACKGROUND-COLOR: transparent;
+    TEXT-ALIGN: left;
+    TEXT-DECORATION: underline
+}
+.TEXTINPUT
+{
+    BORDER-RIGHT: #215486 1px solid;
+    BORDER-TOP: #215486 1px solid;
+    FONT-WEIGHT: bolder;
+    FONT-SIZE: 10px;
+    BORDER-LEFT: #215486 1px solid;
+    COLOR: #215486;
+    BORDER-BOTTOM: #215486 1px solid;
+    FONT-FAMILY: Verdana;
+    BACKGROUND-COLOR: white
+}
+.BUTTONDISABLED
+{
+    FONT-WEIGHT: bolder;
+    FONT-SIZE: 10px;
+    CURSOR: default;
+    COLOR: #6699cc;
+    FONT-FAMILY: Verdana;
+    BACKGROUND-COLOR: #e7e7db
+}

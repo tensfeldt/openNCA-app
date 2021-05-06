@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <!-- This file is used for getting ojdbc8.jar from the Oracle Maven repository. -->
+  <!-- https://blogs.oracle.com/dev2dev/get-oracle-jdbc-drivers-and-ucp-from-oracle-maven-repository-without-ides -->
+  <!-- https://stackoverflow.com/questions/43156870/create-project-specific-maven-settings -->
+  
+  <localRepository>${user.home}/.m2/repository</localRepository>
+  <interactiveMode>true</interactiveMode>
+  <usePluginRegistry>false</usePluginRegistry>
+  <offline>false</offline>
+  
+  <servers>
+   <server>
+    <id>maven.oracle.com</id>
+    <username>r.ravichandran@perficient.com</username>
+    <password>{AggD/gSn/kkHiCyguk/75+x40jwhYvrW9eSHQgcG53I=}</password>
+  <configuration>
+    <basicAuthScope>
+      <host>ANY</host>
+      <port>ANY</port>
+      <realm>OAM 11g</realm>
+    </basicAuthScope>
+    <httpConfiguration>
+      <all>
+      <params>
+        <property>
+          <name>http.protocol.allow-circular-redirects</name>
+          <value>%b,true</value>
+        </property>
+      </params>
+      </all>
+    </httpConfiguration>
+  </configuration>
+  </server>
+  </servers>
+</settings>

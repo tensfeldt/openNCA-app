@@ -1,0 +1,52 @@
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('send_to_medical_study_writer_downstream', 'PK Study Milestone Events', 'Send to Medical Study Writer Downstream', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('publishing', 'PK Study Milestone Events', 'Publishing', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('ard_request', 'PK Study Milestone Events', 'ARD Request', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('last_subject_planned', 'Clinical Database Events for PK Studies', 'Last Subject Planned',  0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('last_dose_actual', 'Clinical Database Events for PK Studies', 'Last Dose Actual', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('last_visit_actual', 'Clinical Database Events for PK Studies', 'Last Visit Actual', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('sap_start_date', 'Clinical Database Events for PK Studies', 'SAP Start Date', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('sap_finish_date', 'Clinical Database Events for PK Studies', 'SAP Finish Date', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('final_approved_protocol_date', 'Clinical Database Events for PK Studies', 'Final Approved Protocol Date', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('final_tables_planned', 'Clinical Database Events for PK Studies', 'Final Tables Planned', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('final_tables_actual', 'Clinical Database Events for PK Studies', 'Final Tables Actual', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('csr_approval_date', 'Clinical Database Events for PK Studies', 'CSR Approval Date', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('clinical_database_release_planned', 'Clinical Database Events for PK Studies', 'Clinical Database Release Planned', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('clinical_database_release_actual', 'Clinical Database Events for PK Studies', 'Clinical Databasse Release Actual', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('study_unblinding', 'Clinical Database Events for PK Studies', 'Study Unblinding', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('subject_unblinding', 'Clinical Database Events for PK Studies', 'Subject Unblinding', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('parameter_data_change', 'Clinical Database Events for PK Studies', 'Parameter Data Change',0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('analysis_change', 'Clinical Database Events for PK Studies', 'Analysis Change', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('review_ready', 'Clinical Database Events for PK Studies', 'Review Ready (Clin Pharm Lead)',0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('date_last_pk_sample_received_by_assay_lab', 'Clinical Database Events for PK Studies', 'Date Last PK Sample Received by Assay Lab',0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('outage', 'System Events', 'Outage', 1);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('user_disablement', 'System Events', 'User Disablement', 1);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('user_enablement', 'System Events', 'User Enablement', 1);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('data_validation', 'NCA Project/Study Specific', 'Data Validation', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('data_loading', 'NCA Project/Study Specific', 'Data Loading', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('data_promotion', 'NCA Project/Study Specific', 'Data Promotion', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('qc_request_sent', 'NCA Project/Study Specific', 'QC Request Sent', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('qc_assigned_self', 'NCA Project/Study Specific', 'QC Assigned (Self-Assigned)', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('qc_complete', 'NCA Project/Study Specific', 'QC Complete', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('qc_report_generated', 'NCA Project/Study Specific', 'QC Report Generated', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('reporting_event_published', 'NCA Project/Study Specific', 'Reporting Event Published', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('release', 'NCA Project/Study Specific', 'Release', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('reopen', 'NCA Project/Study Specific', 'Reopen', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('add_remove_data_authorization', 'NCA Project/Study Specific', 'Add/Remove Data Authorization', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('add_remove_data_authorization_self', 'NCA Project/Study Specific', 'Add/Remove Data Authorization (self-subscription)', 0);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('global_library_additions', 'Study Nonspecific', 'Global Library Additions', 1);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('reporting_templates_additions', 'Study Nonspecific', 'Reporting Templates Additions', 1);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('qc_templates_additions', 'Study Nonspecific', 'QC Templates Additions', 1);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('scripts_additions', 'Study Nonspecific', 'Scripts Additions', 1);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('documents_additions', 'Study Nonspecific', 'Documents Additions', 1);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('global_library_promotion_request', 'Study Nonspecific', 'Global Library Promotion Requests', 1);
+INSERT INTO event_type(event_type_name, event_category, event_description, global_flag) values('global_library_promotion_request_result', 'Global Library Artifact Specific', 'Global Library Promotion Request Results', 0);
+
+
+INSERT INTO lock_control(lock_name, lock_flag) values('daily_email', 0);
+INSERT INTO lock_control(lock_name, lock_flag) values('weekly_email', 0);
+
+INSERT INTO notification_type(notification_type_name) values ('daily_email');
+INSERT INTO notification_type(notification_type_name) values ('realtime_email');
+INSERT INTO notification_type(notification_type_name) values ('weekly_email');
+
+commit;

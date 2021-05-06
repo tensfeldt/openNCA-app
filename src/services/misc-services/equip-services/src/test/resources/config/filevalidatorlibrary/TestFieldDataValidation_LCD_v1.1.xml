@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FieldDefinitions>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">STUDY</ColumnName>
+      <ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">1</Index>
+      <DataType LogLevel="warning">ALPHANUMERICWITHHYPHEN</DataType>
+      <MinLength LogLevel="error">8</MinLength>
+      <MaxLength LogLevel="error">35</MaxLength>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">false</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+   </Field>
+</FieldDefinitions>

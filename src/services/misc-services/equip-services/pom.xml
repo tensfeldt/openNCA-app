@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+
+   <groupId>com.pfizer.equip</groupId>
+   <artifactId>equip-services</artifactId>
+   <version>1.0</version>
+   <packaging>war</packaging>
+
+   <name>equip-services</name>
+   <description>REST services performing a variety of operations related to EQuIP program applications.</description>
+
+   <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+      <!-- JBoss version -->
+      <version.jboss>10.1.0.Final</version.jboss>
+
+      <!-- Spring Boot version -->
+      <version.spring.boot>2.0.1.RELEASE</version.spring.boot>
+
+      <!-- plugin versions -->
+      <version.compiler.plugin>3.7.0</version.compiler.plugin>
+      <version.war.plugin>3.2.0</version.war.plugin>
+      <version.resources.plugin>3.0.2</version.resources.plugin>
+      <version.dependency.plugin>3.0.2</version.dependency.plugin>
+      <version.license.maven>2.0.0</version.license.maven>
+      <version.jacoco.plugin>0.7.9</version.jacoco.plugin>
+
+      <!-- define start class for Spring Boot -->
+      <start-class>com.pfizer.equip.services.Application</start-class>
+
+      <!-- using Java 8 -->
+      <java.version>1.8</java.version>
+
+      <!-- default environment is local -->
+      <env>local</env>
+   </properties>
+
+   <dependencyManagement>
+      <!-- Using a Maven Bill of Materials (BOM) allows us to ensure that 
+         the various dependencies we have that are already in use by JBoss will be 
+         the correct version for the specified version of JBoss, and we will not have 
+         to explicitly specify the version for those shared dependencies. -->
+      <dependencies>
+         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-parent</artifactId>
+            <version>${version.spring.boot}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+         <dependency>
+            <groupId>org.wildfly.bom</groupId>
+            <artifactId>wildfly-javaee7</artifactId>
+            <version>${version.jboss}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
+
+   <!-- build profiles -->
+   <profiles>
+      <profile>
+         <id>standalone</id>
+         <properties>
+            <env>standalone</env>
+            <spring.profiles.active>dev,standalone</spring.profiles.active>
+         </properties>
+      </profile>
+      <profile>
+         <id>local</id>
+         <activation>
+            <activeByDefault>true</activeByDefault>
+         </activation>
+         <properties>
+            <env>local</env>
+            <spring.profiles.active>dev,local</spring.profiles.active>
+         </properties>
+      </profile>
+      <profile>
+         <id>dev</id>
+         <activation>
+            <activeByDefault>true</activeByDefault>
+         </activation>
+         <properties>
+            <env>dev</env>
+            <spring.profiles.active>dev</spring.profiles.active>
+         </properties>
+      </profile>
+      <profile>
+         <id>stg</id>
+         <properties>
+            <env>stg</env>
+            <spring.profiles.active>stg</spring.profiles.active>
+         </properties>
+      </profile>
+      <profile>
+         <id>prod</id>
+         <properties>
+            <env>prod</env>
+            <spring.profiles.active>prod</spring.profiles.active>
+         </properties>
+      </profile>
+   </profiles>
+
+   <!-- add any needed external Maven repositories here -->
+   <repositories>
+      <repository>
+         <id>maven.oracle.com</id>
+         <name>oracle-maven-repo</name>
+         <url>https://maven.oracle.com</url>
+         <layout>default</layout>
+         <releases>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+         </releases>
+      </repository>
+   </repositories>
+   <pluginRepositories>
+      <pluginRepository>
+         <id>maven.oracle.com</id>
+         <name>oracle-maven-repo</name>
+         <url>https://maven.oracle.com</url>
+         <layout>default</layout>
+         <releases>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+         </releases>
+      </pluginRepository>
+   </pluginRepositories>
+
+   <dependencies>
+      <!-- Spring related dependencies -->
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-web</artifactId>
+         <exclusions>
+            <exclusion>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-tomcat</artifactId>
+            </exclusion>
+            <!-- exclude Spring Boot logging since by default it uses Logback, 
+               not log4j -->
+            <exclusion>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-logging</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      <dependency>
+         <groupId>com.fasterxml.jackson.dataformat</groupId>
+         <artifactId>jackson-dataformat-csv</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.commons</groupId>
+         <artifactId>commons-csv</artifactId>
+         <version>1.0</version>
+      </dependency>
+      <!-- Add other Spring dependencies -->
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-mail</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-log4j2</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-undertow</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-actuator</artifactId>
+      </dependency>
+
+      <!-- commented out Spring Boot security and JPA for now -->
+      <!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-security</artifactId> 
+         </dependency> <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-data-jpa</artifactId> 
+         </dependency> <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-configuration-processor</artifactId> 
+         <optional>true</optional> </dependency> -->
+
+      <!-- Google Guava utilities library -->
+      <dependency>
+         <groupId>com.google.guava</groupId>
+         <artifactId>guava</artifactId>
+         <version>18.0</version>
+      </dependency>
+
+      <!-- Jackson for XML / CSV parsing -->
+      <dependency>
+         <groupId>com.fasterxml.jackson.datatype</groupId>
+         <artifactId>jackson-datatype-guava</artifactId>
+      </dependency>
+
+      <!-- Performance Monitoring -->
+      <dependency>
+         <groupId>com.jamonapi</groupId>
+         <artifactId>jamon</artifactId>
+         <version>2.81</version>
+      </dependency>
+
+      <!-- various Apache libraries -->
+      <dependency>
+         <groupId>commons-io</groupId>
+         <artifactId>commons-io</artifactId>
+         <version>2.6</version>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.commons</groupId>
+         <artifactId>commons-lang3</artifactId>
+      </dependency>
+
+      <!-- EQUiP project dependencies -->
+      <dependency>
+         <groupId>com.pfizer.equip</groupId>
+         <artifactId>equip-shared</artifactId>
+         <version>1.0</version>
+      </dependency>
+
+      <!-- Testing dependencies -->
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-test</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.mockito</groupId>
+         <artifactId>mockito-core</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.mockito</groupId>
+         <artifactId>mockito-all</artifactId>
+         <version>1.9.5</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>com.oracle.jdbc</groupId>
+         <artifactId>ojdbc8</artifactId>
+         <version>12.2.0.1</version>
+         <scope>test</scope>
+      </dependency>
+
+      <!-- Password encryption, use something like vault later -->
+      <dependency>
+         <groupId>com.github.ulisesbocchio</groupId>
+         <artifactId>jasypt-spring-boot-starter</artifactId>
+         <version>2.0.0</version>
+      </dependency>
+
+      <!-- Swagger Dependencies -->
+      <dependency>
+         <groupId>io.springfox</groupId>
+         <artifactId>springfox-swagger2</artifactId>
+         <version>2.6.1</version>
+      </dependency>
+      <dependency>
+         <groupId>io.springfox</groupId>
+         <artifactId>springfox-swagger-ui</artifactId>
+         <version>2.6.1</version>
+         <scope>compile</scope>
+      </dependency>
+   </dependencies>
+
+   <build>
+      <!-- Maven will append the version to the finalName (which is the name 
+         given to the generated war, and hence the context root) -->
+      <finalName>${project.artifactId}</finalName>
+
+      <plugins>
+         <!-- various base Maven plugins -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>${version.compiler.plugin}</version>
+            <configuration>
+               <source>${java.version}</source>
+               <target>${java.version}</target>
+               <compilerArgument>-Xlint:unchecked</compilerArgument>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
+            <version>${version.war.plugin}</version>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>${version.dependency.plugin}</version>
+         </plugin>
+
+         <!-- this plugin will copy the current profile's log4j.properties 
+            file to the correct location for deployment -->
+         <plugin>
+            <groupId>com.coderplus.maven.plugins</groupId>
+            <artifactId>copy-rename-maven-plugin</artifactId>
+            <version>1.0</version>
+            <executions>
+               <execution>
+                  <id>copy-file</id>
+                  <phase>generate-sources</phase>
+                  <goals>
+                     <goal>copy</goal>
+                  </goals>
+                  <configuration>
+                     <sourceFile>src/main/resources/config/log4j-${env}.properties</sourceFile>
+                     <destinationFile>target/classes/log4j.properties</destinationFile>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+
+         <!-- Spring Boot plugin -->
+         <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <version>${version.spring.boot}</version>
+         </plugin>
+
+         <!-- license plugin to generate license report -->
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>license-maven-plugin</artifactId>
+            <version>${version.license.maven}</version>
+            <executions>
+               <execution>
+                  <id>add-third-party</id>
+                  <goals>
+                     <goal>add-third-party</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+
+         <!-- Code Coverage Plugin -->
+         <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${version.jacoco.plugin}</version>
+            <executions>
+               <execution>
+                  <id>pre-unit-test</id>
+                  <goals>
+                     <goal>prepare-agent</goal>
+                  </goals>
+               </execution>
+               <execution>
+                  <id>report</id>
+                  <phase>prepare-package</phase>
+                  <goals>
+                     <goal>report</goal>
+                  </goals>
+               </execution>
+               <execution>
+                  <id>post-unit-test</id>
+                  <phase>test</phase>
+                  <goals>
+                     <goal>report</goal>
+                  </goals>
+                  <configuration>
+                     <!-- Sets the path to the file which contains the execution data. -->
+                     <dataFile>target/jacoco.exec</dataFile>
+                     <!-- Sets the output directory for the code coverage report. -->
+                     <outputDirectory>target/jacoco-ut</outputDirectory>
+                  </configuration>
+               </execution>
+            </executions>
+            <configuration>
+               <!--<systemPropertyVariables>
+                  <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
+               </systemPropertyVariables>-->
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+</project>

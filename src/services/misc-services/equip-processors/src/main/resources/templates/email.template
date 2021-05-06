@@ -1,0 +1,59 @@
+Link: PLACEHOLDER.
+[# th:block th:if="${event.entityType == 'artifact'}"]
+Artifact Id: [[${event.entityId}]].
+[/]
+[# th:block th:if="${event.entityType != 'artifact'}"]
+Program: [[${event.programNumber}]].
+Protocol: [[${event.studyId}]].
+[/]
+Notification generation date/time: [[${notification_timestamp}]].
+Event generation date/time: [[${event_timestamp}]].
+Event description: [[${event.eventType.eventDescription}]].
+[# th:block th:if="${event.entityType != 'artifact'}"]
+Entity type/Id: [[${event.entityType}]] / [[${event.entityId}]].
+[/]
+System generated: [[${system_initiated}]].
+[# th:block th:if="${system_initiated == 'false'}"]
+User name: [[${user_name}]].
+[/]
+Comments: [[${comments}]].
+[# th:block th:if="${event.eventType.eventTypeName == 'qc_request_sent'}"]
+Request QC due date:  [[${requested_qc_due_date}]].
+[/]
+[# th:block th:if="${event.eventType.eventTypeName == 'publishing'}"]
+Reporting event type/Id:  [[${reporting_event_type}]] /  [[${reporting_event_id}]].
+Parameter data QC status: [[${parameter_data_qc_status}]].
+Concentration data status: [[${concentration_data_status}]].
+Publishing event expiration date: [[${publishing_event_expiration_date}]].
+[/]
+[# th:block th:if="${event.eventType.eventTypeName == 'data_promotion'}"]
+Data status: [[${data_status}]].
+Blinding status: [[${blinding_status}]].
+[/]
+[# th:block th:if="${event.eventType.eventTypeName == 'data_loading'}"]
+Status/error: [[${status_error}]]
+[# th:block th:each="dataload_info : ${dataload_infos}" ]
+--
+Filename: [[${dataload_info.filename}]]
+Description: [[${dataload_info.description}]]
+Specification: [[${dataload_info.specification}]]
+Number of Rows: [[${dataload_info.number_rows}]]
+PIMS Load? [[${dataload_info.is_pims}]]
+[/]
+[/]
+[# th:block th:if="${event.eventType.eventTypeName == 'data_validation'}"]
+File name: [[${validation_file_name}]]
+Specification: [[${validation_specification}]]
+Number of records: [[${validation_number_records}]]
+Number of skipped records: [[${validation_number_records_skipped}]]
+Number of subjects: [[${validation_number_subjects}]]
+Validation Message: [[${validation_message}]].
+Overall Validation Status: [[${validation_status}]].
+
+Sub-statuses:
+Field: [[${validation_field_status}]]
+File: [[${validation_file_status}]]
+Field Set: [[${validation_field_set_status}]]
+Duplicates: [[${validation_duplicates_status}]]
+Uniqueness: [[${validation_uniqueness_status}]]
+[/]

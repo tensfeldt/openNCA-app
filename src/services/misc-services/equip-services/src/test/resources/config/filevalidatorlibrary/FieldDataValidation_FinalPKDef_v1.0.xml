@@ -1,0 +1,1015 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Refers to Final PK Def Specification -->
+<FieldDefinitions>
+   <FileNamePattern>
+      <!-- <STUDY>_<PKTERM>_<PKBDFLD>_<DATE>_dft.csv -->
+      <Pattern>^([a-zA-Z0-9]+_)([a-zA-Z0-9]+_)([a-zA-Z0-9]+_)([1-9]|([012][0-9])|(3[01]))([a-zA-Z]{3})\d{4}(_dft.csv)+$</Pattern>
+      <!-- <STUDY>_<PKTERM>_<PKBDFLD>_<DATE>_final_dft.csv -->
+      <Pattern>^([a-zA-Z0-9]+_)([a-zA-Z0-9]+_)([a-zA-Z0-9]+_)([1-9]|([012][0-9])|(3[01]))([a-zA-Z]{3})\d{4}(_final_dft.csv)+$</Pattern>
+      <!-- <STUDY>_<PKTERM>_<PKBDFLD>_<DATE>_fnl.csv -->
+      <Pattern>^([a-zA-Z0-9]+_)([a-zA-Z0-9]+_)([a-zA-Z0-9]+_)([1-9]|([012][0-9])|(3[01]))([a-zA-Z]{3})\d{4}(_fnl.csv)+$</Pattern>
+   </FileNamePattern>
+   <Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="info">PROGRAM</ColumnName>
+		<ColumnAlias>
+		<Value>PROGRAM</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>PROGRAM</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="info">true</ExtraSpacesValue>
+		<Index LogLevel="warning">1</Index>
+		<DataType LogLevel="warning"></DataType>
+		<MinLength LogLevel="error">4</MinLength>
+		<MaxLength LogLevel="error">35</MaxLength>
+		<Required LogLevel="error">false</Required>
+		<IsNull LogLevel="error">false</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">STUDY ID</ColumnName>
+		<ColumnAlias>
+		<Value>STUDY ID</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>STUDY ID</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">1</Index>
+		<DataType LogLevel="warning">^[a-zA-Z0-9-]+$</DataType>
+		<MinLength LogLevel="error">8</MinLength>
+		<MaxLength LogLevel="error">35</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">false</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">CENTER NUMBER</ColumnName>
+		<ColumnAlias>
+		<Value>CENTER NUMBER</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>CENTER NUMBER</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">2</Index>
+		<DataType LogLevel="warning">^[a-zA-Z0-9]+$</DataType>
+		<MinLength LogLevel="error">4</MinLength>
+		<MaxLength LogLevel="error">4</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">false</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+	</Field>
+	<Field><!--Check data type in LCD -->
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">SSID</ColumnName>
+		<ColumnAlias>
+		<Value>SSID</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>SSID</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">3</Index>
+		<DataType LogLevel="warning"></DataType>
+		<MinLength LogLevel="error">8</MinLength>
+		<MaxLength LogLevel="error">100</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">false</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">RANDOMIZATION NUMBER</ColumnName>
+		<ColumnAlias>
+		<Value>RANDOMIZATION NUMBER</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>RANDOMIZATION NUMBER</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">4</Index>
+		<DataType LogLevel="warning" SubType="NUMBER">^([-+]?\d*\.?\d+)(?:[eE]([-+]?\d+))?$</DataType>
+		<MinLength LogLevel="error">1</MinLength>
+		<MaxLength LogLevel="error">10</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">false</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true">
+			<Value>AQL</Value>
+			<Value>BQL</Value>
+			<Value>NAZ</Value>
+			<Value>NRC</Value>
+		</AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">TREATMENT DESCRIPTION</ColumnName>
+		<ColumnAlias>
+		<Value>TREATMENT DESCRIPTION</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>TREATMENT DESCRIPTION</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">5</Index>
+		<DataType LogLevel="warning"></DataType>
+		<MinLength LogLevel="error">1</MinLength>
+		<MaxLength LogLevel="error">80</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">false</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">TREATMENT CODE</ColumnName>
+		<ColumnAlias>
+		<Value>TREATMENT CODE</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>TREATMENT CODE</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">6</Index>
+		<DataType LogLevel="warning">^[A-z]+$</DataType>
+		<MinLength LogLevel="error">1</MinLength>
+		<MaxLength LogLevel="error">100</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">false</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">COLLECTION</ColumnName>
+		<ColumnAlias>
+		<Value>COLLECTION</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>COLLECTION</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">7</Index>
+		<DataType LogLevel="warning"></DataType>
+		<MinLength LogLevel="error">5</MinLength>
+		<MaxLength LogLevel="error">8</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">false</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true">
+			<Value>POINT</Value>
+			<Value>INTERVAL</Value>
+		</AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">PFIZER/VENDOR ACCESSION</ColumnName>
+		<ColumnAlias>
+		<Value>PFIZER/VENDOR ACCESSION</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>PFIZER/VENDOR ACCESSION</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">8</Index>
+		<DataType LogLevel="warning"></DataType>
+		<MinLength LogLevel="error">0</MinLength>
+		<MaxLength LogLevel="error">100</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">true</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">ANALYTICAL LABORATORY ACCESSION</ColumnName>
+		<ColumnAlias>
+		<Value>ANALYTICAL LABORATORY ACCESSION</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>ANALYTICAL LABORATORY ACCESSION</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">9</Index>
+		<DataType LogLevel="warning"></DataType>
+		<MinLength LogLevel="error">0</MinLength>
+		<MaxLength LogLevel="error">100</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">true</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">MATRIX</ColumnName>
+		<ColumnAlias>
+		<Value>MATRIX</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>MATRIX</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">10</Index>
+		<DataType LogLevel="warning"></DataType>
+		<MinLength LogLevel="error">1</MinLength>
+		<MaxLength LogLevel="error">50</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">false</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true">
+			<Value>BLOOD</Value>
+			<Value>URINE</Value>
+			<Value>SALIVA</Value>
+			<Value>SPUTUM</Value>
+			<Value>PUS</Value>
+			<Value>DIALYSIS FLUID</Value>
+			<Value>PERITONEAL FLUID</Value>
+			<Value>CEREBRO-SPINAL FLUID</Value>
+			<Value>TISSUE FLUID</Value>
+			<Value>BLISTER FLUID</Value>
+			<Value>SKIN</Value>
+			<Value>NAIL</Value>
+			<Value>CORONARY SINUS BLOOD</Value>
+			<Value>ARTERIAL BLOOD</Value>
+			<Value>FECES</Value>
+			<Value>PLASMA</Value>
+			<Value>VAGINAL FLUID</Value>
+			<Value>VAGINAL TISSUE</Value>
+			<Value>BREAST MILK</Value>
+			<Value>LUNG TISSUE</Value>
+			<Value>HUMERAL FLUID</Value>
+			<Value>GASTRIC TISSUE</Value>
+			<Value>GASTRIC MUCUS</Value>
+			<Value>GASTRIC JUICE</Value>
+			<Value>SERUM</Value>
+			<Value>PROSTATIC FLUID</Value>
+			<Value>SEMINAL FLUID</Value>
+			<Value>SINUS FLUID</Value>
+			<Value>BRONCHIAL LAVAGE - SUPERNATANT</Value>
+			<Value>BRONCHIAL LAVAGE - SEDIMENT</Value>
+			<Value>VENTRICULAR FLUID</Value>
+			<Value>OVARIAN TISSUE</Value>
+			<Value>UTERINE TISSUE</Value>
+			<Value>FALLOPIAN TISSUE</Value>
+			<Value>MIDDLE EAR FLUID</Value>
+			<Value>FIBROMA OF UTERUS</Value>
+			<Value>MORGAGNI CYST</Value>
+			<Value>MOUTHRINSE</Value>
+			<Value>MUCUS</Value>
+			<Value>SUBCUTANEOUS TISSUE</Value>
+			<Value>SKELETAL MUSCLE</Value>
+			<Value>BONE</Value>
+			<Value>MYOMETRIUM</Value>
+			<Value>CERVIX</Value>
+			<Value>COLONIC TISSUE</Value>
+			<Value>PROSTATE MEDIAN LOBE</Value>
+			<Value>PROSTATE LATERAL LOBE</Value>
+			<Value>BUFFY COAT</Value>
+			<Value>WOUND FLUID</Value>
+			<Value>OTHER</Value>
+			<Value>EYE</Value>
+			<Value>SKIN TISSUE</Value>
+			<Value>SKIN SCRAPING</Value>
+			<Value>RECTAL SWAB</Value>
+			<Value>WOUND SWAB</Value>
+			<Value>ALVEOLAR LAVAGE</Value>
+			<Value>SPINAL FLUID</Value>
+			<Value>BLOOD (CATHETER TIP)</Value>
+			<Value>BRONCHIAL SPUTUM</Value>
+			<Value>PULMONARY BIOPSY</Value>
+			<Value>TRANSBRONCHIAL PULMONARY BIOPSY</Value>
+			<Value>PLEURAL BIOPSY</Value>
+			<Value>TRANSBRONCHIAL ASPIRATION</Value>
+			<Value>PLEURAL FLUID</Value>
+			<Value>LEFT INFERIOR TURBINATE SWAB</Value>
+			<Value>WOUND BIOPSY</Value>
+			<Value>WOUND SURFACE</Value>
+			<Value>LUNGS</Value>
+			<Value>MUCOUS MEMBRANES</Value>
+			<Value>LYMPH NODES</Value>
+			<Value>CENTRAL NERVOUS SYSTEM</Value>
+			<Value>ADRENALS</Value>
+			<Value>LIVER</Value>
+			<Value>SPLEEN</Value>
+			<Value>TUMOR</Value>
+			<Value>BRAIN</Value>
+			<Value>PANCREAS</Value>
+			<Value>HEART</Value>
+			<Value>KIDNEY</Value>
+			<Value>ESOPHAGUS</Value>
+			<Value>THYROID</Value>
+			<Value>SMALL INTESTINE</Value>
+			<Value>FIRST-VOIDED URINE</Value>
+			<Value>URETHRAL DISCHARGE</Value>
+			<Value>CERVICAL SWAB</Value>
+			<Value>CERVICAL DISCHARGE</Value>
+			<Value>ASCITES</Value>
+			<Value>THROAT SWAB</Value>
+			<Value>URETHRAL SWAB</Value>
+			<Value>WOUND DRESSING</Value>
+			<Value>ESOPHAGEAL MUCOSA</Value>
+			<Value>DERMIS</Value>
+			<Value>EPIDERMIS</Value>
+			<Value>VOMIT</Value>
+			<Value>TRACHEAL ASPIRATE</Value>
+			<Value>BRONCHOALVEOLAR LAVAGE</Value>
+			<Value>MINIBRONCHOALVEOLAR LAVAGE</Value>
+			<Value>TRANSTRACHEAL NEEDLE ASPIRATION</Value>
+			<Value>TRANSTHORACIC NEEDLE ASPIRATION</Value>
+			<Value>PROTECTED SPECIMEN BRUSH 	</Value>
+			<Value>THORACENTESIS</Value>
+			<Value>ASPIRATE</Value>
+			<Value>WOUND/TISSUE BIOPSY</Value>
+			<Value>GROIN SWAB</Value>
+			<Value>NASAL SWAB</Value>
+			<Value>RESPIRATORY</Value>
+			<Value>NASAL</Value>
+			<Value>GROIN</Value>
+			<Value>WOUND</Value>
+			<Value>INCISION AND DRAINAGE</Value>
+			<Value>WOUND SCRAPING</Value>
+			<Value>TISSUE DEBRIDEMENT</Value>
+			<Value>TISSUE BIOPSY</Value>
+			<Value>TISSUE SCRAPING</Value>
+			<Value>DEEP WOUND SWAB</Value>
+			<Value>BRONCHOSCOPIC PROTECTED SPECIMEN BRUSH 	</Value>
+			<Value>TRACHEAL SWAB</Value>
+			<Value>WHOLE BLOOD</Value>
+			<Value>BLOOD CULTURE</Value>
+			<Value>WBC</Value>
+			<Value>RBC</Value>
+			<Value>PLATELETS</Value>
+			<Value>CLEAN CATCH URINE</Value>
+			<Value>SECOND MORNING URINE VOID</Value>
+			<Value>VITREOUS FLUID</Value>
+			<Value>MEIBOMIAN GLAND FLUID</Value>
+			<Value>LACRIMAL GLAND FLUID</Value>
+			<Value>SEBUM</Value>
+			<Value>SEBUTAPE</Value>
+			<Value>TEARS</Value>
+			<Value>SWEAT</Value>
+			<Value>SYNOVIAL FLUID</Value>
+			<Value>SYNOVIAL TISSUE</Value>
+			<Value>SYNOVIAL LAVAGE</Value>
+			<Value>SYNOVIUM</Value>
+			<Value>CARTILAGE</Value>
+			<Value>SKIN PUNCH</Value>
+			<Value>AMNIOTIC FLUID</Value>
+			<Value>COLON TUMOR</Value>
+			<Value>BREAST TUMOR</Value>
+			<Value>LUNG TUMOR</Value>
+			<Value>KIDNEY TUMOR</Value>
+			<Value>ABDOMINAL TUMOR</Value>
+			<Value>BONE TUMOR</Value>
+			<Value>BLOOD TUMOR</Value>
+			<Value>PANCREAS TUMOR</Value>
+			<Value>BRAIN TUMOR</Value>
+			<Value>PROSTATE TUMOR</Value>
+			<Value>HEAD TUMOR</Value>
+			<Value>NECK TUMOR</Value>
+			<Value>LYMPH NODE TUMOR</Value>
+			<Value>LIVER TUMOR</Value>
+			<Value>BONE MARROW ASPIRATE</Value>
+			<Value>HAIR FOLLICLES</Value>
+			<Value>BUCCAL CELLS</Value>
+			<Value>LUNG LAVAGE</Value>
+			<Value>NASAL LAVAGE</Value>
+			<Value>EXHALED BREATH CONDENSATE</Value>
+			<Value>EPITHELIAL LUNG FLUID</Value>
+			<Value>UPPER RESPIRATORY CULTURE</Value>
+			<Value>WOUND CULTURE</Value>
+			<Value>PROTEIN FREE FRACTION</Value>
+			<Value>PROTEIN BOUND FRACTION</Value>
+			<Value>VENOUS BLOOD</Value>
+			<Value>LOWER RESPIRATORY CULTURE</Value>
+			<Value>ENDOTHELIAL CELLS/MEDIA</Value>
+			<Value>FECAL HOMOGENATE</Value>
+			<Value>POLYMORPHONUCLEAR LEUKOCYTE</Value>
+			<Value>PLASMA DIALYSATE</Value>
+			<Value>PLASMA ULTRAFILTRATE</Value>
+			<Value>ARTERIAL SERUM</Value>
+			<Value>VENOUS SERUM</Value>
+			<Value>NASAL FLUID</Value>
+			<Value>NEAT BRONCHO-ALVEOLAR LAVAGE FLUID</Value>
+			<Value>PROTEASE INHIBITORS BRONCHO-ALVEOLAR LAVAGE FLUID</Value>
+			<Value>GREATER OMENTUM</Value>
+			<Value>SERUM DIALYSATE</Value>
+			<Value>URINE CATHETER</Value>
+			<Value>ARTERIAL PLASMA</Value>
+			<Value>VENOUS PLASMA</Value>
+			<Value>BRONCHOALVEOLAR LAVAGE CELL PELLETS</Value>
+			<Value>DIALYSATE</Value>
+			<Value>PLASMA SUPERNATANT</Value>
+			<Value>LEUKOCYTE</Value>
+			<Value>PERIPHERAL BLOOD MONONUCLEAR CELL</Value>
+
+		</AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">ANALYTE NAME</ColumnName>
+		<ColumnAlias>
+		<Value>ANALYTE NAME</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>ANALYTE NAME</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">11</Index>
+		<DataType LogLevel="warning"></DataType>
+		<MinLength LogLevel="error">1</MinLength>
+		<MaxLength LogLevel="error">200</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">false</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">PERIOD UNIT</ColumnName>
+		<ColumnAlias>
+		<Value>PERIOD UNIT</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>PERIOD UNIT</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">12</Index>
+		<DataType LogLevel="warning"></DataType>
+		<MinLength LogLevel="error">1</MinLength>
+		<MaxLength LogLevel="error">100</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">true</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true">
+			<Value>PERIOD</Value>
+			<Value>DAY</Value>
+			<Value>WEEK</Value>
+			<Value>UNPLANNED</Value>
+		</AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">PERIOD</ColumnName>
+		<ColumnAlias>
+		<Value>PERIOD</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>PERIOD</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">13</Index>
+		<DataType LogLevel="warning"></DataType>
+		<MinLength LogLevel="error">1</MinLength>
+		<MaxLength LogLevel="error">100</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">true</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">VISIT UNIT</ColumnName>
+		<ColumnAlias>
+		<Value>VISIT UNIT</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>VISIT UNIT</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">14</Index>
+		<DataType LogLevel="warning"></DataType>
+		<MinLength LogLevel="error">1</MinLength>
+		<MaxLength LogLevel="error">100</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">false</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true">
+			<Value>VISIT</Value>
+			<Value>DAY</Value>
+			<Value>WEEK</Value>
+			<Value>MONTH</Value>
+			<Value>UNPLANNED</Value>
+		</AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">VISIT</ColumnName>
+		<ColumnAlias>
+		<Value>VISIT</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>VISIT</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">15</Index>
+		<DataType LogLevel="warning"></DataType>
+		<MinLength LogLevel="error">1</MinLength>
+		<MaxLength LogLevel="error">100</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">false</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">PHASE</ColumnName><!--Any values entered for PHASE will be IGNORED by the system -->
+		<ColumnAlias>
+		<Value>PHASE</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>PHASE</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">16</Index>
+		<DataType LogLevel="warning"></DataType>
+		<MinLength LogLevel="error">0</MinLength>
+		<MaxLength LogLevel="error">100</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">true</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">TIME POST DOSE UNIT</ColumnName>
+		<ColumnAlias>
+		<Value>TIME POST DOSE UNIT</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>TIME POST DOSE UNIT</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">17</Index>
+		<DataType LogLevel="warning"></DataType>
+		<MinLength LogLevel="error">0</MinLength>
+		<MaxLength LogLevel="error">3</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">true</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true"><!-- verify 
+				allowed values -->
+			<Value>H</Value>
+			<Value>MIN</Value>
+			<Value>HR</Value>
+		</AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">TIME POST DOSE OR INTERVAL</ColumnName><!--(TIME POST DOSE OR INTERVAL+MINUTE NOMINAL can't be null) -->
+		<ColumnAlias>
+		<Value>TIME POST DOSE OR INTERVAL</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>TIME POST DOSE OR INTERVAL</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">18</Index>
+		<DataType LogLevel="warning"></DataType>
+		<MinLength LogLevel="error">0</MinLength>
+		<MaxLength LogLevel="error">100</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">true</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">MINUTE NOMINAL</ColumnName><!--(TIME POST DOSE OR INTERVAL+MINUTE NOMINAL can't be null) -->
+		<ColumnAlias>
+		<Value>MINUTE NOMINAL</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>MINUTE NOMINAL</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">19</Index>
+		<DataType LogLevel="warning" SubType="NUMBER">^([-+]?\d*\.?\d+)(?:[eE]([-+]?\d+))?$</DataType><!--Minute Value. So should 
+			we validate if it is more than 60? -->
+		<MinLength LogLevel="error">0</MinLength>
+		<MaxLength LogLevel="error">2</MaxLength>
+		<MinRange LogLevel="error">0</MinRange>
+      	<MaxRange LogLevel="error">60</MaxRange>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">true</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true">
+			<Value>AQL</Value>
+			<Value>BQL</Value>
+			<Value>NAZ</Value>
+			<Value>NRC</Value>
+		</AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">ANALYTE RESULT</ColumnName>
+		<ColumnAlias>
+		<Value>ANALYTE RESULT</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>ANALYTE RESULT</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">20</Index>
+		<DataType LogLevel="warning"></DataType>
+		<MinLength LogLevel="error">0</MinLength>
+		<MaxLength LogLevel="error">32</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">true</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+	</Field>
+
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">ANALYTE UNIT</ColumnName><!--LCD files are not constrained by these requirements -->
+		<ColumnAlias>
+		<Value>ANALYTE UNIT</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>ANALYTE UNIT</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">21</Index>
+		<DataType LogLevel="warning"></DataType>
+		<MinLength LogLevel="error">0</MinLength>
+		<MaxLength LogLevel="error">16</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">false</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true">
+			<Value>MG/L</Value>
+			<Value>NG/L</Value>
+			<Value>MG/L</Value>
+			<Value>MMOL/L</Value>
+			<Value>UG/L</Value>
+			<Value>MEQ/L</Value>
+			<Value>GM/L</Value>
+			<Value>GM/DL</Value>
+			<Value>GM/CL</Value>
+			<Value>MG/DL</Value>
+			<Value>UG/L</Value>
+			<Value>UG/CL</Value>
+			<Value>UG/DL</Value>
+			<Value>NG/DL</Value>
+			<Value>NG/L</Value>
+			<Value>PG/L</Value>
+			<Value>PG/NL</Value>
+			<Value>NGEQ/L</Value>
+			<Value>NMOL/L</Value>
+			<Value>UMOL/L</Value>
+			<Value>IU/L</Value>
+			<Value>UU/L</Value>
+			<Value>PG</Value>
+			<Value>PG/CL</Value>
+			<Value>PG/DL</Value>
+			<Value>PG/L</Value>
+			<Value>PGEQ/L</Value>
+			<Value>PGEQ/CL</Value>
+			<Value>PGEQ/DL</Value>
+			<Value>PGEQ/L</Value>
+			<Value>PMOL/L</Value>
+			<Value>PMOL/CL</Value>
+			<Value>PMOL/DL</Value>
+			<Value>PMOL/L</Value>
+			<Value>PG/PMOL</Value>
+			<Value>PG/NMOL</Value>
+			<Value>PG/UMOL</Value>
+			<Value>PG/MMOL</Value>
+			<Value>PG/MOL</Value>
+			<Value>PG/MGM</Value>
+			<Value>PG/GM</Value>
+			<Value>PG/MM**2</Value>
+			<Value>NG</Value>
+			<Value>NG/CL</Value>
+			<Value>NGEQ/CL</Value>
+			<Value>NGEQ/DL</Value>
+			<Value>NGEQ/L</Value>
+			<Value>NMOL/L</Value>
+			<Value>NMOL/CL</Value>
+			<Value>NMOL/DL</Value>
+			<Value>NG/PMOL</Value>
+			<Value>NG/NMOL</Value>
+			<Value>NG/UMOL</Value>
+			<Value>NG/MMOL</Value>
+			<Value>NG/MOL</Value>
+			<Value>NG/MGM</Value>
+			<Value>NG/GM</Value>
+			<Value>NG/MM**2</Value>
+			<Value>UG</Value>
+			<Value>UGEQ/L</Value>
+			<Value>UGEQ/CL</Value>
+			<Value>UGEQ/DL</Value>
+			<Value>UGEQ/L</Value>
+			<Value>UMOL/L</Value>
+			<Value>UMOL/CL</Value>
+			<Value>UMOL/DL</Value>
+			<Value>UG/PMOL</Value>
+			<Value>UG/NMOL</Value>
+			<Value>UG/UMOL</Value>
+			<Value>UG/MMOL</Value>
+			<Value>UG/MOL</Value>
+			<Value>UG/MGM</Value>
+			<Value>UG/GM</Value>
+			<Value>UG/MM**2</Value>
+			<Value>MG</Value>
+			<Value>MG/CL</Value>
+			<Value>MGEQ/L</Value>
+			<Value>MGEQ/CL</Value>
+			<Value>MGEQ/DL</Value>
+			<Value>MGEQ/L</Value>
+			<Value>MMOL/L</Value>
+			<Value>MMOL/CL</Value>
+			<Value>MMOL/DL</Value>
+			<Value>MG/PMOL</Value>
+			<Value>MG/NMOL</Value>
+			<Value>MG/UMOL</Value>
+			<Value>MG/MMOL</Value>
+			<Value>MG/MOL</Value>
+			<Value>MG/MGM</Value>
+			<Value>MG/GM</Value>
+			<Value>MG/MM**2</Value>
+			<Value>IU</Value>
+			<Value>IU/CL</Value>
+			<Value>IU/DL</Value>
+			<Value>IU/L</Value>
+			<Value>MIU/L</Value>
+			<Value>MIN</Value>
+			<Value>NMOL/MIN</Value>
+			<Value>M</Value>
+			<Value>PM</Value>
+			<Value>NM</Value>
+			<Value>MM</Value>
+			<Value>UM</Value>
+			<Value>MOL/MIN/G</Value>
+			<Value>DPM</Value>
+			<Value>CPM</Value>
+			<Value>BQ</Value>
+			<Value>DPM/L</Value>
+			<Value>CPM/L</Value>
+			<Value>BQ/L</Value>
+			<Value>COPIES/L</Value>
+			<Value>H-SCORE RATIO</Value>
+			<Value>MEAN CELLS/FIELD</Value>
+			<Value>NG/ML/H</Value>
+			<Value>NG/BIOPSY</Value>
+			<Value>NM.MIN</Value>
+			<Value>NMOL BCE/MMOL CR</Value>
+			<Value>CELLS/UL</Value>
+			<Value>ENDPOINT TITER</Value>
+			<Value>NG/MG TOTAL PROTEIN</Value>
+			<Value>NG/CELL</Value>
+			<Value>MIU/L</Value>
+			<Value>UIU/L</Value>
+			<Value>U/L</Value>
+			<Value>UNIT/WELL</Value>
+			<Value>MU/L</Value>
+			<Value>%ACTIVITY</Value>
+			<Value>%INHIBITION</Value>
+			<Value>MG/KG</Value>
+			<Value>PERCENT</Value>
+			<Value>NGEQ/GM</Value>
+		</AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">AMOUNT</ColumnName>
+		<ColumnAlias>
+		<Value>AMOUNT</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>AMOUNT</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">22</Index>
+		<DataType LogLevel="warning" SubType="NUMBER">^([-+]?\d*\.?\d+)(?:[eE]([-+]?\d+))?$</DataType>
+		<MinLength LogLevel="error">0</MinLength>
+		<MaxLength LogLevel="error">32</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">true</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true">
+			<Value>AQL</Value>
+			<Value>BQL</Value>
+			<Value>NAZ</Value>
+			<Value>NRC</Value>
+		</AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">AMOUNT UNIT</ColumnName>
+		<ColumnAlias>
+		<Value>AMOUNT UNIT</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>AMOUNT UNIT</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">23</Index>
+		<DataType LogLevel="warning"></DataType>
+		<MinLength LogLevel="error">0</MinLength>
+		<MaxLength LogLevel="error">16</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">true</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true"><!-- ML value 
+				not in codelist but it is given in example data -->
+			<Value>LB</Value>
+			<Value>KG</Value>
+			<Value>GM</Value>
+			<Value>MG</Value>
+			<Value>UG</Value>
+			<Value>NG</Value>
+		</AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">QA STATUS</ColumnName>
+		<ColumnAlias>
+		<Value>QA STATUS</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>QA STATUS</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">24</Index>
+		<DataType LogLevel="warning"></DataType>
+		<MinLength LogLevel="error">0</MinLength>
+		<MaxLength LogLevel="error">10</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">false</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true">
+			<Value>FINAL</Value>
+			<Value>DRAFT</Value>
+		</AllowedValues>
+	</Field>
+	<Field><!-- Unclear about CENTRAL LABORATORY COMMENTS and ANALYTICAL LABORATORY COMMENTS - max char - description -->
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">CENTRAL LABORATORY COMMENTS</ColumnName><!--Central Laboratory Comment Codes or Text (Semi-colon ";" 
+			delimited); Required field but can be empty if no sample handling events 
+			occur -->
+		<ColumnAlias>
+		<Value>CENTRAL LABORATORY COMMENTS</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>CENTRAL LABORATORY COMMENTS</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">25</Index>
+		<DataType LogLevel="warning"></DataType>
+		<MinLength LogLevel="error">0</MinLength>
+		<MaxLength LogLevel="error">200</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">true</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">ANALYTICAL LABORATORY COMMENTS</ColumnName><!--Central Laboratory Comment Codes or Text (Semi-colon ";" 
+			delimited); Required field but can be empty if no sample handling events 
+			occur -->
+		<ColumnAlias>
+		<Value>ANALYTICAL LABORATORY COMMENTS</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>ANALYTICAL LABORATORY COMMENTS</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">26</Index>
+		<DataType LogLevel="warning"></DataType>
+		<MinLength LogLevel="error">0</MinLength>
+		<MaxLength LogLevel="error">200</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">true</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">PFIZER COMMENTS</ColumnName>
+		<ColumnAlias>
+		<Value>PFIZER COMMENTS</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>PFIZER COMMENTS</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">27</Index>
+		<DataType LogLevel="warning"></DataType>
+		<MinLength LogLevel="error">0</MinLength>
+		<MaxLength LogLevel="error">4000</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">true</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+	</Field>
+	<Field>
+		<ColumnName CaseSensitive="true" CaseSensitivityLogLevel="error"
+			ExtraSpacesHeaderCheck="true" ExtraSpacesHeaderLogLevel="error">PKUSMID SAMPLE ID</ColumnName>
+		<ColumnAlias>
+		<Value>PKUSMID SAMPLE ID</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>PKUSMID SAMPLE ID</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+		<Index LogLevel="warning">28</Index>
+		<DataType LogLevel="warning"></DataType>
+		<MinLength LogLevel="error">0</MinLength>
+		<MaxLength LogLevel="error">100</MaxLength>
+		<Required LogLevel="error">true</Required>
+		<IsNull LogLevel="error">true</IsNull>
+		<AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+	</Field>
+	<FieldSets LogLevel="error">
+		<Columns>
+			<ColumnName>PERIOD</ColumnName>
+			<ColumnName>PERIOD UNIT</ColumnName>
+		</Columns>
+		<Rules>
+			<Condition>NOTNULL</Condition><!-- PERIOD unit cannot have missing values 
+				if the corresponding PERIOD value is provided. -->
+		</Rules>
+	</FieldSets>
+	 <FieldSets LogLevel="error">
+      <Columns>
+         <ColumnName>VISIT</ColumnName>
+         <ColumnName>VISIT UNIT</ColumnName>
+      </Columns>
+      <Rules>
+         <Condition>NOTNULL</Condition><!-- VISIT unit cannot have missing 
+            values if the corresponding VISIT value is provided. -->
+      </Rules>
+   </FieldSets>
+	<FieldSets LogLevel="error">
+		<Columns>
+			<ColumnName>PERIOD</ColumnName>
+			<ColumnName>VISIT UNIT</ColumnName>
+		</Columns>
+		<Rules>
+			<Condition>NOTNULL</Condition><!-- VISIT unit cannot have missing values 
+				if the corresponding PERIOD value is provided. -->
+		</Rules>
+	</FieldSets>
+	<FieldSets LogLevel="error">
+      <Columns>
+         <ColumnName>ANALYTE RESULT</ColumnName> <!-- both columns should not be null together -->
+         <ColumnName>ANALYTICAL LABORATORY COMMENTS</ColumnName>
+      </Columns>
+      <Rules>
+         <Condition>DEPENDENTCONSTRAINT</Condition><!--Req:SR-FVS-034 -->
+      </Rules>
+   </FieldSets>
+
+	<SDEIDSets LogLevel="error">
+		<ColumnName>STUDY ID</ColumnName>
+		<ColumnName>CENTER NUMBER</ColumnName>
+		<ColumnName>SSID</ColumnName>
+		<ColumnName>RANDOMIZATION NUMBER</ColumnName>
+		<ColumnName>TREATMENT DESCRIPTION</ColumnName>
+		<ColumnName>TREATMENT CODE</ColumnName>
+		<ColumnName>COLLECTION</ColumnName>
+		<ColumnName>MATRIX</ColumnName>
+		<ColumnName>ANALYTE NAME</ColumnName>
+		<ColumnName>PERIOD UNIT</ColumnName>
+		<ColumnName>PERIOD</ColumnName>
+		<ColumnName>VISIT UNIT</ColumnName>
+		<ColumnName>VISIT</ColumnName>
+		<ColumnName>PHASE</ColumnName>
+	</SDEIDSets>
+   <CrossFileFieldSets LogLevel="error">
+      <ColumnName>STUDY ID</ColumnName>
+      <ColumnName>MATRIX</ColumnName><!-- PKBDFLD -->
+      <ColumnName>ANALYTE NAME</ColumnName><!-- PKTERM -->
+   </CrossFileFieldSets>
+   <FileLevelRules LogLevel="error" RuleType="UNIQUE">
+     <Columns>
+         <ColumnName>PKUSMID SAMPLE ID</ColumnName>
+      </Columns>
+   </FileLevelRules>
+   <UniqueSets>
+   	<Unique Scope ="FILE" LogLevel="warning">	
+   		<Columns>
+   			<ColumnName>PROGRAM</ColumnName>
+   			<ColumnName>STUDY ID</ColumnName>
+   			<ColumnName>PCMETHOD</ColumnName>
+   			<ColumnName>QA STATUS</ColumnName>
+   		</Columns>
+   	</Unique>
+   	<Unique Scope ="SDEID" LogLevel="warning">	
+   		<Columns>
+   			<ColumnName>TIME POST DOSE OR INTERVAL</ColumnName>
+   		</Columns>
+   	</Unique>
+   	<Unique Scope ="SSID" LogLevel="warning">	
+   		<Columns>
+   			<ColumnName>RANDOMIZATION NUMBER</ColumnName>
+   		</Columns>
+   	</Unique>
+   	<Unique Scope ="ANALYTE NAME" LogLevel="warning">	
+   		<Columns>
+   			<ColumnName>ANALYTICAL LABORATORY ACCESSION</ColumnName>
+   		</Columns>
+   	</Unique>
+   </UniqueSets>
+   <DuplicateRecords LogLevel="error"> <!-- combination of ColumnNames values cannot be duplicated -->
+		<ColumnName>STUDY ID</ColumnName>
+		<ColumnName>CENTER NUMBER</ColumnName>
+		<ColumnName>SSID</ColumnName>
+		<ColumnName>RANDOMIZATION NUMBER</ColumnName>
+		<ColumnName>TREATMENT DESCRIPTION</ColumnName>
+		<ColumnName>TREATMENT CODE</ColumnName>
+		<ColumnName>COLLECTION</ColumnName>
+		<ColumnName>MATRIX</ColumnName>
+		<ColumnName>ANALYTE NAME</ColumnName>
+		<ColumnName>PERIOD UNIT</ColumnName>
+		<ColumnName>PERIOD</ColumnName>
+		<ColumnName>VISIT UNIT</ColumnName>
+		<ColumnName>VISIT</ColumnName>
+		<ColumnName>PHASE</ColumnName>
+	</DuplicateRecords>
+	<ExtraneousColumns LogLevel="info"></ExtraneousColumns>
+	<EmptyLines LogLevel="info"></EmptyLines>
+	<ColumnOrdering>false</ColumnOrdering>
+</FieldDefinitions>

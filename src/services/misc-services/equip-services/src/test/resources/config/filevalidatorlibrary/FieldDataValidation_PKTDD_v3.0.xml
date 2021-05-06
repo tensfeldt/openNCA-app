@@ -1,0 +1,880 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Refers to PKTDD 3.0 Specification -->
+<FieldDefinitions>
+   <FileNamePattern>
+      <!-- no case restrictions -->
+      <Pattern>((PKTDD_)|(pktdd_))([a-zA-Z0-9]+_)([a-zA-Z0-9]+_)([a-zA-Z0-9]+_)([1-9]|([012][0-9])|(3[01]))([a-zA-Z]{3})\d{4}(.csv)+$</Pattern>
+   </FileNamePattern>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">STUDY</ColumnName>
+      <ColumnAlias>
+		<Value>STUDY</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>STUDY</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">1</Index>
+      <DataType LogLevel="warning">^[a-zA-Z0-9-]+$</DataType>
+      <MinLength LogLevel="error">8</MinLength>
+      <MaxLength LogLevel="error">35</MaxLength>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">false</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">SITEID</ColumnName>
+      <ColumnAlias>
+		<Value>SITEID</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>SITEID</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">2</Index>
+      <DataType LogLevel="warning">^[a-zA-Z0-9]+$</DataType>
+      <MinLength LogLevel="error">4</MinLength>
+      <MaxLength LogLevel="error">4</MaxLength>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">false</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">SUBJID</ColumnName>
+      <ColumnAlias>
+		<Value>SUBJID</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>SUBJID</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">3</Index>
+      <DataType LogLevel="warning"></DataType>
+      <MinLength LogLevel="error">8</MinLength>
+      <MaxLength LogLevel="error">100</MaxLength>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">false</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">RAND</ColumnName>
+      <ColumnAlias>
+		<Value>RAND</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>RAND</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">4</Index>
+      <DataType LogLevel="warning" SubType="NUMBER">^([-+]?\d*\.?\d+)(?:[eE]([-+]?\d+))?$</DataType>
+      <MinLength LogLevel="error">1</MinLength>
+      <MaxLength LogLevel="error">10</MaxLength>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">false</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true">
+			<Value>AQL</Value>
+			<Value>BQL</Value>
+			<Value>NAZ</Value>
+			<Value>NRC</Value>
+		</AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">PKCOLL</ColumnName>
+      <ColumnAlias>
+		<Value>PKCOLL</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>PKCOLL</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">5</Index>
+      <DataType LogLevel="warning"></DataType>
+      <MinLength LogLevel="error">5</MinLength>
+      <MaxLength LogLevel="error">8</MaxLength>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">false</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true">
+         <Value>POINT</Value>
+         <Value>INTERVAL</Value>
+      </AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">PKBDFLD</ColumnName>
+      <ColumnAlias>
+		<Value>PKBDFLD</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>PKBDFLD</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">6</Index>
+      <DataType LogLevel="warning"></DataType>
+      <MinLength LogLevel="error">1</MinLength>
+      <MaxLength LogLevel="error">50</MaxLength>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">false</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true">
+         <Value>BLOOD</Value>
+         <Value>URINE</Value>
+         <Value>SALIVA</Value>
+         <Value>SPUTUM</Value>
+         <Value>PUS</Value>
+         <Value>DIALYSIS FLUID</Value>
+         <Value>PERITONEAL FLUID</Value>
+         <Value>CEREBRO-SPINAL FLUID</Value>
+         <Value>TISSUE FLUID</Value>
+         <Value>BLISTER FLUID</Value>
+         <Value>SKIN</Value>
+         <Value>NAIL</Value>
+         <Value>CORONARY SINUS BLOOD</Value>
+         <Value>ARTERIAL BLOOD</Value>
+         <Value>FECES</Value>
+         <Value>PLASMA</Value>
+         <Value>VAGINAL FLUID</Value>
+         <Value>VAGINAL TISSUE</Value>
+         <Value>BREAST MILK</Value>
+         <Value>LUNG TISSUE</Value>
+         <Value>HUMERAL FLUID</Value>
+         <Value>GASTRIC TISSUE</Value>
+         <Value>GASTRIC MUCUS</Value>
+         <Value>GASTRIC JUICE</Value>
+         <Value>SERUM</Value>
+         <Value>PROSTATIC FLUID</Value>
+         <Value>SEMINAL FLUID</Value>
+         <Value>SINUS FLUID</Value>
+         <Value>BRONCHIAL LAVAGE - SUPERNATANT</Value>
+         <Value>BRONCHIAL LAVAGE - SEDIMENT</Value>
+         <Value>VENTRICULAR FLUID</Value>
+         <Value>OVARIAN TISSUE</Value>
+         <Value>UTERINE TISSUE</Value>
+         <Value>FALLOPIAN TISSUE</Value>
+         <Value>MIDDLE EAR FLUID</Value>
+         <Value>FIBROMA OF UTERUS</Value>
+         <Value>MORGAGNI CYST</Value>
+         <Value>MOUTHRINSE</Value>
+         <Value>MUCUS</Value>
+         <Value>SUBCUTANEOUS TISSUE</Value>
+         <Value>SKELETAL MUSCLE</Value>
+         <Value>BONE</Value>
+         <Value>MYOMETRIUM</Value>
+         <Value>CERVIX</Value>
+         <Value>COLONIC TISSUE</Value>
+         <Value>PROSTATE MEDIAN LOBE</Value>
+         <Value>PROSTATE LATERAL LOBE</Value>
+         <Value>BUFFY COAT</Value>
+         <Value>WOUND FLUID</Value>
+         <Value>OTHER</Value>
+         <Value>EYE</Value>
+         <Value>SKIN TISSUE</Value>
+         <Value>SKIN SCRAPING</Value>
+         <Value>RECTAL SWAB</Value>
+         <Value>WOUND SWAB</Value>
+         <Value>ALVEOLAR LAVAGE</Value>
+         <Value>SPINAL FLUID</Value>
+         <Value>BLOOD (CATHETER TIP)</Value>
+         <Value>BRONCHIAL SPUTUM</Value>
+         <Value>PULMONARY BIOPSY</Value>
+         <Value>TRANSBRONCHIAL PULMONARY BIOPSY</Value>
+         <Value>PLEURAL BIOPSY</Value>
+         <Value>TRANSBRONCHIAL ASPIRATION</Value>
+         <Value>PLEURAL FLUID</Value>
+         <Value>LEFT INFERIOR TURBINATE SWAB</Value>
+         <Value>WOUND BIOPSY</Value>
+         <Value>WOUND SURFACE</Value>
+         <Value>LUNGS</Value>
+         <Value>MUCOUS MEMBRANES</Value>
+         <Value>LYMPH NODES</Value>
+         <Value>CENTRAL NERVOUS SYSTEM</Value>
+         <Value>ADRENALS</Value>
+         <Value>LIVER</Value>
+         <Value>SPLEEN</Value>
+         <Value>TUMOR</Value>
+         <Value>BRAIN</Value>
+         <Value>PANCREAS</Value>
+         <Value>HEART</Value>
+         <Value>KIDNEY</Value>
+         <Value>ESOPHAGUS</Value>
+         <Value>THYROID</Value>
+         <Value>SMALL INTESTINE</Value>
+         <Value>FIRST-VOIDED URINE</Value>
+         <Value>URETHRAL DISCHARGE</Value>
+         <Value>CERVICAL SWAB</Value>
+         <Value>CERVICAL DISCHARGE</Value>
+         <Value>ASCITES</Value>
+         <Value>THROAT SWAB</Value>
+         <Value>URETHRAL SWAB</Value>
+         <Value>WOUND DRESSING</Value>
+         <Value>ESOPHAGEAL MUCOSA</Value>
+         <Value>DERMIS</Value>
+         <Value>EPIDERMIS</Value>
+         <Value>VOMIT</Value>
+         <Value>TRACHEAL ASPIRATE</Value>
+         <Value>BRONCHOALVEOLAR LAVAGE</Value>
+         <Value>MINIBRONCHOALVEOLAR LAVAGE</Value>
+         <Value>TRANSTRACHEAL NEEDLE ASPIRATION</Value>
+         <Value>TRANSTHORACIC NEEDLE ASPIRATION</Value>
+         <Value>PROTECTED SPECIMEN BRUSH 	</Value>
+         <Value>THORACENTESIS</Value>
+         <Value>ASPIRATE</Value>
+         <Value>WOUND/TISSUE BIOPSY</Value>
+         <Value>GROIN SWAB</Value>
+         <Value>NASAL SWAB</Value>
+         <Value>RESPIRATORY</Value>
+         <Value>NASAL</Value>
+         <Value>GROIN</Value>
+         <Value>WOUND</Value>
+         <Value>INCISION AND DRAINAGE</Value>
+         <Value>WOUND SCRAPING</Value>
+         <Value>TISSUE DEBRIDEMENT</Value>
+         <Value>TISSUE BIOPSY</Value>
+         <Value>TISSUE SCRAPING</Value>
+         <Value>DEEP WOUND SWAB</Value>
+         <Value>BRONCHOSCOPIC PROTECTED SPECIMEN BRUSH 	</Value>
+         <Value>TRACHEAL SWAB</Value>
+         <Value>WHOLE BLOOD</Value>
+         <Value>BLOOD CULTURE</Value>
+         <Value>WBC</Value>
+         <Value>RBC</Value>
+         <Value>PLATELETS</Value>
+         <Value>CLEAN CATCH URINE</Value>
+         <Value>SECOND MORNING URINE VOID</Value>
+         <Value>VITREOUS FLUID</Value>
+         <Value>MEIBOMIAN GLAND FLUID</Value>
+         <Value>LACRIMAL GLAND FLUID</Value>
+         <Value>SEBUM</Value>
+         <Value>SEBUTAPE</Value>
+         <Value>TEARS</Value>
+         <Value>SWEAT</Value>
+         <Value>SYNOVIAL FLUID</Value>
+         <Value>SYNOVIAL TISSUE</Value>
+         <Value>SYNOVIAL LAVAGE</Value>
+         <Value>SYNOVIUM</Value>
+         <Value>CARTILAGE</Value>
+         <Value>SKIN PUNCH</Value>
+         <Value>AMNIOTIC FLUID</Value>
+         <Value>COLON TUMOR</Value>
+         <Value>BREAST TUMOR</Value>
+         <Value>LUNG TUMOR</Value>
+         <Value>KIDNEY TUMOR</Value>
+         <Value>ABDOMINAL TUMOR</Value>
+         <Value>BONE TUMOR</Value>
+         <Value>BLOOD TUMOR</Value>
+         <Value>PANCREAS TUMOR</Value>
+         <Value>BRAIN TUMOR</Value>
+         <Value>PROSTATE TUMOR</Value>
+         <Value>HEAD TUMOR</Value>
+         <Value>NECK TUMOR</Value>
+         <Value>LYMPH NODE TUMOR</Value>
+         <Value>LIVER TUMOR</Value>
+         <Value>BONE MARROW ASPIRATE</Value>
+         <Value>HAIR FOLLICLES</Value>
+         <Value>BUCCAL CELLS</Value>
+         <Value>LUNG LAVAGE</Value>
+         <Value>NASAL LAVAGE</Value>
+         <Value>EXHALED BREATH CONDENSATE</Value>
+         <Value>EPITHELIAL LUNG FLUID</Value>
+         <Value>UPPER RESPIRATORY CULTURE</Value>
+         <Value>WOUND CULTURE</Value>
+         <Value>PROTEIN FREE FRACTION</Value>
+         <Value>PROTEIN BOUND FRACTION</Value>
+         <Value>VENOUS BLOOD</Value>
+         <Value>LOWER RESPIRATORY CULTURE</Value>
+         <Value>ENDOTHELIAL CELLS/MEDIA</Value>
+         <Value>FECAL HOMOGENATE</Value>
+         <Value>POLYMORPHONUCLEAR LEUKOCYTE</Value>
+         <Value>PLASMA DIALYSATE</Value>
+         <Value>PLASMA ULTRAFILTRATE</Value>
+         <Value>ARTERIAL SERUM</Value>
+         <Value>VENOUS SERUM</Value>
+         <Value>NASAL FLUID</Value>
+         <Value>NEAT BRONCHO-ALVEOLAR LAVAGE FLUID</Value>
+         <Value>PROTEASE INHIBITORS BRONCHO-ALVEOLAR LAVAGE FLUID</Value>
+         <Value>GREATER OMENTUM</Value>
+         <Value>SERUM DIALYSATE</Value>
+         <Value>URINE CATHETER</Value>
+         <Value>ARTERIAL PLASMA</Value>
+         <Value>VENOUS PLASMA</Value>
+         <Value>BRONCHOALVEOLAR LAVAGE CELL PELLETS</Value>
+         <Value>DIALYSATE</Value>
+         <Value>PLASMA SUPERNATANT</Value>
+         <Value>LEUKOCYTE</Value>
+         <Value>PERIPHERAL BLOOD MONONUCLEAR CELL</Value>
+      </AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">PERIODU</ColumnName>
+      <ColumnAlias>
+		<Value>PERIODU</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>PERIODU</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">7</Index>
+      <DataType LogLevel="warning"></DataType>
+      <MinLength LogLevel="error">1</MinLength>
+      <MaxLength LogLevel="error">100</MaxLength>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">true</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true">
+         <Value>PERIOD</Value>
+         <Value>DAY</Value>
+         <Value>WEEK</Value>
+         <Value>UNPLANNED</Value>
+      </AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">PERIOD</ColumnName>
+      <ColumnAlias>
+		<Value>PERIOD</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>PERIOD</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">8</Index>
+      <DataType LogLevel="warning"></DataType>
+      <MinLength LogLevel="error">1</MinLength>
+      <MaxLength LogLevel="error">100</MaxLength>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">true</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">VISITU</ColumnName>
+      <ColumnAlias>
+		<Value>VISITU</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>VISITU</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">9</Index>
+      <DataType LogLevel="warning"></DataType>
+      <MinLength LogLevel="error">1</MinLength>
+      <MaxLength LogLevel="error">100</MaxLength>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">false</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true">
+         <Value>VISIT</Value>
+         <Value>DAY</Value>
+         <Value>WEEK</Value>
+         <Value>MONTH</Value>
+         <Value>UNPLANNED</Value>
+      </AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">VISIT</ColumnName>
+      <ColumnAlias>
+		<Value>VISIT</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>VISIT</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">10</Index>
+      <DataType LogLevel="warning"></DataType>
+      <MinLength LogLevel="error">1</MinLength>
+      <MaxLength LogLevel="error">100</MaxLength>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">false</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">PHASE</ColumnName><!--Any values entered 
+         for PHASE will be IGNORED by the system -->
+      <ColumnAlias>
+		<Value>PHASE</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>PHASE</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">11</Index>
+      <DataType LogLevel="warning"></DataType>
+      <MinLength LogLevel="error">0</MinLength>
+      <MaxLength LogLevel="error">100</MaxLength>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">true</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">PKUSMID</ColumnName>
+      <ColumnAlias>
+		<Value>PKUSMID</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>PKUSMID</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">12</Index>
+      <DataType LogLevel="warning">^[a-zA-Z0-9]+$</DataType>
+      <MinLength LogLevel="error">1</MinLength>
+      <MaxLength LogLevel="error">16</MaxLength>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">false</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">NTPDU</ColumnName>
+      <ColumnAlias>
+		<Value>NTPDU</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>NTPDU</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">13</Index>
+      <DataType LogLevel="warning"></DataType>
+      <MinLength LogLevel="error">0</MinLength>
+      <MaxLength LogLevel="error">3</MaxLength>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">true</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true"><!-- verify 
+            allowed values -->
+         <Value>H</Value>
+         <Value>MIN</Value>
+         <Value>HR</Value>
+      </AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">PKPTMR</ColumnName><!--(pkptmr+ntpdmn 
+         can't be null) -->
+      <ColumnAlias>
+		<Value>PKPTMR</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>PKPTMR</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">14</Index>
+      <DataType LogLevel="warning"></DataType>
+      <MinLength LogLevel="error">0</MinLength>
+      <MaxLength LogLevel="error">100</MaxLength>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">true</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">NTPDMN</ColumnName><!--(pkptmr+ntpdmn 
+         can't be null) -->
+      <ColumnAlias>
+		<Value>NTPDMN</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>NTPDMN</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">15</Index>
+      <DataType LogLevel="warning" SubType="NUMBER">^([-+]?\d*\.?\d+)(?:[eE]([-+]?\d+))?$</DataType><!--Minute Value. So should 
+         we validate if it is more than 60? -->
+      <MinLength LogLevel="error">0</MinLength>
+      <MaxLength LogLevel="error">2</MaxLength>
+      <MinRange LogLevel="error">0</MinRange>
+	  <MaxRange LogLevel="error">60</MaxRange>
+      <Required LogLevel="error">false</Required><!--Unique -->
+      <IsNull LogLevel="error">true</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true">
+			<Value>AQL</Value>
+			<Value>BQL</Value>
+			<Value>NAZ</Value>
+			<Value>NRC</Value>
+		</AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">PKATPD</ColumnName>
+      <ColumnAlias>
+		<Value>PKATPD</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>PKATPD</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">16</Index>
+      <DataType LogLevel="warning"></DataType>
+      <MinLength LogLevel="error">0</MinLength>
+      <MaxLength LogLevel="error">100</MaxLength>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">true</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">PKATPDU</ColumnName>
+      <ColumnAlias>
+		<Value>PKATPDU</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>PKATPDU</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">17</Index>
+      <DataType LogLevel="warning"></DataType>
+      <MinLength LogLevel="error">0</MinLength>
+      <MaxLength LogLevel="error">3</MaxLength>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">true</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true">
+         <Value>H</Value>
+         <Value>MIN</Value>
+         <Value>HR</Value>
+      </AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">PKCOMC</ColumnName>
+      <ColumnAlias>
+		<Value>PKCOMC</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>PKCOMC</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">18</Index>
+      <DataType LogLevel="warning"></DataType>
+      <MinLength LogLevel="error">0</MinLength>
+      <MaxLength LogLevel="error">200</MaxLength>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">true</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">COLLDATE</ColumnName>
+      <ColumnAlias>
+		<Value>COLLDATE</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>COLLDATE</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">19</Index>
+      <DataType LogLevel="warning" SubType="DATE">yyyy-MM-dd</DataType><!--[YYYY-MM-DD] -->
+      <MinLength LogLevel="error">0</MinLength>
+      <MaxLength LogLevel="error">10</MaxLength>
+      <MinRange LogLevel="error">1900-01-01</MinRange>
+      <MaxRange LogLevel="error">2050-12-31</MaxRange>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">true</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">PKATM</ColumnName>
+      <ColumnAlias>
+		<Value>PKATM</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>PKATM</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">20</Index>
+      <DataType LogLevel="warning"  SubType="TIME">HH:mm</DataType><!--[HH24:MM] -->
+      <MinLength LogLevel="error">0</MinLength>
+      <MaxLength LogLevel="error">200</MaxLength>
+      <MinRange LogLevel="error">00:00</MinRange>
+	  <MaxRange LogLevel="error">23:59</MaxRange>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">true</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">PKADT</ColumnName>
+      <ColumnAlias>
+		<Value>PKADT</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>PKADT</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">21</Index>  <!--Mismatch in pattern see PDS column - PKADT (Date - dd-MMM-yyyy) -->
+      <DataType LogLevel="warning" SubType="DATE">yyyy-MM-dd</DataType><!--[YYYY-MM-DD] -->
+      <MinLength LogLevel="error">0</MinLength>
+      <MaxLength LogLevel="error">10</MaxLength>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">true</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">PKSMND</ColumnName>
+      <ColumnAlias>
+		<Value>PKSMND</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>PKSMND</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">22</Index>
+      <DataType LogLevel="warning"></DataType>
+      <MinLength LogLevel="error">0</MinLength>
+      <MaxLength LogLevel="error">8</MaxLength>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">true</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true">
+         <Value>DONE</Value>
+         <Value>NOT DONE</Value>
+      </AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">PKND</ColumnName>
+      <ColumnAlias>
+		<Value>PKND</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>PKND</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">23</Index>
+      <DataType LogLevel="warning"></DataType>
+      <MinLength LogLevel="error">0</MinLength>
+      <MaxLength LogLevel="error">8</MaxLength>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">true</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true">
+         <Value>DONE</Value>
+         <Value>NOT DONE</Value>
+      </AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">PKATME</ColumnName>
+      <ColumnAlias>
+		<Value>PKATME</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>PKATME</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">24</Index>
+      <DataType LogLevel="warning"  SubType="TIME">HH:mm</DataType><!--[HH24:MM] -->
+      <MinLength LogLevel="error">0</MinLength>
+      <MaxLength LogLevel="error">200</MaxLength>
+      <MinRange LogLevel="error">00:00</MinRange>
+	  <MaxRange LogLevel="error">23:59</MaxRange>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">true</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">PKADTE</ColumnName><!--Mismatch in pattern 
+         see PDS column - PKADT (Date - dd-MMM-yyyy) -->
+      <ColumnAlias>
+		<Value>PKADTE</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>PKADTE</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">25</Index>
+      <DataType LogLevel="warning" SubType="DATE">yyyy-MM-dd</DataType><!--[YYYY-MM-DD] -->
+      <MinLength LogLevel="error">0</MinLength>
+      <MaxLength LogLevel="error">10</MaxLength>
+      <MinRange LogLevel="error">1900-01-01</MinRange>
+      <MaxRange LogLevel="error">2050-12-31</MaxRange>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">true</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">DRGDATE</ColumnName>
+      <ColumnAlias>
+		<Value>DRGDATE</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>DRGDATE</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">26</Index>
+      <DataType LogLevel="warning" SubType="DATE">yyyy-MM-dd</DataType><!--[YYYY-MM-DD] -->
+      <MinLength LogLevel="error">0</MinLength>
+      <MaxLength LogLevel="error">10</MaxLength>
+      <MinRange LogLevel="error">1900-01-01</MinRange>
+      <MaxRange LogLevel="error">2050-12-31</MaxRange>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">true</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">DOSETIM</ColumnName>
+      <ColumnAlias>
+		<Value>DOSETIM</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>DOSETIM</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">27</Index>
+      <DataType LogLevel="warning" SubType="TIME">HH:mm</DataType><!--[HH24:MM] -->
+      <MinLength LogLevel="error">0</MinLength>
+      <MaxLength LogLevel="error">200</MaxLength>
+      <MinRange LogLevel="error">00:00</MinRange>
+      <MaxRange LogLevel="error">23:59</MaxRange>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">true</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+   </Field>
+   <Field>
+      <ColumnName CaseSensitive="true"
+         CaseSensitivityLogLevel="error" ExtraSpacesHeaderCheck="true"
+         ExtraSpacesHeaderLogLevel="error">DATAPREPCOMMENT</ColumnName>
+      <ColumnAlias>
+		<Value>DATAPREPCOMMENT</Value>
+		</ColumnAlias>
+		<Mapping>
+		<ColumnMap>DATAPREPCOMMENT</ColumnMap>
+		</Mapping>
+		<ExtraSpacesValue LogLevel="error">true</ExtraSpacesValue>
+      <Index LogLevel="warning">28</Index>
+      <DataType LogLevel="warning">^[a-zA-Z0-9\s]+$</DataType>
+      <MinLength LogLevel="error">0</MinLength>
+      <MaxLength LogLevel="error">4000</MaxLength>
+      <Required LogLevel="error">true</Required>
+      <IsNull LogLevel="error">true</IsNull>
+      <AllowedValues LogLevel="error" CaseSensitive="true"></AllowedValues>
+   </Field>
+   <FieldSets LogLevel="error">
+      <Columns>
+         <ColumnName>PKPTMR</ColumnName>
+         <ColumnName>NTPDMN</ColumnName>
+      </Columns>
+      <Rules>
+         <Condition>NOTNULL</Condition><!--pkptmr+ntpdmn can't be null -->
+      </Rules>
+   </FieldSets>
+   <FieldSets LogLevel="error">
+      <Columns>
+         <ColumnName>PERIOD</ColumnName>
+         <ColumnName>PERIODU</ColumnName>
+      </Columns>
+      <Rules>
+         <Condition>NOTNULL</Condition><!-- PERIOD unit cannot have missing 
+            values if the corresponding PERIOD value is provided. -->
+      </Rules>
+   </FieldSets>
+    <FieldSets LogLevel="error">
+      <Columns>
+         <ColumnName>VISIT</ColumnName>
+         <ColumnName>VISITU</ColumnName>
+      </Columns>
+      <Rules>
+         <Condition>NOTNULL</Condition><!-- VISIT unit cannot have missing 
+            values if the corresponding VISIT value is provided. -->
+      </Rules>
+   </FieldSets>
+   <FieldSets LogLevel="error">
+      <Columns>
+         <ColumnName>PERIOD</ColumnName>
+         <ColumnName>VISITU</ColumnName>
+      </Columns>
+      <Rules>
+         <Condition>NOTNULL</Condition><!-- VISIT unit cannot have missing 
+            values if the corresponding PERIOD value is provided. -->
+      </Rules>
+   </FieldSets>
+    <FieldSets  LogLevel="warning">
+		<Columns>
+			<ColumnName>PKADT</ColumnName>
+			<ColumnName>DRGDATE</ColumnName>
+		</Columns>
+		<Rules>
+			<Condition>{PKADT}>={DRGDATE}</Condition><!--date of sample collection should (warning/not error) be following or same date as dosing-->
+		</Rules>
+	</FieldSets>
+   <SDEIDSets LogLevel="error">
+      <ColumnName>STUDY</ColumnName>
+      <ColumnName>SITEID</ColumnName>
+      <ColumnName>SUBJID</ColumnName>
+      <ColumnName>RAND</ColumnName>
+      <ColumnName>PKCOLL</ColumnName>
+      <ColumnName>PKBDFLD</ColumnName>
+      <ColumnName>PKTERM</ColumnName>
+      <ColumnName>PERIODU</ColumnName>
+      <ColumnName>PERIOD</ColumnName>
+      <ColumnName>VISITU</ColumnName>
+      <ColumnName>VISIT</ColumnName>
+      <ColumnName>PHASE</ColumnName>
+   </SDEIDSets>
+   <UniqueSets>
+   	<Unique Scope ="FILE" LogLevel="warning">	
+   		<Columns>
+   			<ColumnName>STUDY</ColumnName>
+   		</Columns>
+   	</Unique>
+   	<Unique Scope ="SDEID" LogLevel="warning">	
+   		<Columns>
+   			<ColumnName>PKPTMR</ColumnName>
+   		</Columns>
+   	</Unique>
+   </UniqueSets>
+   <DuplicateRecords LogLevel="error"> <!-- combination of ColumnNames values cannot be duplicated -->
+	  <ColumnName>STUDY</ColumnName>
+	  <ColumnName>SITEID</ColumnName>
+	  <ColumnName>SUBJID</ColumnName>
+	  <ColumnName>RAND</ColumnName>
+	  <ColumnName>PKCOLL</ColumnName>
+	  <ColumnName>PKBDFLD</ColumnName>
+	  <ColumnName>PKTERM</ColumnName>
+	  <ColumnName>PERIODU</ColumnName>
+	  <ColumnName>PERIOD</ColumnName>
+	  <ColumnName>VISITU</ColumnName>
+	  <ColumnName>VISIT</ColumnName>
+	  <ColumnName>PHASE</ColumnName>
+	</DuplicateRecords>
+   <FileLevelRules LogLevel="error" RuleType="UNIQUE">
+     <Columns>
+         <ColumnName>PKUSMID</ColumnName>
+      </Columns>
+   </FileLevelRules>
+   <ExtraneousColumns LogLevel="info"></ExtraneousColumns>
+   <EmptyLines LogLevel="info"></EmptyLines>
+   <ColumnOrdering>false</ColumnOrdering>
+</FieldDefinitions>

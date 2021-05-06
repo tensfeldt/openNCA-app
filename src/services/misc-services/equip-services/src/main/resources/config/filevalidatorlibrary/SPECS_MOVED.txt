@@ -1,0 +1,2 @@
+Specs were moved to the equip system scripts repo:
+svn checkout --username change_to_your_username https://pfizer.collab.net/svn/repos/equipsystemscripts

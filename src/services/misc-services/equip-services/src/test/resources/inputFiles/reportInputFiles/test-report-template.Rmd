@@ -1,0 +1,13 @@
+---
+output: pdf_document
+params:
+    INPUT1: "reporting-item1.txt"
+    TEST: "test"
+---
+The following is a reporting item embedded into this report using rmakrdown parameters:
+
+\begin{center}
+\includegraphics[width=8in]{`r params$INPUT1`}
+\end{center}
+
+This text is from the report definition.

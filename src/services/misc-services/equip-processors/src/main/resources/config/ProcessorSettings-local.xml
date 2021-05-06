@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<processor-settings>
+   <processors>
+   	 <processor name="Event Processor" autoStart="false"
+         class="com.pfizer.equip.processors.impl.EventProcessor"
+         description="Processes Events from the Event Message Queue">
+         <properties />
+         <cron-expressions />
+        <intervals>
+            <interval seconds="600" days="1,2,3,4,5,6,7" start="00:00"
+               end="23:59" />
+         </intervals>
+      </processor>
+      <processor name="Notification Processor" autoStart="false"
+         class="com.pfizer.equip.processors.impl.NotificationProcessor"
+         description="Processes Notifications from the Notification Message Queue">
+         <properties />
+         <cron-expressions />
+        <intervals>
+            <interval seconds="600" days="1,2,3,4,5,6,7" start="00:00"
+               end="23:59" />
+         </intervals>
+      </processor>
+      <processor name="Realtime Email Processor" autoStart="false"
+         class="com.pfizer.equip.processors.impl.RealtimeEmailProcessor"
+         description="Processes Realtime Notifications">
+         <properties />
+         <cron-expressions />
+        <intervals>
+            <interval seconds="600" days="1,2,3,4,5,6,7" start="00:00"
+               end="23:59" />
+         </intervals>
+      </processor>
+      <processor name="Daily Email Processor" autoStart="false"
+         class="com.pfizer.equip.processors.impl.DailyEmailProcessor"
+         description="Processes Daily Email Notifications">
+         <properties />
+         <cron-expressions>
+         <!-- Every day at 3 PM -->
+         	<cron-expression>0 0 15 * * ?</cron-expression>
+         </cron-expressions>
+         <intervals />
+      </processor>
+       <processor name="Weekly Email Processor" autoStart="false"
+         class="com.pfizer.equip.processors.impl.WeeklyEmailProcessor"
+         description="Processes Weekly Email Notifications">
+         <properties />
+         <cron-expressions>
+         <!-- Every Friday at 3 PM -->
+         	<cron-expression>0 0 15 ? * 6</cron-expression>
+         </cron-expressions>
+         <intervals />
+      </processor>
+      <processor name="Operational Metadata Processor" autoStart="false"
+         class="com.pfizer.equip.processors.impl.OperationalMetadataProcessor"
+         description="Processes Operational Metadata ETL Job">
+         <properties />
+         <cron-expressions>
+          <!-- Every day at 8 PM -->
+             <cron-expression>0 0 20 * * ?</cron-expression>
+         </cron-expressions>
+         <intervals />
+      </processor>
+      <processor name="Study Blinding Status Processor" autoStart="true"
+         class="com.pfizer.equip.processors.impl.StudyBlindingStatusProcessor"
+         description="Processes Study Blinding Status Updates Job">
+         <properties />
+         <cron-expressions>
+          <!-- Every day at 8 PM -->
+             <cron-expression>0 0 20 * * ?</cron-expression>
+         </cron-expressions>
+         <intervals />
+      </processor>
+   </processors>
+
+
+   <holidays>
+      <holiday month="12" day="25" />
+   </holidays>
+</processor-settings>

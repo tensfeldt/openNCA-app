@@ -1,0 +1,12 @@
+[# th:block th:if="${event.entityType == 'artifact'}"]
+Link: PLACEHOLDER.
+Artifact Id: [[${event.entityId}]].
+[/]
+Notification generation date/time: [[${notification_timestamp}]].
+Event generation date/time: [[${event_timestamp}]].
+Event description: [[${event.eventType.eventDescription}]].
+Comments: [[${comments}]].
+System generated: [[${system_initiated}]].
+[# th:block th:if="${system_initiated == 'false'}"]
+User name: [[${user_name}]].
+[/]

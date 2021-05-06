@@ -1,0 +1,25 @@
+<div>
+  <table id="ControlPanel">
+    <tr>
+      <th>Service Name</th>
+      <th style="width: 14em">Status</th>
+      <th style="width: 11em">Controls</th>
+      <th>Description</th>
+    </tr>
+    <tr *ngFor="let processor of processorStates; trackBy: trackByFn">
+      <td>{{processor.name}}</td>
+      <td>{{processor.statusDescription}}</td>
+      <td>
+          <span class="SubmitButton" (click)="start(processor.name)" *ngIf="processor.status == 'OFF'">Turn On</span>
+          <span class="SubmitButton" (click)="runNow(processor.name)" *ngIf="processor.status == 'OFF'">Run Now</span>
+          <span class="SubmitButton" (click)="stop(processor.name)" *ngIf="processor.status != 'OFF'">Turn Off</span>
+      </td>
+      <td>{{processor.description}}</td>
+    </tr>
+  </table>
+
+  <div id="RefreshDiv">
+    <img src="assets/images/arrow2.gif">&nbsp;<span class="SubmitButton" (click)='refresh()'>Refresh</span>
+  </div>
+</div>
+

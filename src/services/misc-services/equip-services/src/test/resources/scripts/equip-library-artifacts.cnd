@@ -1,0 +1,60 @@
+<equipLibrary = 'https://www.pfizer.com/equip/library'>
+<nt = 'http://www.jcp.org/jcr/nt/1.0'>
+<mix = 'http://www.jcp.org/jcr/mix/1.0'>
+<jcr = 'http://www.jcp.org/jcr/1.0'>
+
+[equipLibrary:baseFolder] > nt:folder
+	- equipLibrary:deleted (BOOLEAN) = 'false' autocreated COPY
+
+[equipLibrary:baseArtifact] > nt:resource, nt:hierarchyNode, mix:versionable abstract
+    - equipLibrary:name (STRING) COPY
+    - equipLibrary:description (STRING) COPY
+    - equipLibrary:customTags (STRING) MULTIPLE COPY
+    - equipLibrary:created (DATE) COPY
+    - equipLibrary:createdBy (STRING) COPY
+    - equipLibrary:comments (STRING) COPY
+	- equipLibrary:deleted (BOOLEAN) = 'false' autocreated COPY
+
+[equipLibrary:kvp] query
+    - equipLibrary:key (STRING) COPY mandatory
+    - equipLibrary:value (UNDEFINED) COPY
+
+[equipLibrary:attachment] > equipLibrary:baseArtifact
+    - equipLibrary:parentType (STRING) COPY
+    - equipLibrary:parentKey (STRING) COPY
+
+[equipLibrary:script] > equipLibrary:baseArtifact
+
+[equipLibrary:specification] > equipLibrary:baseArtifact
+	- equipLibrary:specificationType (STRING) COPY mandatory
+	- equipLibrary:specificationVersion (STRING) COPY mandatory
+
+[equipLibrary:savedSearch] > equipLibrary:baseArtifact
+    - equipLibrary:type (STRING) COPY
+
+[equipLibrary:savedSearchResults] > equipLibrary:baseArtifact
+    - equipLibrary:type (STRING) COPY
+
+[equipLibrary:reportingItem] > equipLibrary:baseArtifact
+    - equipLibrary:type (STRING) COPY
+    - equipLibrary:qcStatus (STRING) COPY
+    - equipLibrary:reportingItemTemplateId (REFERENCE) COPY
+    - equipLibrary:sourceEntityId (REFERENCE) COPY
+
+[equipLibrary:reportingItemTemplate] > equipLibrary:baseArtifact
+    - equipLibrary:studyDesign (STRING) COPY
+    - equipLibrary:fileNameFormat (STRING) COPY
+    - equipLibrary:dataFrames (STRING) MULTIPLE COPY
+    - equipLibrary:scripts (REFERENCE) MULTIPLE COPY
+
+[equipLibrary:reportTemplate] > equipLibrary:baseArtifact
+	+ equipLibrary:parameters (equipLibrary:kvp) COPY SNS
+    - equipLibrary:studyDesign (STRING) COPY
+    - equipLibrary:defaultOutputFiletype (STRING) COPY
+    - equipLibrary:reportingItems (REFERENCE) MULTIPLE COPY
+    - equipLibrary:summary (STRING) COPY
+
+[equipLibrary:subsetTemplate] > equipLibrary:baseArtifact
+
+[equipLibrary:report] > equipLibrary:baseArtifact 
+    - equipLibrary:reportTemplateId (REFERENCE) COPY
