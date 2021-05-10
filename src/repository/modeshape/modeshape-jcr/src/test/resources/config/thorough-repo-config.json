@@ -1,0 +1,117 @@
+{
+    "name" : "Thorough",
+    "monitoring" : {
+        "enabled" : true,
+    },
+    "lockTimeoutMillis" : 100,
+    "eventBusSize" : 2048,
+    "workspaces" : {
+        "predefined" : ["otherWorkspace"],
+        "default" : "default",
+        "allowCreation" : true,
+        "initialContent" : {
+            "ws1" : "file1.xml",
+            "ws2" : "file2.xml",
+            "*" : "default.xml"
+        },
+        "cacheSize" : 100
+    },
+    "storage" : {
+        "persistence" : {
+            "type": "db",
+            "connectionUrl" : "test",
+            "driver" : "test",
+            "username" : "test",
+            "password" : "",
+            "dataSourceJndiName" : "test",
+            "tableName" : "test",
+            "createOnStart" : true,
+            "dropOnExit" : false,
+            "fetchSize" : 1000,
+            "compress" : false
+        },
+        "transactionManagerLookup" : {
+            "name" : "org.modeshape.jcr.txn.DefaultTransactionManagerLookup",
+            "classloader" : "some_path"
+        },
+        "binaryStorage" : {
+            "type" : "file",
+            "directory" : "Thorough/binaries",    
+            "trash" : "Thorough/trash",
+            "minimumBinarySizeInBytes" : 4096,
+            "minimumStringSize" : 8096,
+            "mimeTypeDetection" : "none"
+        }
+    },
+    "security" : {
+        "anonymous" : {
+            "username" : "<anonymous>",
+            "roles" : ["readonly","readwrite","admin"],
+            "useOnFailedLogin" : false
+        },
+        "providers" : [
+            {
+                "name" : "My Custom Security Provider",
+                "classname" : "com.example.MyAuthenticationProvider",
+            },
+            {
+                "classname" : "jaas",
+                "policyName" : "modeshape-jcr",
+            }
+        ]
+    },
+    "indexes": {
+        "primaryTypes" : {
+            "provider" : "files",
+            "kind" : "ENUMERATED",
+            "nodeType" : "nt:base",
+            "description" : "Index for quickly identifying nodes by node type",
+            "columns" : "jcr:primaryType(STRING)"
+        },
+        "fileMimeTypes" : {
+            "provider" : "files",
+            "nodeType" : "nt:resource",
+            "columns" : "jcr:mimeType(STRING)"
+        }
+    },
+    "indexProviders" : {
+        "files" : {
+            "classname" : "org.modeshape.index.provider.FileBasedIndexProvider",
+            "directory" : "/a/b/c/foo",
+        }
+    },
+    "textExtraction": {
+        "threadPool" : "test",
+        "maxPoolSize" : 10,
+            "extractors" : {
+                "customExtractor": {
+                    "name" : "MyFileType extractor",
+                    "classname" : "com.example.myfile.MyExtractor",
+                },
+                "tikaExtractor":{
+                    "name" : "General content-based extractor",
+                    "classname" : "tika",
+                }
+        }
+    },
+    "sequencing" : {
+        "threadPool" : "modeshape-workers",
+        "maxPoolSize" : 100,
+        "sequencers" : {
+            "zipSequencer" : {
+                "classname" : "ZipSequencer",
+                "pathExpressions" : ["default:/files(//)(*.zip[*])/jcr:content[@jcr:data] => default:/sequenced/zip/$1"],
+            },
+            "delimitedTextSequencer" : {
+                "classname" : "org.modeshape.sequencer.text.DelimitedTextSequencer",
+                "pathExpressions" : [ 
+                    "default:/files//(*.csv[*])/jcr:content[@jcr:data] => default:/sequenced/text/delimited/$1"
+                ],
+                "splitPattern" : ","
+            }
+        }
+    },
+    "node-types" : ["file1.cnd", "file2.cnd"],
+    "journaling" : {
+    }
+}

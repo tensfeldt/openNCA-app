@@ -1,0 +1,258 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.modeshape</groupId>
+        <artifactId>modeshape-parent</artifactId>
+        <version>5.4.0.Final</version>
+        <relativePath>../../modeshape-parent/pom.xml</relativePath>
+    </parent>
+    <!-- The groupId and version values are inherited from parent  -->
+    <artifactId>modeshape-jbossas-kit-tests</artifactId>
+    <name>ModeShape for JBoss AS Distribution Kit Tests</name>
+    <description>Tests that use the distributed ModeShape subsystem for JBoss AS7</description>
+    <url>http://www.modeshape.org</url>
+    <properties>
+        <arquillian.suspend>n</arquillian.suspend>
+        <jboss.as.startup.timeout>240</jboss.as.startup.timeout>
+        <!--Force Ipv4 since that's how Arquillian starts -->
+        <preferIpv4>true</preferIpv4>
+        <preferIpv6>false</preferIpv6>
+    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <!--
+                Wildfly BOM
+             -->
+            <dependency>
+                <groupId>org.wildfly.bom</groupId>
+                <artifactId>wildfly-javaee7-with-tools</artifactId>
+                <version>${version.org.wildfly}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <!--
+      Define the dependencies. Note that all version and scopes default to
+      those defined in the dependencyManagement section of the parent pom.
+    -->
+    <dependencies>
+        <!-- Import the JCR API (and ModeShape's extension), we use provided scope as the API is included in JBoss AS 7 -->
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-jcr-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Import JUnit, Arquillian, and other artifacts used in the tests -->
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-depchain</artifactId>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.protocol</groupId>
+            <artifactId>arquillian-protocol-servlet</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.wildfly.arquillian</groupId>
+            <artifactId>wildfly-arquillian-container-managed</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <scope>test</scope>
+        </dependency>     
+        
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <resources>
+            <resource>
+                <filtering>false</filtering>
+                <directory>src/main/webapp</directory>
+                <includes>
+                    <include>*</include>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>*</include>
+                </includes>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </testResource>
+        </testResources>
+
+        <plugins>
+            <plugin>
+                <!-- Don't run regular unit tests, we'll run them as integration tests via failsafe...-->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <!-- Run the tests as integration tests-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <!-- Unpack the JBoss Server version which should be installed locally first into the 'target' directory -->
+                                <artifactItem>
+                                    <groupId>org.wildfly</groupId>
+                                    <artifactId>wildfly-dist</artifactId>
+                                    <version>${version.org.wildfly}</version>
+                                    <type>zip</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                </artifactItem>
+
+                                <!-- Unpack the ModeShape distribution which is installed (hopefully) locally-->
+                                <artifactItem>
+                                    <groupId>org.modeshape</groupId>
+                                    <artifactId>modeshape-distribution</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>${wf.dist.id}</classifier>
+                                    <type>zip</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/wildfly-${version.org.wildfly}</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--Copy & overwrite the default configuration to enable a simple login module (MODE-2242) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <skip>${skipTests}</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>overwrite-configuration</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/wildfly-${version.org.wildfly}</outputDirectory>
+                            <overwrite>true</overwrite>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources</directory>
+                                    <filtering>false</filtering>
+                                    <includes>
+                                        <include>standalone/**</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- 
+               Use the JBOSS AS plugin to fire up the server and run the CLI scripts which install the ModeShape DV kit
+           -->
+            <plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-maven-plugin</artifactId>
+                <configuration>
+                    <jbossHome>${project.build.directory}/wildfly-${version.org.wildfly}</jbossHome>
+                    <serverConfig>standalone-modeshape.xml</serverConfig>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>prepare-server</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>start</goal>
+                            <goal>execute-commands</goal>
+                        </goals>
+                        <configuration>
+                            <execute-commands>
+                                <scripts>
+                                    <!-- run a script to overwrite some default security values for testing -->
+                                    <script>src/test/resources/ModeShape-standalone.cli</script>
+                                </scripts>
+                            </execute-commands>
+                        </configuration>
+                    </execution>
+                    <!-- stop the server after configuring it, so that Arquillian can start it up later -->
+                    <execution>
+                        <id>stop-server</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>shutdown</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- 
+             Makes no sense to deploy this during a release
+            -->  
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

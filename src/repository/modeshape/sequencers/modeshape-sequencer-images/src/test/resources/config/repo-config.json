@@ -1,0 +1,17 @@
+{
+    "name" : "ImageSequencer Test Repository",
+    "sequencing" : {
+        "maxPoolSize" : 4,
+        "threadPool" : "test-sequencer",
+        "sequencers" : {
+            "Images in separate location" : {
+                "classname" : "ImageSequencer",
+                "pathExpression" : "default://(*.(gif|png|pict|jpg|tiff|tif))/jcr:content[@jcr:data] => default:/sequenced/images"
+            },
+            "Images in the same location" : {
+                "classname" : "org.modeshape.sequencer.image.ImageMetadataSequencer",
+                "pathExpressions" : [ "default://(*.(gif|png|pict|jpg))/jcr:content[@jcr:data]" ]
+            }
+        }
+    }
+}

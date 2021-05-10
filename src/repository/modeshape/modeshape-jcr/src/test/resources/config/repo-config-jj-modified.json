@@ -1,0 +1,19 @@
+{
+    "name": "JJ modified repository",
+    "storage": {
+        "persistence" : {
+            "type" : "file",
+            "path": "target/persistent_repository"
+        },
+        "binaryStorage": {
+            "type": "file",
+            "directory": "target/persistent_repository/binaries",
+            "minimumBinarySizeInBytes": 40
+        }
+    },
+    "workspaces": {
+        "default": "default",
+        "allowCreation": true
+    },
+    "node-types": ["cnd/jj_modified.cnd"]
+}

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.  
+-->
+<web-app version="3.0"
+    xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+
+    <display-name>OpenCMIS Server</display-name>
+
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+    <listener>
+        <listener-class>org.modeshape.web.jcr.ModeShapeJcrDeployer</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.apache.chemistry.opencmis.server.impl.CmisRepositoryContextListener</listener-class>
+    </listener>
+
+    <context-param>
+        <param-name>org.modeshape.jcr.URL</param-name>
+        <param-value>file:/repo-config.json</param-value>
+    </context-param>
+    
+    <servlet>
+        <servlet-name>cmisws10</servlet-name>
+        <servlet-class>org.apache.chemistry.opencmis.server.async.impl.webservices.AsyncCmisWebServicesServlet</servlet-class>
+        <init-param>
+            <description>CMIS version of this endpoint</description>
+            <param-name>cmisVersion</param-name>
+            <param-value>1.0</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+        <async-supported>true</async-supported>
+    </servlet>
+
+    <servlet>
+        <servlet-name>cmisws11</servlet-name>
+        <servlet-class>org.apache.chemistry.opencmis.server.async.impl.webservices.AsyncCmisWebServicesServlet</servlet-class>
+        <init-param>
+            <description>CMIS version of this endpoint</description>
+            <param-name>cmisVersion</param-name>
+            <param-value>1.1</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+        <async-supported>true</async-supported>
+    </servlet>
+
+    <servlet>
+        <servlet-name>cmisatom10</servlet-name>
+        <servlet-class>org.apache.chemistry.opencmis.server.async.impl.atompub.AsyncCmisAtomPubServlet</servlet-class>
+        <init-param>
+            <param-name>callContextHandler</param-name>
+            <param-value>org.apache.chemistry.opencmis.server.shared.BasicAuthCallContextHandler</param-value>
+        </init-param>
+        <init-param>
+            <description>CMIS version of this endpoint</description>
+            <param-name>cmisVersion</param-name>
+            <param-value>1.0</param-value>
+        </init-param>
+        <load-on-startup>2</load-on-startup>
+        <async-supported>true</async-supported>
+    </servlet>
+
+    <servlet>
+        <servlet-name>cmisatom11</servlet-name>
+        <servlet-class>org.apache.chemistry.opencmis.server.async.impl.atompub.AsyncCmisAtomPubServlet</servlet-class>
+        <init-param>
+            <param-name>callContextHandler</param-name>
+            <param-value>org.apache.chemistry.opencmis.server.shared.BasicAuthCallContextHandler</param-value>
+        </init-param>
+        <init-param>
+            <description>CMIS version of this endpoint</description>
+            <param-name>cmisVersion</param-name>
+            <param-value>1.1</param-value>
+        </init-param>
+        <load-on-startup>2</load-on-startup>
+        <async-supported>true</async-supported>
+    </servlet>
+
+    <servlet>
+        <servlet-name>cmisbrowser</servlet-name>
+        <servlet-class>org.apache.chemistry.opencmis.server.async.impl.browser.AsyncCmisBrowserBindingServlet</servlet-class>
+        <init-param>
+            <param-name>callContextHandler</param-name>
+            <param-value>org.apache.chemistry.opencmis.server.impl.browser.token.TokenCallContextHandler</param-value>
+        </init-param>
+        <load-on-startup>2</load-on-startup>
+        <async-supported>true</async-supported>
+    </servlet>
+
+    <servlet>
+        <servlet-name>cmisendpoints</servlet-name>
+        <servlet-class>org.apache.chemistry.opencmis.server.impl.endpoints.SimpleCmisEndpointsDocumentServlet</servlet-class>
+        <init-param>
+            <param-name>template</param-name>
+            <param-value>/WEB-INF/cmis-endpoints.json</param-value>
+        </init-param>
+        <load-on-startup>3</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>cmisws10</servlet-name>
+        <url-pattern>/services/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>cmisws11</servlet-name>
+        <url-pattern>/services11/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>cmisatom10</servlet-name>
+        <url-pattern>/atom/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>cmisatom11</servlet-name>
+        <url-pattern>/atom11/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>cmisbrowser</servlet-name>
+        <url-pattern>/browser/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>cmisendpoints</servlet-name>
+        <url-pattern>/cmis-endpoints.json</url-pattern>
+    </servlet-mapping>
+
+    <session-config>
+        <session-timeout>60</session-timeout>
+    </session-config>
+    <security-constraint>
+        <display-name>ModeShape CMIS</display-name>
+        <web-resource-collection>
+            <web-resource-name>CMIS</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <!--
+                   A user must be assigned this role to connect to this web application, in addition to needing the READONLY,
+                   READWRITE or ADMIN roles to actually connect to the repository, read or modify the data.
+                   This is not used internally, so another role could be substituted here.
+               -->
+            <role-name>connect</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <!--
+         Any auth-method will work for ModeShape.  BASIC is used this example for simplicity.
+      -->
+    <login-config>
+        <auth-method>BASIC</auth-method>
+    </login-config>
+
+    <!--
+         This must match the role-name in the auth-constraint above.
+      -->
+    <security-role>
+        <role-name>connect</role-name>
+    </security-role>
+</web-app>

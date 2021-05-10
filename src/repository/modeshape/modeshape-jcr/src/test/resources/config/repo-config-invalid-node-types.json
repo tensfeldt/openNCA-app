@@ -1,0 +1,9 @@
+{
+    "name" : "Repository with node types",
+    "workspaces" : {
+        "predefined" : ["ws1", "ws2"],
+        "default" : "default",
+        "allowCreation" : true
+    },
+    "node-types" : ["cnd/cars.cnd", "cnd/invalid.cnd", "cnd/aircraft.cnd"]
+}

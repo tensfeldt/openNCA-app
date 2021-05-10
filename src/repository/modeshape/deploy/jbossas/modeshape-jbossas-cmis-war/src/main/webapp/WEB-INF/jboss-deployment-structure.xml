@@ -1,0 +1,22 @@
+<jboss-deployment-structure>
+    <deployment>
+        <dependencies>
+            <!-- 
+               The following 2 dependencies are required for the WAR to run in Wildfly 9
+            -->
+            <module name="javax.jws.api"/>
+            <module name="javax.xml.ws.api"/>
+            <module name="javax.jcr"/>
+            <module name="org.modeshape.jcr.api" services="import"/>
+            <module name="org.modeshape.persistence.relational" services="import"/>
+            <module name="org.modeshape" services="import"/>
+        </dependencies>
+        <!--
+            The CMIS endpoints are not compatible with CXF, so we need to disable that when deploying in EAP
+            see https://issues.jboss.org/browse/MODE-2129
+        -->
+        <exclude-subsystems>
+            <subsystem name="webservices"/>
+        </exclude-subsystems>
+    </deployment>
+</jboss-deployment-structure>

@@ -1,0 +1,23 @@
+{
+    "name" : "Federated repository",
+    "workspaces" : {
+        "predefined" : ["ws1", "ws2"],
+        "default" : "default",
+        "allowCreation" : true,
+        "initialContent" : {
+            "default" : "xmlImport/docWithFederationRoot.xml",
+        }
+    },
+    "externalSources" : {
+        "targetDirectory" : {
+            "classname" : "filesystem",
+            "directoryPath" : "target",
+            "extraPropertiesStorage" : "json",
+            "projections" : [
+                "default:/federation/generated-sources => /generated-sources",
+                "default:/federation/surefire => /generated-surefire",
+                "default:/federation/classes => /classes"
+            ]
+        }
+    },
+}

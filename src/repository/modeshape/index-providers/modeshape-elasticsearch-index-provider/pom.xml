@@ -1,0 +1,44 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.modeshape</groupId>
+        <artifactId>modeshape-index-providers</artifactId>
+        <version>5.4.0.Final</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <!-- The groupId and version values are inherited from parent -->
+    <artifactId>modeshape-elasticsearch-index-provider</artifactId>
+    <packaging>jar</packaging>
+    <name>ModeShape Elasticsearch Index Provider</name>
+    <description>ModeShape index provider that uses Elasticsearch engine</description>
+    <url>http://www.modeshape.org</url>
+    <properties>
+        <!--Overwrite the default version because this version of ES uses an older Lucene version -->
+        <version.org.apache.lucene>5.3.1</version.org.apache.lucene>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <scope>test</scope>
+        </dependency>  
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <scope>test</scope>
+        </dependency>                
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-schematic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+        </dependency>
+    </dependencies>      
+</project>

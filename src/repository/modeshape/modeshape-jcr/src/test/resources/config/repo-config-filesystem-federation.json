@@ -1,0 +1,94 @@
+{
+    "name" : "Federated repository",
+    "workspaces" : {
+        "predefined" : ["ws1", "ws2"],
+        "default" : "default",
+        "allowCreation" : true
+    },
+    "externalSources" : {
+        "readonly-files" : {
+            "classname" : "org.modeshape.connector.filesystem.FileSystemConnector",
+            "directoryPath" : "target/federation/files-read",
+            "readonly" : true,
+            "exposeAsWorkspace" : "readonly-fls"
+        },
+        "readonly-files-with-exclusion" : {
+            "classname" : "org.modeshape.connector.filesystem.FileSystemConnector",
+            "directoryPath" : "target/federation/files-read-exclusion",
+            "readonly" : true,
+            "exclusionPattern" : "simple.*"
+        },
+        "readonly-files-with-inclusion" : {
+            "classname" : "org.modeshape.connector.filesystem.FileSystemConnector",
+            "directoryPath" : "target/federation/files-read-inclusion",
+            "readonly" : true,
+            "inclusionPattern" : "files-read-inclusion|dir3|simple.*"
+        },
+        "mutable-files-store" : {
+            "classname" : "filesystem",
+            "directoryPath" : "target/federation/files-store"
+        },
+        "mutable-files-json" : {
+            "classname" : "filesystem",
+            "directoryPath" : "target/federation/files-json",
+            "extraPropertiesStorage" : "json"
+        },
+        "mutable-files-legacy" : {
+            "classname" : "filesystem",
+            "directoryPath" : "target/federation/files-legacy",
+            "extraPropertiesStorage" : "legacy"
+        },
+        "mutable-files-none" : {
+            "classname" : "filesystem",
+            "directoryPath" : "target/federation/files-none",
+            "extraPropertiesStorage" : "none"
+        } ,
+        "paged-files" : {
+            "classname" : "filesystem",
+            "directoryPath" : "target/federation/paged-files",
+            "extraPropertiesStorage" : "none",
+            "pageSize" : 2
+        } ,
+        "large-files" : {
+            "classname" : "org.modeshape.connector.filesystem.LargeFileSystemConnector",
+            "directoryPath" : "target/federation/large-files",
+            "extraPropertiesStorage" : "none",
+            "contentBasedSha1" : "false"
+        } ,
+        "large-files-default" : {
+            "classname" : "org.modeshape.connector.filesystem.LargeFileSystemConnector",
+            "directoryPath" : "target/federation/large-files-default",
+            "extraPropertiesStorage" : "none"
+        } ,
+        "targetDirectory" : {
+            "classname" : "filesystem",
+            "directoryPath" : "target/classes",
+            "extraPropertiesStorage" : "json",
+            "projections" : [
+                "default:/fs => /"
+            ]
+        },
+        "monitoring" : {
+            "classname" : "filesystem",
+            "directoryPath" : "target/federation/monitoring",
+            "enableEvents" : true
+        },
+        "json-filter" : {
+            "classname" : "filesystem",
+            "directoryPath" : "target/federation/files-json-filter",
+            "projections" : [ "default:/json_filter => /" ],
+            "enableEvents" : true,
+            "cacheable" : false,
+            "inclusionPattern" : "dir3|.+[.]json$"
+        }
+    },
+    "sequencing" : {
+        //configure a sequencer from the modeshape-jcr package to test in conjunction with event notifications
+        "sequencers" : {
+            "CND Sequencer" : {
+                "classname" : "CNDSequencer",
+                "pathExpression" : "default://testRoot/monitoring/(*.cnd)/jcr:content[@jcr:data] => default://testRoot/sequenced"
+            }
+        }
+    }
+}

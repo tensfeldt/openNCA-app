@@ -1,0 +1,24 @@
+{
+    "name" : "Federated repository",
+    "workspaces" : {
+        "predefined" : ["ws1", "ws2"],
+        "default" : "default",
+        "allowCreation" : true
+    },
+    "externalSources" : {
+        "mock-source" : {
+            "classname" : "org.modeshape.connector.mock.MockConnector",
+            "cacheable" : false
+        },
+        "mock-source-non-queryable" : {
+            "classname" : "org.modeshape.connector.mock.MockConnector",
+            "cacheable" : false,
+            "queryable" : false
+        },
+        "mock-source-readonly" : {
+            "classname" : "org.modeshape.connector.mock.MockConnector",
+            "cacheable" : false,
+            "readonly" : true
+        }
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "name" : "XML Sequencer Test Repository",
+    "sequencing" : {
+        "sequencers" : {
+            "XML sequencer" : {
+                "classname" : "xmlsequencer",
+                "pathExpressions" : [ "default:/(*.xml)/jcr:content[@jcr:data] => /xml" ]
+            },
+            "Inheriting XML sequencer" : {
+                "classname" : "org.modeshape.sequencer.xml.InheritingXmlSequencer",
+                "pathExpressions" : [ "default:/(*.xsd)/jcr:content[@jcr:data] => /xml" ]
+            }
+        }
+    }
+}

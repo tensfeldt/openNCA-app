@@ -1,0 +1,113 @@
+/*
+ * ModeShape (http://www.modeshape.org)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
+//------------------------------------------------------------------------------
+// N A M E S P A C E S
+//------------------------------------------------------------------------------
+<jcr='http://www.jcp.org/jcr/1.0'>
+<nt='http://www.jcp.org/jcr/nt/1.0'>
+<mix='http://www.jcp.org/jcr/mix/1.0'>
+<git='http://www.modeshape.org/git/1.0'>
+
+
+//------------------------------------------------------------------------------
+// N O D E T Y P E S
+//------------------------------------------------------------------------------
+
+[git:referenceable] > mix:referenceable mixin
+- git:objectId (string) mandatory protected
+
+[git:navigable] mixin
+- git:tree (reference) mandatory protected < 'git:folder' 
+
+[git:historical] mixin
+- git:history (reference) mandatory protected < 'git:commit' 
+
+[git:detailed] mixin
+- git:detail (reference) mandatory protected < 'git:detailedCommit' 
+
+// Represents a branch or tag or commit ...
+[git:reference] > git:referenceable, git:navigable, git:historical, git:detailed abstract
+
+[git:committed] > git:referenceable mixin
+- git:author (string) mandatory protected
+- git:committer (string) mandatory protected
+- git:committed (date) mandatory protected
+- git:title (string) mandatory protected
+
+[git:root] primaryitem tree // the 'tree' subgraph is considered primary
++ tree (git:trees) abort protected
++ branches (git:branches) abort protected
++ tags (git:tags) abort protected
++ commits (git:commits) abort protected
++ commit (git:details) abort protected
+
+//------------------------------------------------------------------------------
+// The content with the branch and tag information
+//------------------------------------------------------------------------------
+
+[git:branches] primaryitem master // the 'master' branch is considered primary if it exists
++ master (git:branch) abort protected
++ * (git:branch) abort protected
+
+[git:branch] > git:reference
+
+[git:tags]
++ * (git:tag) abort protected
+
+[git:tag] > git:reference
+
+//------------------------------------------------------------------------------
+// The content with the history information about a particular branch/tag/commit
+//------------------------------------------------------------------------------
+
+[git:commits]
++ * (git:object) = git:object abort protected
+
+[git:object]
++ * (git:commit) = git:commit abort protected
+
+[git:commit] > git:committed, git:navigable, git:detailed
+
+//------------------------------------------------------------------------------
+// The content showing the details of each commit
+//------------------------------------------------------------------------------
+
+[git:details]
++ * (git:detailedCommit) abort protected
+
+[git:detailedCommit] > git:commit
+- git:message (string) mandatory protected
+- git:parents (reference) multiple mandatory protected < 'git:detailedCommit' 
+- git:diff (string) mandatory protected
+
+//------------------------------------------------------------------------------
+// The content with the folder and file structure of a particular object
+//------------------------------------------------------------------------------
+
+[git:trees] primaryitem master // the 'master' tree is considered primary if it exists
++ master (git:folder) abort protected
++ * (git:folder) abort protected
+
+[git:folder] > nt:folder, git:committed, git:historical, git:detailed
++ * (nt:hierarchyNode,git:committed)
+
+[git:file] > nt:file, git:committed
+
+[git:resource] > nt:resource, git:committed
+
+
+

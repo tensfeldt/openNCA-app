@@ -1,0 +1,25 @@
+{
+    "name" : "DB Repository",
+    "storage" : {
+        "persistence" : {
+            "type" : "db",
+            "connectionUrl": "${database.url}",
+            "driver": "${database.driver}",
+            "username": "${database.username}",
+            "password": "${database.password}",
+            "createOnStart": true,
+            "dropOnExit": false
+        },
+        "binaryStorage" : {
+            "type"  : "database",
+            "driverClass" : "${database.driver}",
+            "url" : "${database.url}",
+            "username" : "${database.username}",
+            "password" : "${database.password}"
+        }
+    },
+    "workspaces" : {
+        "default" : "default",
+        "allowCreation" : true
+    }
+}

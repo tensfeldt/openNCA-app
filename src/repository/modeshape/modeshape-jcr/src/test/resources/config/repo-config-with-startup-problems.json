@@ -1,0 +1,29 @@
+{
+    "name" : "Test Repository",
+    "jndiName" : "",
+    "monitoring" : {
+        "enabled" : true
+    },
+    "workspaces" : {
+        "predefined" : ["otherWorkspace"],
+        "default" : "default",
+        "allowCreation" : true
+    },
+    "security" : {
+        "anonymous" : {
+            "roles" : ["readonly","readwrite","admin"],
+            "useOnFailedLogin" : false
+        }
+    },
+    "sequencing": {
+        "sequencers": {
+            "Invalid sequencer": {
+                "classname": "invalid.class",
+                "pathExpressions": [
+                    "default://(*.cnd)/jcr:content[@jcr:data]"
+                ]
+            }
+        }
+    },
+    "node-types" : ["cnd/invalid.cnd"]
+}

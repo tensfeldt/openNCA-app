@@ -1,0 +1,173 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.modeshape.bom</groupId>
+    <artifactId>modeshape-bom-jbossas</artifactId>
+    <version>5.4.0.Final</version>
+
+    <name>ModeShape BOM for use within a JBoss App Server</name>
+
+    <url>http://www.modeshape.org</url>
+    <packaging>pom</packaging>
+    <description>ModeShape and JBoss AS usage Bill of Material (BOM)</description>
+    <inceptionYear>2008</inceptionYear>
+
+    <organization>
+        <name>JBoss, by Red Hat</name>
+        <url>http://www.jboss.org</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>Apache Software License 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git://github.com/ModeShape/modeshape.git</connection>
+        <developerConnection>scm:git:git@github.com:ModeShape/modeshape.git</developerConnection>
+        <url>http://github.com/ModeShape/modeshape</url>
+    </scm>
+
+    <issueManagement>
+        <system>jira</system>
+        <url>http://issues.jboss.org/browse/MODE</url>
+    </issueManagement>
+
+    <developers>
+        <developer>
+            <id>modeshape.org</id>
+            <name>ModeShape Community</name>
+            <organization>modeshape.org</organization>
+            <organizationUrl>http://modeshape.org</organizationUrl>
+        </developer>
+    </developers>
+
+    <properties>
+        <!-- ***************** -->
+        <!-- Repository Deployment URLs -->
+        <!-- ***************** -->
+        <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
+        <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
+
+        <version.javax.jcr>2.0</version.javax.jcr>
+        <version.org.wildfly>10.1.0.Final</version.org.wildfly>
+        <version.org.jboss.spec.jboss-javaee-7.0>1.0.3.Final</version.org.jboss.spec.jboss-javaee-7.0>
+        <version.org.mongodb.mongo-java-driver>2.14.0</version.org.mongodb.mongo-java-driver>
+        <version.com.datastax.cassandra>2.0.0-rc2</version.com.datastax.cassandra>
+        <version.com.amazonaws>1.11.24</version.com.amazonaws>
+    </properties>
+
+    <!--
+         This section defines the default dependency settings inherited by
+         child projects. Note that this section does not add dependencies, but
+         rather provide default settings.
+     -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- All dependencies should be 'provided' since they are already installed in the server. -->
+
+            <!-- ModeShape public API -->
+            <dependency>
+                <groupId>org.modeshape</groupId>
+                <artifactId>modeshape-jcr-api</artifactId>
+                <version>${project.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.jcr</groupId>
+                <artifactId>jcr</artifactId>
+                <version>${version.javax.jcr}</version>
+                <scope>provided</scope>
+            </dependency>
+            <!--
+                Java EE 7
+            -->
+            <dependency>
+                <groupId>org.jboss.spec</groupId>
+                <artifactId>jboss-javaee-7.0</artifactId>
+                <version>${version.org.jboss.spec.jboss-javaee-7.0}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            
+            <!--
+              Wildfly BOMs
+            -->
+            <dependency>
+                <groupId>org.wildfly.bom</groupId>
+                <artifactId>wildfly-javaee7-with-tools</artifactId>
+                <version>${version.org.wildfly}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.wildfly.bom</groupId>
+                <artifactId>wildfly-javaee7</artifactId>
+                <version>${version.org.wildfly}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- MongoDB binary store -->
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongo-java-driver</artifactId>
+                <version>${version.org.mongodb.mongo-java-driver}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- Cassandra binary storage -->
+            <dependency>
+                <groupId>com.datastax.cassandra</groupId>
+                <artifactId>cassandra-driver-core</artifactId>
+                <version>${version.com.datastax.cassandra}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- Used for Amazon S3 binary storage -->
+            <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-java-sdk-core</artifactId>
+                <version>${version.com.amazonaws}</version>
+                <scope>provided</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-java-sdk-s3</artifactId>
+                <version>${version.com.amazonaws}</version>
+                <scope>provided</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <distributionManagement>
+      <repository>
+        <id>jboss-releases-repository</id>
+        <name>JBoss Releases Repository</name>
+        <url>${jboss.releases.repo.url}</url>
+      </repository>
+      <snapshotRepository>
+        <id>jboss-snapshots-repository</id>
+        <name>JBoss Snapshots Repository</name>
+        <url>${jboss.snapshots.repo.url}</url>
+      </snapshotRepository>
+    </distributionManagement>
+</project>

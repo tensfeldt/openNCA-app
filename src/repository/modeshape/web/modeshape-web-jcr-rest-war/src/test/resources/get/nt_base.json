@@ -1,0 +1,21 @@
+{
+    "self":"http://localhost:8090/resources/repo/default/items/jcr%3asystem/jcr%3anodeTypes/nt%3abase",
+    "up":"http://localhost:8090/resources/repo/default/items/jcr%3asystem/jcr%3anodeTypes",
+    "jcr:primaryType":"nt:nodeType",
+    "jcr:nodeTypeName":"nt:base",
+    "jcr:isAbstract":"true",
+    "jcr:hasOrderableChildNodes":"false",
+    "jcr:isQueryable":"true",
+    "jcr:isMixin":"false",
+    "children":{
+        "jcr:primaryType":{
+            "self":"http://localhost:8090/resources/repo/default/items/jcr%3asystem/jcr%3anodeTypes/nt%3abase/jcr%3aprimaryType",
+            "up":"http://localhost:8090/resources/repo/default/items/jcr%3asystem/jcr%3anodeTypes/nt%3abase"
+        },
+        "jcr:mixinTypes":{
+            "self":"http://localhost:8090/resources/repo/default/items/jcr%3asystem/jcr%3anodeTypes/nt%3abase/jcr%3amixinTypes",
+            "up":"http://localhost:8090/resources/repo/default/items/jcr%3asystem/jcr%3anodeTypes/nt%3abase"
+        }
+    }
+}
+

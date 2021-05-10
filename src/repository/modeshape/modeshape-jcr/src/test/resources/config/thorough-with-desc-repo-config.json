@@ -1,0 +1,100 @@
+{
+    "name" : "Thorough",
+    "description" : "This is a sample configuration that defines options with their defaults.",
+    "monitoring" : {
+        "enabled" : true,
+    },
+    "workspaces" : {
+        "description" : "The 'default' workspace is used by default, while 'otherWorkspace' will exist at startup.",
+        "predefined" : ["otherWorkspace"],
+        "default" : "default",
+        "allowCreation" : true,
+    },
+    "storage" : {
+        "description" : "Repository content will be stored the specified persistence section.",
+        "binaryStorage" : {
+            "description" : "Binary values (>=4096 bytes in size) will be stored on the file system at the relative path 'Thorough/binaries'. Smaller binaries will be stored with the referenced content.",
+            "type" : "file",
+            "directory" : "Thorough/binaries",
+            "minimumBinarySizeInBytes" : 4096
+        }
+    },
+    "security" : {
+        "description" : "Three providers are set up: the first is a custom provider, then JAAS, and finally anonymous",
+        "anonymous" : {
+            "description" : "Grants all roles to users with '<anonymous>' as username, but does not automatically authenticate any user that fails to authenticate via the other previous providers.",
+            "username" : "<anonymous>",
+            "roles" : ["readonly","readwrite","admin"],
+            "useOnFailedLogin" : false
+        },
+        "providers" : [
+            {
+                "name" : "My Custom Security Provider",
+                "classname" : "com.example.MyAuthenticationProvider",
+                "description" : "A custom security provider used for authentication and authorization."
+            },
+            {
+                "classname" : "JAAS",
+                "policyName" : "modeshape-jcr",
+                "description" : "JAAS should use the 'modeshape-jcr' policy.",
+            }
+        ]
+    },
+    "indexes": {
+        "primaryTypes" : {
+            "provider" : "files",
+            "kind" : "ENUMERATED",
+            "nodeType" : "nt:base",
+            "description" : "Index for quickly identifying nodes by node type",
+            "columns" : "jcr:primaryType(STRING)"
+        },
+        "fileMimeTypes" : {
+            "provider" : "files",
+            "nodeType" : "nt:resource",
+            "columns" : "jcr:mimeType(STRING)"
+        }
+    },
+    "indexProviders" : {
+        "files" : {
+            "description" : "More descriptions",
+            "classname" : "org.modeshape.index.provider.FileBasedIndexProvider",
+            "directory" : "/a/b/c/foo",
+        }
+    },
+    "reindexing" : {
+        "async" : false,
+        "mode" : "if_missing"
+    },
+    "textExtraction": {
+        "threadPool" : "test",
+            "extractors" : {
+                "customExtractor": {
+                    "description" : "More descriptions",
+                    "name" : "MyFileType extractor",
+                    "classname" : "com.example.myfile.MyExtractor",
+                },
+                "tikaExtractor":{
+                    "name" : "General content-based extractor",
+                    "classname" : "tika",
+                }
+        }
+    },
+    "sequencing" : {
+        "description" : "Define several sequencers to automatically analyze and extract structured content from files uploaded to the repository. If a file is updated, the content previously derived by the sequencer(s) will be removed before the newly-derived content is stored. Since sequencing is done asynchronously, specify that threads from the 'modeshape-workers' thread poool be used.",
+        "threadPool" : "modeshape-workers",
+        "sequencers" : {
+            "zipSequencer" : {
+                "classname" : "ZipSequencer",
+                "pathExpressions" : ["default:/files(//)(*.zip[*])/jcr:content[@jcr:data] => default:/sequenced/zip/$1"],
+            },
+            "delimitedTextSequencer" : {
+                "description" : "Extracts row and column information from CSV files uploaded under '/files', and stores the derived information under '/sequenced/text/delimited/...'. The ',' character should be used to delimit the different values in a row.",
+                "classname" : "org.modeshape.sequencer.text.DelimitedTextSequencer",
+                "pathExpressions" : [ 
+                    "default:/files//(*.csv[*])/jcr:content[@jcr:data] => default:/sequenced/text/delimited/$1"
+                ],
+                "splitPattern" : ","
+            }
+        }
+    }
+}

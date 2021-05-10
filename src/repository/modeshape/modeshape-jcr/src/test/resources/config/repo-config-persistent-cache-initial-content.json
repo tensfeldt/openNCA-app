@@ -1,0 +1,23 @@
+{
+    "name" : "Persistent Repository With Initial Content",
+    "storage" : {
+        "persistence" : {
+            "type" : "file",
+            "path": "target/persistent_repository/db"
+        }
+    },
+    "workspaces" : {
+        "predefined" : ["ws1"],
+        "default" : "default",
+        "allowCreation" : true,
+        "initialContent" : {
+            "ws1" : "xmlImport/docWithMixins.xml"
+        }
+    },
+    "security" : {
+        "anonymous" : {
+            "roles" : ["readonly","readwrite","admin"],
+            "useOnFailedLogin" : false
+        }
+    },
+}

@@ -1,0 +1,11 @@
+{
+    "name" : "ZIP Sequencer Test Repository",
+    "sequencing" : {
+        "sequencers" : {
+            "ZIP sequencer" :  {
+                "classname" : "zipsequencer",
+                "pathExpressions" : [ "default:/(*.zip)/jcr:content[@jcr:data] => /zip" ]
+            }
+        }
+    }
+}

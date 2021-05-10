@@ -1,0 +1,91 @@
+{
+    "name" : "Thorough",
+    "monitoring" : {
+        "enabled" : true,
+    },
+    "workspaces" : {
+        "predefined" : ["otherWorkspace"],
+        "default" : "default",
+        "allowCreation" : true,
+    },
+    "storage" : {
+        "persistence" : {
+            "type": "db",
+            "connectionUrl" : "test",
+            "driver" : "test",
+            "username" : "test",
+            "password" : "",
+            "dataSourceJndiName" : "test",
+            "tableName" : "test",
+            "createOnStart" : true,
+            "dropOnExit" : false,
+            "fetchSize" : 1000,
+            "compress" : false
+        },
+        "binaryStorage" : {
+            "type" : "file",
+            "directory" : "Thorough/binaries",
+            "minimumBinarySizeInBytes" : 4096
+        }
+    },
+    "security" : {
+        "anonymous" : {
+            "username" : "<anonymous>",
+            "roles" : ["readonly","readwrite","admin"],
+            "useOnFailedLogin" : false
+        },
+        "providers" : [
+            {
+                "name" : "My Custom Security Provider",
+                "classname" : "com.example.MyAuthenticationProvider",
+            },
+            {
+                "classname" : "jaas",
+                "policyName" : "modeshape-jcr",
+            }
+        ]
+    },
+    "indexes": {
+        "primaryTypes" : {
+            "provider" : "files",
+            "kind" : "ENUMERATED",
+            "nodeType" : "nt:base",
+            "description" : "Index for quickly identifying nodes by node type",
+            "columns" : "jcr:primaryType(STRING)"
+        },
+        "fileMimeTypes" : {
+            "provider" : "files",
+            "nodeType" : "nt:resource",
+            "columns" : "jcr:mimeType(STRING)"
+        }
+    },
+    "indexProviders" : {
+        "files" : {
+            "description" : "More descriptions",
+            "classname" : "org.modeshape.index.provider.FileBasedIndexProvider",
+            "directory" : "/a/b/c/foo"
+        }
+    },
+    "reindexing" : {
+        "async" : false,
+        "mode" : "if_missing"
+    },
+    "sequencing" : {
+        "threadPool" : "modeshape-workers",
+        "sequencers" : {
+            "zipSequencer" : {
+                "classname" : "ZipSequencer",
+                "pathExpressions" : ["default:/files(//)(*.zip[*])/jcr:content[@jcr:data] => default:/sequenced/zip/$1"],
+            },
+            "delimitedTextSequencer" : {
+                "classname" : "org.modeshape.sequencer.text.DelimitedTextSequencer",
+                "pathExpressions" : [ 
+                    "default:/files//(*.csv[*])/jcr:content[@jcr:data] => default:/sequenced/text/delimited/$1"
+                ],
+                "splitPattern" : ","
+            }
+        }
+    },
+    "node-types" : ["file1.cnd", "file2.cnd"]
+
+}

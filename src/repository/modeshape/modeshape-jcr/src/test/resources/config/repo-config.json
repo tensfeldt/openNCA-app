@@ -1,0 +1,18 @@
+{
+    "name" : "CND Sequencer Test Repository",
+    "storage" : {
+        "persistence" : {
+            "type" : "mem"
+        }
+    },
+    "sequencing" : {
+        "sequencers" : {
+            "CND sequencer" : {
+                "classname" : "cnd",
+                "pathExpressions" : [ 
+                    "default://(*.cnd)/jcr:content[@jcr:data]" 
+                ]
+            }
+        }
+    }
+}

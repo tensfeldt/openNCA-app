@@ -1,0 +1,16 @@
+{
+    "name" : "Repository",
+    "storage" : {
+        "persistence" : "db"
+    },
+    "workspaces" : {
+        "default" : "default",
+        "allowCreation" : true
+    },
+    "security" : {
+        "anonymous" : {
+            "roles" : ["readonly","readwrite","admin"],
+            "useOnFailedLogin" : false
+        }
+    },
+}

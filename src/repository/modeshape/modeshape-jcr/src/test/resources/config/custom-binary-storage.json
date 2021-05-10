@@ -1,0 +1,14 @@
+{
+    "name" : "Test Repository",
+    "storage" : {
+        "persistence": {
+            "type": "mem"
+        },
+        "binaryStorage" : {
+            "type"  : "custom",
+            "classname" : "org.modeshape.jcr.value.binary.CustomBinaryStoreImpl",
+            "key" : "value"
+        }
+    }
+    
+}

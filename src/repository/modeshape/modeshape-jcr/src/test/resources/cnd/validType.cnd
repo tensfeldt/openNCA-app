@@ -1,0 +1,26 @@
+/*
+ * Valid test type
+ */
+ 
+ 
+<mix = "http://www.jcp.org/jcr/mix/1.0">
+<mode = "http://www.modeshape.org/1.0">
+<modetest = "http://www.modeshape.org/test/1.0">
+
+[modetest:testType] > mix:referenceable, mix:lockable mixin orderable
++ modetest:namespace (mode:namespace) = mode:namespace protected version
+- * (string) = 'foo' version < 'foo', 'bar', 'baz'
+
+[modetest:simpleType]
+- fieldA (STRING)
+- fieldB (STRING)
+
+[modetest:child]
+- modetest:childField (STRING)
+
+[modetest:intermediate]
++ * (modetest:child) = modetest:child
+
+[modetest:parent]
+- modetest:parentField (STRING) nofulltext
++ modetest:folder (modetest:intermediate) = modetest:intermediate autocreated

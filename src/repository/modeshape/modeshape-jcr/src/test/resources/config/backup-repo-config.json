@@ -1,0 +1,15 @@
+{
+    "name" : "Backup Repository",
+    "storage" : {
+        "persistence": {
+            "type": "file",
+            "path" : "target/backupArea/backupRepo/backup_db"
+        },
+        "binaryStorage" : {
+            "type" : "file",
+            "directory": "target/backupArea/backupRepo/binaries",
+            "minimumBinarySizeInBytes" : 40
+        }
+    },
+    "node-types" : ["cnd/cars.cnd"]
+}

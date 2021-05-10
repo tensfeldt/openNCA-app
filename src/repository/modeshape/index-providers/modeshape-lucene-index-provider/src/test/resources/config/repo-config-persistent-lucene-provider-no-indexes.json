@@ -1,0 +1,40 @@
+{
+    "name": "Persistent repo no indexes",
+    "storage": {
+        "persistence" : {
+            "type" : "file",
+            "path": "target/persistent_repository"
+        },
+        "binaryStorage": {
+            "type": "file",
+            "directory": "target/persistent_repository/binaries",
+            "minimumBinarySizeInBytes": 40
+        }
+    },
+    "workspaces": {
+        "default": "default",
+        "allowCreation": true
+    },
+    "indexProviders" : {
+        "lucene" : {
+            "classname" : "lucene",
+            "directory" : "target/persistent_repository/indexes/lucene_primary"
+        },
+        "secondary" : {
+            "classname" : "lucene",
+            "path" : "indexes/lucene_secondary",
+            "relative-to" : "target/persistent_repository"
+        }
+    },
+    "reindexing" : {
+        "async" : false //make sure this is sync to avoid waiting in tests after registering indexes
+    }, 
+    "textExtraction": {
+        "extractors": {
+            "tikaExtractor": {
+                "name": "Tika content-based extractor",
+                "classname": "tika"
+            }
+        }
+    }
+}

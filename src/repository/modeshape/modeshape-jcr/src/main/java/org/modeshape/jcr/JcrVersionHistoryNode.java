@@ -1,0 +1,606 @@
+/*
+ * ModeShape (http://www.modeshape.org)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.modeshape.jcr;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import javax.jcr.AccessDeniedException;
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.PropertyIterator;
+import javax.jcr.PropertyType;
+import javax.jcr.ReferentialIntegrityException;
+import javax.jcr.RepositoryException;
+import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.jcr.Value;
+import javax.jcr.version.LabelExistsVersionException;
+import javax.jcr.version.Version;
+import javax.jcr.version.VersionException;
+import javax.jcr.version.VersionHistory;
+import javax.jcr.version.VersionIterator;
+import org.modeshape.common.annotation.NotThreadSafe;
+import org.modeshape.common.annotation.ThreadSafe;
+import org.modeshape.jcr.cache.MutableCachedNode;
+import org.modeshape.jcr.cache.NodeKey;
+import org.modeshape.jcr.cache.SessionCache;
+import org.modeshape.jcr.value.Name;
+import org.modeshape.jcr.value.Property;
+import org.modeshape.jcr.value.Reference;
+import org.modeshape.jcr.value.basic.NodeKeyReference;
+
+/**
+ * Convenience wrapper around a version history {@link JcrNode node}.
+ */
+@ThreadSafe
+final class JcrVersionHistoryNode extends JcrSystemNode implements VersionHistory {
+
+    JcrVersionHistoryNode( JcrSession session,
+                           NodeKey key ) {
+        super(session, key);
+    }
+
+    @Override
+    Type type() {
+        return Type.VERSION_HISTORY;
+    }
+
+    /**
+     * Get the node that represents the version labels for this history. Each version label node (see Section 3.13.5.5 of the JCR
+     * 2.0 specification) contains a REFERENCE property for each label, where the name of the property is the label and the
+     * REFERENCE points to the 'nt:version' child node that has that label.
+     * 
+     * @return a reference to the {@code jcr:versionLabels} child node of this history node.
+     * @throws RepositoryException if an error occurs accessing this node
+     */
+    protected final AbstractJcrNode versionLabels() throws RepositoryException {
+        return childNode(JcrLexicon.VERSION_LABELS, Type.NODE);
+    }
+
+    @Override
+    public VersionIterator getAllVersions() throws RepositoryException {
+        return new JcrVersionIterator(getNodesInternal());
+    }
+
+    @Override
+    public JcrVersionNode getRootVersion() throws RepositoryException {
+        return (JcrVersionNode)childNode(JcrLexicon.ROOT_VERSION, Type.VERSION);
+    }
+
+    @Override
+    public JcrVersionNode getVersion( String versionName ) throws VersionException, RepositoryException {
+        try {
+            return (JcrVersionNode)getNode(versionName);
+        } catch (PathNotFoundException pnfe) {
+            throw new VersionException(JcrI18n.invalidVersionName.text(versionName, getPath()));
+        }
+    }
+
+    @Override
+    public JcrVersionNode getVersionByLabel( String label ) throws VersionException, RepositoryException {
+        try {
+            javax.jcr.Property prop = versionLabels().getProperty(nameFrom(label));
+            if (prop == null) {
+                throw new VersionException(JcrI18n.labeledNodeNotFound.text(label, getPath()));
+            }
+            return (JcrVersionNode)prop.getNode();
+        } catch (PathNotFoundException e) {
+            throw new VersionException(JcrI18n.invalidVersionLabel.text(label, getPath()));
+        } catch (ItemNotFoundException e) {
+            throw new VersionException(JcrI18n.labeledNodeNotFound.text(label, getPath()));
+        }
+    }
+
+    @Override
+    public String[] getVersionLabels() throws RepositoryException {
+        List<String> labels = new ArrayList<String>();
+
+        PropertyIterator iter = versionLabels().getProperties();
+        while (iter.hasNext()) {
+            javax.jcr.Property property = iter.nextProperty();
+            if (property.getType() == PropertyType.REFERENCE) {
+                labels.add(property.getName());
+            }
+        }
+
+        return labels.toArray(new String[labels.size()]);
+    }
+
+    /**
+     * Returns the version labels that point to the given version
+     * 
+     * @param version the version for which the labels should be retrieved
+     * @return the set of version labels for that version; never null
+     * @throws RepositoryException if an error occurs accessing the repository
+     */
+    private Set<String> versionLabelsFor( Version version ) throws RepositoryException {
+        if (!version.getParent().equals(this)) {
+            throw new VersionException(JcrI18n.invalidVersion.text(version.getPath(), getPath()));
+        }
+
+        String versionId = version.getIdentifier();
+        PropertyIterator iter = versionLabels().getProperties();
+        if (iter.getSize() == 0) return Collections.emptySet();
+
+        Set<String> labels = new HashSet<String>();
+        while (iter.hasNext()) {
+            javax.jcr.Property prop = iter.nextProperty();
+            if (versionId.equals(prop.getString())) {
+                labels.add(prop.getName());
+            }
+        }
+        return labels;
+    }
+
+    @Override
+    public String[] getVersionLabels( Version version ) throws RepositoryException {
+        Set<String> labels = versionLabelsFor(version);
+        return labels.toArray(new String[labels.size()]);
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public String getVersionableUUID() throws RepositoryException {
+        return getProperty(JcrLexicon.VERSIONABLE_UUID).getString();
+    }
+
+    @Override
+    public boolean hasVersionLabel( String label ) throws RepositoryException {
+        return versionLabels().hasProperty(label);
+    }
+
+    @Override
+    public boolean hasVersionLabel( Version version,
+                                    String label ) throws RepositoryException {
+        return versionLabelsFor(version).contains(label);
+    }
+
+    @Override
+    public void removeVersion( String versionName )
+        throws ReferentialIntegrityException, AccessDeniedException, UnsupportedRepositoryOperationException, VersionException,
+        RepositoryException {
+        JcrVersionNode version = getVersion(versionName);
+        removeVersion(version);
+    }
+
+    public void removeVersion( Version versionToBeRemoved )
+        throws ReferentialIntegrityException, AccessDeniedException, UnsupportedRepositoryOperationException, VersionException,
+        RepositoryException {
+
+        assert versionToBeRemoved.getParent().equals(this);
+
+        if (versionToBeRemoved.getName().equalsIgnoreCase(JcrLexicon.ROOT_VERSION.getString())) {
+            //the root version should not be removed
+            return;
+        }
+
+        JcrVersionNode version = (JcrVersionNode)versionToBeRemoved;
+
+        validateIncomingReferences(version);
+
+        String versionId = version.getIdentifier();
+
+        // Get the predecessors and successors for the version being removed ...
+        AbstractJcrProperty predecessors = version.getProperty(JcrLexicon.PREDECESSORS);
+        AbstractJcrProperty successors = version.getProperty(JcrLexicon.SUCCESSORS);
+
+        SessionCache system = session.createSystemCache(false);
+
+        // Remove the reference to the dead version from the successors property of all the predecessors
+        Set<JcrValue> addedValues = new HashSet<>();
+        for (Value predecessorValue : predecessors.getValues()) {
+            addedValues.clear();
+            List<JcrValue> newNodeSuccessors = new ArrayList<>();
+
+            // Add each of the successors from the version's predecessor ...
+            NodeKey predecessorKey = ((NodeKeyReference)((JcrValue)predecessorValue).value()).getNodeKey();
+            AbstractJcrNode predecessor = session().node(predecessorKey, null);
+            MutableCachedNode predecessorSystem = system.mutable(predecessor.key());
+
+            JcrValue[] nodeSuccessors = predecessor.getProperty(JcrLexicon.SUCCESSORS).getValues();
+            addValuesNotInSet(nodeSuccessors, newNodeSuccessors, versionId, addedValues);
+
+            if (successors != null) {
+                // Add each of the successors from the version being removed ...
+                addValuesNotInSet(successors.getValues(), newNodeSuccessors, versionId, addedValues);
+            }
+
+            // Set the property ...
+            Object[] newSuccessorReferences = extractValues(newNodeSuccessors);
+            predecessorSystem.setProperty(system, session.propertyFactory().create(JcrLexicon.SUCCESSORS,
+                                                                           newSuccessorReferences));
+            addedValues.clear();
+        }
+
+        if (successors != null) {
+            // Remove the reference to the dead version from the predecessors property of all the successors
+            for (Value successorValue : successors.getValues()) {
+                addedValues.clear();
+                List<JcrValue> newNodePredecessors = new ArrayList<>();
+
+                // Add each of the predecessors from the version's successor ...
+                NodeKey successorKey = ((NodeKeyReference)((JcrValue)successorValue).value()).getNodeKey();
+                AbstractJcrNode successor = session().node(successorKey, null);
+                MutableCachedNode successorSystem = system.mutable(successor.key());
+
+                JcrValue[] nodePredecessors = successor.getProperty(JcrLexicon.PREDECESSORS).getValues();
+                addValuesNotInSet(nodePredecessors, newNodePredecessors, versionId, addedValues);
+
+                // Add each of the predecessors from the version being removed ...
+                addValuesNotInSet(predecessors.getValues(), newNodePredecessors, versionId, addedValues);
+
+                // Set the property ...
+                Object[] newPredecessorReferences = extractValues(newNodePredecessors);
+                successorSystem.setProperty(system,
+                                            session.propertyFactory().create(JcrLexicon.PREDECESSORS, newPredecessorReferences));
+            }
+        }
+
+        system.mutable(key).removeChild(system, version.key);
+        system.destroy(version.key);
+        try {
+            system.save();
+        } catch (org.modeshape.jcr.cache.ReferentialIntegrityException e) {
+            // expected by the tck
+            throw new ReferentialIntegrityException(e.getMessage());
+        }
+    }
+
+    /*
+    * Verify that the only references to this version are from its predecessors and successors in the version history.
+    */
+    private void validateIncomingReferences( JcrVersionNode version ) throws RepositoryException {
+        for (PropertyIterator iter = version.getReferences(); iter.hasNext();) {
+            AbstractJcrProperty prop = (AbstractJcrProperty)iter.next();
+            AbstractJcrNode referrer = prop.getParent();
+
+            // If the property's parent is the root node, fail.
+            if (referrer.isRoot()) {
+                throw new ReferentialIntegrityException(JcrI18n.cannotRemoveVersion.text(prop.getPath()));
+            }
+            boolean referrerIsAnotherVersion = (referrer instanceof JcrVersionNode)
+                                               && ((JcrVersionNode)referrer).getContainingHistory()
+                                                                            .getIdentifier()
+                                                                            .equals(version.getContainingHistory()
+                                                                                           .getIdentifier());
+            if (!this.equals(referrer) && !referrerIsAnotherVersion) {
+                throw new ReferentialIntegrityException(JcrI18n.cannotRemoveVersion.text(prop.getPath()));
+            }
+        }
+    }
+
+    private Object[] extractValues( List<JcrValue> values ) {
+        Object[] newSuccessorReferences = new Object[values.size()];
+        for (int i = 0; i < values.size(); i++) {
+            newSuccessorReferences[i] = values.get(i).value();
+        }
+        return newSuccessorReferences;
+    }
+
+    private void addValuesNotInSet( JcrValue[] values,
+                                    List<JcrValue> newValues,
+                                    String versionUuid,
+                                    Set<JcrValue> exceptIn ) throws RepositoryException {
+        for (JcrValue value : values) {
+            if (!versionUuid.equals(value.getString()) && !exceptIn.contains(value)) {
+                exceptIn.add(value);
+                newValues.add(value);
+            }
+        }
+    }
+
+    @Override
+    public void addVersionLabel( String versionName,
+                                 String label,
+                                 boolean moveLabel ) throws VersionException, RepositoryException {
+        AbstractJcrNode versionLabels = versionLabels();
+        JcrVersionNode version = getVersion(versionName);
+
+        try {
+            // This throws a PNFE if the named property doesn't already exist
+            versionLabels.getProperty(label);
+            if (!moveLabel) throw new LabelExistsVersionException(JcrI18n.versionLabelAlreadyExists.text(label));
+
+        } catch (PathNotFoundException pnfe) {
+            // This gets thrown if the label doesn't already exist
+        }
+
+        // Use a separate system session to set the REFERENCE property on the 'nt:versionLabels' child node ...
+        SessionCache system = session.createSystemCache(false);
+        Reference labelReference = session.referenceFactory().create(version.key(), true);
+        Property ref = session.propertyFactory().create(nameFrom(label), labelReference);
+        system.mutable(versionLabels.key()).setProperty(system, ref);
+        system.save();
+    }
+
+    @Override
+    public void removeVersionLabel( String label ) throws VersionException, RepositoryException {
+        AbstractJcrNode versionLabels = versionLabels();
+
+        Name propName = null;
+        try {
+            // This throws a PNFE if the named property doesn't already exist
+            propName = versionLabels.getProperty(label).name();
+        } catch (PathNotFoundException pnfe) {
+            // This gets thrown if the label doesn't already exist
+            throw new VersionException(JcrI18n.invalidVersionLabel.text(label, getPath()));
+        }
+
+        // Use a separate system session to remove the REFERENCE property on the 'nt:versionLabels' child node ...
+        SessionCache system = session.createSystemCache(false);
+        system.mutable(versionLabels.key()).removeProperty(system, propName);
+        system.save();
+    }
+
+    @Override
+    public NodeIterator getAllFrozenNodes() throws RepositoryException {
+        return new FrozenNodeIterator(getAllVersions());
+    }
+
+    @Override
+    public NodeIterator getAllLinearFrozenNodes() throws RepositoryException {
+        return new FrozenNodeIterator(getAllLinearVersions());
+    }
+
+    @Override
+    public VersionIterator getAllLinearVersions() throws RepositoryException {
+        AbstractJcrNode existingNode = session().getNonSystemNodeByIdentifier(getVersionableIdentifier());
+        if (existingNode == null) return getAllVersions();
+
+        assert existingNode.isNodeType(JcrMixLexicon.VERSIONABLE);
+
+        LinkedList<JcrVersionNode> versions = new LinkedList<JcrVersionNode>();
+        JcrVersionNode baseVersion = existingNode.getBaseVersion();
+        while (baseVersion != null) {
+            versions.addFirst(baseVersion);
+            baseVersion = baseVersion.getLinearPredecessor();
+        }
+
+        return new LinearVersionIterator(versions, versions.size());
+    }
+
+    @Override
+    public String getVersionableIdentifier() throws RepositoryException {
+        // ModeShape uses a node's UUID as it's identifier
+        return getVersionableUUID();
+    }
+
+    @Override
+    public String toString() {
+        try {
+            StringBuilder sb = new StringBuilder();
+            String versionableId = getVersionableIdentifier();
+            sb.append("Version history for " + session.getNonSystemNodeByIdentifier(versionableId).location() + " ("
+                      + versionableId + ") stored at " + location() + ":\n");
+            VersionIterator iter = getAllLinearVersions();
+            while (iter.hasNext()) {
+                Version v = iter.nextVersion();
+                sb.append(" - " + v.getName() + "\n");
+            }
+            return sb.toString();
+        } catch (RepositoryException e) {
+            return super.toString();
+        }
+    }
+
+    /**
+     * Iterator over the versions within a version history. This class wraps the {@link JcrChildNodeIterator node iterator} for
+     * all nodes of the {@link JcrVersionHistoryNode version history}, silently ignoring the {@code jcr:rootVersion} and
+     * {@code jcr:versionLabels} children.
+     */
+    @NotThreadSafe
+    static class JcrVersionIterator implements VersionIterator {
+
+        private final NodeIterator nodeIterator;
+        private Version next;
+        private int position = 0;
+
+        public JcrVersionIterator( NodeIterator nodeIterator ) {
+            super();
+            this.nodeIterator = nodeIterator;
+        }
+
+        @Override
+        public Version nextVersion() {
+            Version next = this.next;
+
+            if (next != null) {
+                this.next = null;
+                return next;
+            }
+
+            next = nextVersionIfPossible();
+            if (next == null) {
+                throw new NoSuchElementException();
+            }
+
+            position++;
+            return next;
+        }
+
+        private JcrVersionNode nextVersionIfPossible() {
+            while (nodeIterator.hasNext()) {
+                AbstractJcrNode node = (AbstractJcrNode)nodeIterator.nextNode();
+
+                Name nodeName;
+                try {
+                    nodeName = node.segment().getName();
+                } catch (RepositoryException re) {
+                    throw new IllegalStateException(re);
+                }
+
+                if (!JcrLexicon.VERSION_LABELS.equals(nodeName)) {
+                    return (JcrVersionNode)node;
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        public long getPosition() {
+            return position;
+        }
+
+        @Override
+        public long getSize() {
+            // The number of version nodes is the number of child nodes of the version history - 1
+            // (the jcr:versionLabels node)
+            return nodeIterator.getSize() - 1;
+        }
+
+        @Override
+        public void skip( long count ) {
+            // Walk through the list to make sure that we don't accidentally count jcr:rootVersion or jcr:versionLabels as a
+            // skipped node
+            while (count-- > 0) {
+                nextVersion();
+            }
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (this.next != null) return true;
+            this.next = nextVersionIfPossible();
+            return this.next != null;
+        }
+
+        @Override
+        public Object next() {
+            return nextVersion();
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    /**
+     * An implementation of {@link VersionIterator} that iterates over a given set of versions. This differs from
+     * {@link JcrVersionIterator} in that it expects an exact list of versions to iterate over whereas {@code JcrVersionIterator}
+     * expects list of children for a {@code nt:versionHistory} node and filters out the label child.
+     */
+    @NotThreadSafe
+    static class LinearVersionIterator implements VersionIterator {
+
+        private final Iterator<? extends Version> versions;
+        private final int size;
+        private int pos;
+
+        protected LinearVersionIterator( Iterable<? extends Version> versions,
+                                         int size ) {
+            this.versions = versions.iterator();
+            this.size = size;
+            this.pos = 0;
+        }
+
+        @Override
+        public long getPosition() {
+            return pos;
+        }
+
+        @Override
+        public long getSize() {
+            return this.size;
+        }
+
+        @Override
+        public void skip( long skipNum ) {
+            while (skipNum-- > 0 && versions.hasNext()) {
+                versions.next();
+                pos++;
+            }
+
+        }
+
+        @Override
+        public Version nextVersion() {
+            return versions.next();
+        }
+
+        @Override
+        public boolean hasNext() {
+            return versions.hasNext();
+        }
+
+        @Override
+        public Object next() {
+            return nextVersion();
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    @NotThreadSafe
+    static final class FrozenNodeIterator implements NodeIterator {
+        private final VersionIterator versions;
+
+        FrozenNodeIterator( VersionIterator versionIter ) {
+            this.versions = versionIter;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return versions.hasNext();
+        }
+
+        @Override
+        public Object next() {
+            return nextNode();
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Node nextNode() {
+            try {
+                return versions.nextVersion().getFrozenNode();
+            } catch (RepositoryException re) {
+                // ModeShape doesn't throw a RepositoryException on getFrozenNode() from a valid version node
+                throw new IllegalStateException(re);
+            }
+        }
+
+        @Override
+        public long getPosition() {
+            return versions.getPosition();
+        }
+
+        @Override
+        public long getSize() {
+            return versions.getSize();
+        }
+
+        @Override
+        public void skip( long skipNum ) {
+            versions.skip(skipNum);
+        }
+    }
+}

@@ -1,0 +1,11 @@
+{
+    "name" : "XSD Sequencer Test Repository",
+    "sequencing" : {
+        "sequencers" : {
+            "XSD sequencer" : {
+                "classname" : "xsdsequencer",
+                "pathExpressions" : [ "default:/(*.xsd)/jcr:content[@jcr:data]" ]
+            }
+        }
+    }
+}

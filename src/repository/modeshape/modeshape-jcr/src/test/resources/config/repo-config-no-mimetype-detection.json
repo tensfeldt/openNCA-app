@@ -1,0 +1,15 @@
+{
+    "name" : "Persistent Repository",
+    "jndiName" : "java:jcr/local/PersistentRepository",
+    "storage" : {
+        "binaryStorage" : {
+            "type" : "file",
+            "directory": "target/persistent_repository/binaries",
+            "mimeTypeDetection" : "none"
+        }
+    },
+    "workspaces" : {
+        "default" : "default",
+        "allowCreation" : true
+    }
+}

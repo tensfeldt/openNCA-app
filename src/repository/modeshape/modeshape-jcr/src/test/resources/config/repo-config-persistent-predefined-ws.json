@@ -1,0 +1,14 @@
+{
+    "name": "Persistent repo predefined workspaces",
+    "storage": {
+        "persistence" : {
+            "type" : "file",
+            "path": "target/persistent_repository/db"
+        }
+    },
+    "workspaces": {
+        "predefined" : ["ws1"],
+        "default": "default",
+        "allowCreation": true
+    }
+}

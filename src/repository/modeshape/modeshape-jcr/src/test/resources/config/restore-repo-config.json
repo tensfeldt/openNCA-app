@@ -1,0 +1,15 @@
+{
+    "name" : "Restore Repository",
+    "storage" : {
+        "persistence": {
+            "type": "file",
+            "path" : "target/backupArea/restoreRepo/restore_db"
+        },
+        "binaryStorage" : {
+            "type" : "file",
+            "directory": "target/backupArea/restoreRepo/binaries",
+            "minimumBinarySizeInBytes" : 40
+        }
+    },
+    "node-types" : ["cnd/cars.cnd"]
+}

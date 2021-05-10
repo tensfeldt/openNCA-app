@@ -1,0 +1,281 @@
+/*
+ * ModeShape (http://www.modeshape.org)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.modeshape.jcr;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.jcr.ItemVisitor;
+import javax.jcr.NamespaceRegistry;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import org.modeshape.common.annotation.NotThreadSafe;
+import org.modeshape.common.text.TextEncoder;
+import org.modeshape.common.text.XmlNameEncoder;
+import org.modeshape.common.xml.StreamingContentHandler;
+import org.modeshape.jcr.cache.NodeKey;
+import org.modeshape.jcr.value.Name;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+
+/**
+ * Superclass of ModeShape JCR exporters, provides basic support for traversing through the nodes recursively (if needed),
+ * exception wrapping (since {@link ItemVisitor} does not allow checked exceptions to be thrown from its visit* methods, and the
+ * ability to wrap an {@link OutputStream} with a {@link ContentHandler}.
+ * <p />
+ * Each exporter is only intended to be used once (by calling <code>exportView</code>) and discarded. This class is <b>NOT</b>
+ * thread-safe.
+ * 
+ * @see JcrSystemViewExporter
+ * @see JcrDocumentViewExporter
+ */
+@NotThreadSafe
+abstract class AbstractJcrExporter {
+
+    /**
+     * Encoder to properly escape XML names.
+     * 
+     * @see XmlNameEncoder
+     */
+    private static final TextEncoder NAME_ENCODER = new XmlNameEncoder();
+
+    /**
+     * The list of XML namespaces that are predefined and should not be exported by the content handler.
+     */
+    private static final List<String> UNEXPORTABLE_NAMESPACES = Arrays.asList("", "xml", "xmlns");
+
+    /**
+     * The session in which this exporter was created.
+     */
+    protected final JcrSession session;
+
+    /**
+     * The list of XML namespace prefixes that should never be exported.
+     */
+    private final Collection<String> restrictedPrefixes;
+
+    /**
+     * Cache from {@link Name}s to their rewritten version based on session uri mappings.
+     */
+    private final Map<Name, String> prefixedNames;
+
+    /**
+     * The set of node keys for the shareable nodes that were already exported.
+     */
+    private final Set<NodeKey> shareableNodes = new HashSet<NodeKey>();
+
+    /**
+     * Creates the exporter
+     * 
+     * @param session the session in which the exporter is created
+     * @param restrictedPrefixes the list of XML namespace prefixes that should not be exported
+     */
+    AbstractJcrExporter( JcrSession session,
+                         Collection<String> restrictedPrefixes ) {
+        this.session = session;
+        this.restrictedPrefixes = restrictedPrefixes;
+        this.prefixedNames = new HashMap<Name, String>();
+    }
+
+    /**
+     * Returns the &quot;prefixed&quot; or rewritten version of <code>baseName</code> based on the URI mappings in the current
+     * session. For example:</p> If the namespace &quot;http://www.example.com/JCR/example/1.0&quot; is mapped to the prefix
+     * &quot;foo&quot; in the current session (or as a persistent mapping that has not been re-mapped in the current session),
+     * this method will return the string &quot;foo:bar&quot; when passed a {@link Name} with uri
+     * &quot;http://www.example.com/JCR/example/1.0&quot; and local name &quot;bar&quot;.</p> This method does manage and utilize
+     * a {@link Name} to {@link String} cache at the instance scope.
+     * 
+     * @param baseName the name to be re-mapped into its prefixed version
+     * @return the prefixed version of <code>baseName</code> based on the current session URI mappings (which include all
+     *         persistent URI mappings by default).
+     * @see #prefixedNames
+     * @see javax.jcr.Session#setNamespacePrefix(String, String)
+     * @see javax.jcr.Session#getNamespacePrefix(String)
+     */
+    protected String getPrefixedName( Name baseName ) {
+        String prefixedName = prefixedNames.get(baseName);
+
+        if (prefixedName == null) {
+            prefixedName = baseName.getString(session.namespaces());
+
+            prefixedNames.put(baseName, prefixedName);
+        }
+
+        return prefixedName;
+    }
+
+    protected void startDocument( ContentHandler handler ) throws SAXException {
+        shareableNodes.clear();
+        handler.startDocument();
+    }
+
+    protected void endDocument( ContentHandler handler ) throws SAXException {
+        handler.endDocument();
+    }
+
+    /**
+     * Exports <code>node</code> (or the subtree rooted at <code>node</code>) into an XML document by invoking SAX events on
+     * <code>contentHandler</code>.
+     * 
+     * @param exportRootNode the node which should be exported. If <code>noRecursion</code> was set to <code>false</code> in the
+     *        constructor, the entire subtree rooted at <code>node</code> will be exported.
+     * @param contentHandler the SAX content handler for which SAX events will be invoked as the XML document is created.
+     * @param skipBinary if <code>true</code>, indicates that binary properties should not be exported
+     * @param noRecurse if<code>true</code>, indicates that only the given node should be exported, otherwise a recursice export
+     *        and not any of its child nodes.
+     * @throws SAXException if an exception occurs during generation of the XML document
+     * @throws RepositoryException if an exception occurs accessing the content repository
+     */
+    public void exportView( Node exportRootNode,
+                            ContentHandler contentHandler,
+                            boolean skipBinary,
+                            boolean noRecurse ) throws RepositoryException, SAXException {
+        assert exportRootNode != null;
+        assert contentHandler != null;
+        session.checkLive();
+
+        // Export the namespace mappings used in this session
+        NamespaceRegistry registry = session.getWorkspace().getNamespaceRegistry();
+
+        startDocument(contentHandler);
+        String[] namespacePrefixes = registry.getPrefixes();
+        for (int i = 0; i < namespacePrefixes.length; i++) {
+            String prefix = namespacePrefixes[i];
+
+            if (!restrictedPrefixes.contains(prefix)) {
+                contentHandler.startPrefixMapping(prefix, registry.getURI(prefix));
+            }
+        }
+
+        exportNode(exportRootNode, contentHandler, skipBinary, noRecurse);
+
+        for (int i = 0; i < namespacePrefixes.length; i++) {
+            if (!restrictedPrefixes.contains(namespacePrefixes[i])) {
+                contentHandler.endPrefixMapping(namespacePrefixes[i]);
+            }
+        }
+
+        endDocument(contentHandler);
+    }
+
+    /**
+     * Exports <code>node</code> (or the subtree rooted at <code>node</code>) into an XML document that is written to
+     * <code>os</code>.
+     * 
+     * @param node the node which should be exported. If <code>noRecursion</code> was set to <code>false</code> in the
+     *        constructor, the entire subtree rooted at <code>node</code> will be exported.
+     * @param os the {@link OutputStream} to which the XML document will be written
+     * @param skipBinary if <code>true</code>, indicates that binary properties should not be exported
+     * @param noRecurse if<code>true</code>, indicates that only the given node should be exported, otherwise a recursive export
+     *        and not any of its child nodes.
+     * @throws RepositoryException if an exception occurs accessing the content repository, generating the XML document, or
+     *         writing it to the output stream <code>os</code>.
+     * @throws IOException if there is a problem writing to the supplied stream
+     */
+    public void exportView( Node node,
+                            OutputStream os,
+                            boolean skipBinary,
+                            boolean noRecurse ) throws IOException, RepositoryException {
+        try {
+            exportView(node, new StreamingContentHandler(os, UNEXPORTABLE_NAMESPACES), skipBinary, noRecurse);
+            os.flush();
+        } catch (SAXException se) {
+            throw new RepositoryException(se);
+        }
+    }
+
+    /**
+     * Exports <code>node</code> (or the subtree rooted at <code>node</code>) into an XML document by invoking SAX events on
+     * <code>contentHandler</code>.
+     * 
+     * @param node the node which should be exported. If <code>noRecursion</code> was set to <code>false</code> in the
+     *        constructor, the entire subtree rooted at <code>node</code> will be exported.
+     * @param contentHandler the SAX content handler for which SAX events will be invoked as the XML document is created.
+     * @param skipBinary if <code>true</code>, indicates that binary properties should not be exported
+     * @param noRecurse if<code>true</code>, indicates that only the given node should be exported, otherwise a recursive export
+     *        and not any of its child nodes.
+     * @throws SAXException if an exception occurs during generation of the XML document
+     * @throws RepositoryException if an exception occurs accessing the content repository
+     */
+    public abstract void exportNode( Node node,
+                                     ContentHandler contentHandler,
+                                     boolean skipBinary,
+                                     boolean noRecurse ) throws RepositoryException, SAXException;
+
+    /**
+     * Convenience method to invoke the {@link ContentHandler#startElement(String, String, String, Attributes)} method on the
+     * given content handler. The name will be encoded to properly escape invalid XML characters.
+     * 
+     * @param contentHandler the content handler on which the <code>startElement</code> method should be invoked.
+     * @param name the un-encoded, un-prefixed name of the element to start
+     * @param atts the attributes that should be created for the given element
+     * @throws SAXException if there is an error starting the element
+     */
+    protected void startElement( ContentHandler contentHandler,
+                                 Name name,
+                                 Attributes atts ) throws SAXException {
+        contentHandler.startElement(name.getNamespaceUri(),
+                                    NAME_ENCODER.encode(name.getLocalName()),
+                                    NAME_ENCODER.encode(getPrefixedName(name)),
+                                    atts);
+    }
+
+    /**
+     * Convenience method to invoke the {@link ContentHandler#endElement(String, String, String)} method on the given content
+     * handler. The name will be encoded to properly escape invalid XML characters.
+     * 
+     * @param contentHandler the content handler on which the <code>endElement</code> method should be invoked.
+     * @param name the un-encoded, un-prefixed name of the element to end
+     * @throws SAXException if there is an error ending the element
+     */
+    protected void endElement( ContentHandler contentHandler,
+                               Name name ) throws SAXException {
+        contentHandler.endElement(name.getNamespaceUri(),
+                                  NAME_ENCODER.encode(name.getLocalName()),
+                                  NAME_ENCODER.encode(getPrefixedName(name)));
+    }
+
+    protected void exporting( Node node ) throws RepositoryException {
+        if (node instanceof AbstractJcrNode) {
+            AbstractJcrNode jcrNode = (AbstractJcrNode)node;
+            if (jcrNode.isShareable()) {
+                shareableNodes.add(jcrNode.key());
+            }
+        }
+    }
+
+    protected JcrSharedNode asSharedNode( Node node ) {
+        if (node instanceof JcrSharedNode) {
+            JcrSharedNode sharedNode = (JcrSharedNode)node;
+            NodeKey shareableKey = sharedNode.key();
+            // See if the node is already exported ...
+            if (!shareableNodes.add(shareableKey)) {
+                // Already saw it, so return the shared node ...
+                return sharedNode;
+            }
+        }
+        // Otherwise, it's not shareable or it is but hasn't yet been seen, so return null so that it's treated like a regular
+        // node
+        return null;
+    }
+}

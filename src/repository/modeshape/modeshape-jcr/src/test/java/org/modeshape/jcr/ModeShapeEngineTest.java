@@ -1,0 +1,394 @@
+/*
+ * ModeShape (http://www.modeshape.org)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.modeshape.jcr;
+
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import java.net.URL;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+import javax.jcr.Session;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.modeshape.common.FixFor;
+import org.modeshape.common.util.FileUtil;
+import org.modeshape.jcr.ClientLoad.Client;
+import org.modeshape.jcr.ClientLoad.ClientResultProcessor;
+import org.modeshape.jcr.ModeShapeEngine.State;
+import org.modeshape.jcr.RepositoryConfiguration.Default;
+import org.modeshape.jcr.RepositoryConfiguration.FieldName;
+import org.modeshape.schematic.DocumentFactory;
+import org.modeshape.schematic.document.Changes;
+import org.modeshape.schematic.document.Document;
+import org.modeshape.schematic.document.EditableDocument;
+import org.modeshape.schematic.document.Editor;
+
+public class ModeShapeEngineTest {
+
+    private RepositoryConfiguration config;
+    private ModeShapeEngine engine;
+    private Environment environment;
+
+    @Before
+    public void beforeEach() throws Exception {
+        environment = new TestingEnvironment();
+        config = RepositoryConfiguration.read("{ \"name\":\"my-repo\" }").with(environment);
+        engine = new ModeShapeEngine();
+
+    }
+
+    @After
+    public void afterEach() throws Exception {
+        try {
+            engine.shutdown();
+        } finally {
+            engine = null;
+            config = null;
+        }
+    }
+
+    @Test
+    public void shouldStart() {
+        engine.start();
+        assertThat(engine.getState(), is(State.RUNNING));
+    }
+
+    @Test
+    public void shouldAllowStartToBeCalledMultipleTimes() {
+        for (int i = 0; i != 10; ++i) {
+            engine.start();
+            assertThat(engine.getState(), is(State.RUNNING));
+        }
+    }
+
+    @Test
+    public void shouldAllowShutdownToBeCalledEvenIfNotRunning() {
+        assertThat(engine.getState(), is(State.NOT_RUNNING));
+        for (int i = 0; i != 10; ++i) {
+            engine.shutdown();
+            assertThat(engine.getState(), is(State.NOT_RUNNING));
+        }
+    }
+
+    @Test
+    public void shouldStartThenStopThenRestart() throws Exception {
+        assertThat(engine.getState(), is(State.NOT_RUNNING));
+        engine.start();
+        assertThat(engine.getState(), is(State.RUNNING));
+        for (int i = 0; i != 5; ++i) {
+            engine.shutdown().get(3L, TimeUnit.SECONDS);
+            assertThat(engine.getState(), is(State.NOT_RUNNING));
+        }
+        engine.start();
+        assertThat(engine.getState(), is(State.RUNNING));
+    }
+
+    @Test
+    public void shouldDeployRepositoryConfiguration() throws Exception {
+        engine.start();
+        JcrRepository repository = engine.deploy(config);
+        assertThat(repository, is(notNullValue()));
+        assertThat(repository, is(notNullValue()));
+    }
+
+    @Test( expected = ConfigurationException.class )
+    public void shouldFailToDeployRepositoryConfigurationWithoutName() throws Throwable {
+        config = new RepositoryConfiguration(); // without a name!
+        assertThat(config.validate().hasErrors(), is(true));
+        engine.start();
+        engine.deploy(config);
+    }
+
+    @Test
+    public void shouldNotAutomaticallyStartDeployedRepositories() throws Exception {
+        engine.start();
+        JcrRepository repository = engine.deploy(config);
+        String name = repository.getName();
+        assertThat(engine.getRepositoryState(name), is(State.NOT_RUNNING));
+        engine.startRepository(name).get(); // blocks
+        assertThat(engine.getRepositoryState(name), is(State.RUNNING));
+        engine.shutdownRepository(name).get(); // blocks
+        assertThat(engine.getRepositoryState(name), is(State.NOT_RUNNING));
+    }
+
+    @Test
+    public void shouldAutomaticallyStartRepositoryUponLogin() throws Exception {
+        engine.start();
+        JcrRepository repository = engine.deploy(config);
+        String name = repository.getName();
+        assertThat(engine.getRepositoryState(name), is(State.NOT_RUNNING));
+        assertThat(repository.getState(), is(State.NOT_RUNNING));
+        for (int i = 0; i != 4; ++i) {
+            javax.jcr.Session session = repository.login();
+            assertThat(repository.getState(), is(State.RUNNING));
+            session.logout();
+        }
+        assertThat(engine.getRepositoryState(name), is(State.RUNNING));
+        engine.shutdownRepository(name).get(); // blocks
+        assertThat(engine.getRepositoryState(name), is(State.NOT_RUNNING));
+    }
+
+    @Test
+    public void shouldAllowConcurrentLoginWhileRequiringAutoStartOfRepository() throws Exception {
+        engine.start();
+        final JcrRepository repository = engine.deploy(config);
+        String name = repository.getName();
+        assertThat(engine.getRepositoryState(name), is(State.NOT_RUNNING));
+        assertThat(repository.getState(), is(State.NOT_RUNNING));
+
+        List<Client<Session>> results = ClientLoad.runSimultaneously(10, new Callable<Session>() {
+            @Override
+            public Session call() throws Exception {
+                return repository.login();
+            }
+        });
+
+        // NOTE THAT MUCH OF THE TIME DELAY SEEN WITHIN THE CLIENT TIMES IS DUE TO THE EXECUTOR SERVICE AND THREAD SWITCHING.
+        // We're only checking times here to make sure that they don't quit after failing to reach the barrier.
+
+        final boolean print = false;
+
+        ClientLoad.forEachResult(results, new ClientResultProcessor<Session>() {
+            @Override
+            public void process( Client<Session> clientResult ) throws Exception {
+                assertThat(clientResult.isSuccess(), is(true));
+                assertThat(clientResult.getTime(TimeUnit.SECONDS) < 20, is(true));
+                clientResult.getResult().logout();
+                if (print) System.out.println("Client result: " + clientResult.getTime(TimeUnit.MILLISECONDS) + " ms");
+            }
+        });
+
+        long start = System.nanoTime();
+        Session session = repository.login();
+        if (print) System.out.println("Session result: "
+                                      + TimeUnit.MILLISECONDS.convert(System.nanoTime() - start, TimeUnit.NANOSECONDS) + " ms");
+        session.logout();
+
+        // Make sure the repository is running ...
+        assertThat(engine.getRepositoryState(name), is(State.RUNNING));
+
+        // Shutdown repository ...
+        engine.shutdownRepository(name).get(); // blocks
+        assertThat(engine.getRepositoryState(name), is(State.NOT_RUNNING));
+    }
+
+    @Test
+    public void shouldAllowConcurrentLoginOfAlreadyStartedRepository() throws Exception {
+        engine.start();
+        final JcrRepository repository = engine.deploy(config);
+        String name = repository.getName();
+        assertThat(engine.getRepositoryState(name), is(State.NOT_RUNNING));
+        assertThat(repository.getState(), is(State.NOT_RUNNING));
+        engine.startRepository(name).get(); // blocks
+        assertThat(repository.getState(), is(State.RUNNING));
+
+        // NOTE THAT MUCH OF THE TIME DELAY SEEN WITHIN THE CLIENT TIMES IS DUE TO THE EXECUTOR SERVICE AND THREAD SWITCHING.
+        // We're only checking times here to make sure that they don't quit after failing to reach the barrier.
+        // Plus, note that creating sessions within this thread happens very fast (usually < 1ms), whether its
+        // the initial priming session, or the one created before all the client's sessions are terminated,
+        // or the one created after all the others were closed.
+
+        final boolean print = false;
+
+        // Prime the sessions ...
+        long start = System.nanoTime();
+        Session session = repository.login();
+        if (print) System.out.println("Initial session: "
+                                      + TimeUnit.MILLISECONDS.convert(Math.abs(System.nanoTime() - start), TimeUnit.NANOSECONDS)
+                                      + " ms");
+        session.logout();
+
+        // Now create bunch of sessions simultaneously ...
+        List<Client<Session>> results = ClientLoad.run(20, new Callable<Session>() {
+            @Override
+            public Session call() throws Exception {
+                return repository.login();
+            }
+        });
+
+        // Create another session (before all the clients' sessions have been closed) ...
+        start = System.nanoTime();
+        session = repository.login();
+        if (print) System.out.println("Before close: "
+                                      + TimeUnit.MILLISECONDS.convert(Math.abs(System.nanoTime() - start), TimeUnit.NANOSECONDS)
+                                      + " ms");
+        session.logout();
+
+        ClientLoad.forEachResult(results, new ClientResultProcessor<Session>() {
+            @Override
+            public void process( Client<Session> clientResult ) throws Exception {
+                assertThat(clientResult.isSuccess(), is(true));
+                assertThat(clientResult.getTime(TimeUnit.SECONDS) < 20, is(true));
+                clientResult.getResult().logout();
+                if (print) System.out.println("Client result: " + clientResult.getTime(TimeUnit.MICROSECONDS) + " ms");
+            }
+        });
+
+        // Create another session (after all the clients' sessions have been closed) ...
+        start = System.nanoTime();
+        session = repository.login();
+        if (print) System.out.println("After close: "
+                                      + TimeUnit.MILLISECONDS.convert(Math.abs(System.nanoTime() - start), TimeUnit.NANOSECONDS)
+                                      + " ms");
+        session.logout();
+
+        // Make sure the repository is running ...
+        assertThat(engine.getRepositoryState(name), is(State.RUNNING));
+
+        // Shutdown repository ...
+        engine.shutdownRepository(name).get(); // blocks
+        assertThat(engine.getRepositoryState(name), is(State.NOT_RUNNING));
+    }
+
+    @Test
+    public void shouldAllowUpdatingRepositoryConfigurationWhileNotRunning() throws Exception {
+        engine.start();
+        JcrRepository repository = engine.deploy(config);
+        String name = repository.getName();
+        assertThat(engine.getRepositoryState(name), is(State.NOT_RUNNING));
+        assertThat(config.getBinaryStorage().getMinimumBinarySizeInBytes(), is(Default.MINIMUM_BINARY_SIZE_IN_BYTES));
+
+        // Change the configuration ...
+        long newLargeValueSizeInBytes = Default.MINIMUM_BINARY_SIZE_IN_BYTES * 2;
+        Editor editor = repository.getConfiguration().edit();
+        EditableDocument binaryStorage = editor.getOrCreateDocument(FieldName.STORAGE)
+                                               .getOrCreateDocument(FieldName.BINARY_STORAGE);
+        binaryStorage.setNumber(FieldName.MINIMUM_BINARY_SIZE_IN_BYTES, newLargeValueSizeInBytes);
+        Changes changes = editor.getChanges();
+
+        // Apply the changes to the deployed repository ...
+        engine.update(name, changes).get(); // blocks
+        assertThat(engine.getRepositoryState(name), is(State.NOT_RUNNING));
+
+        RepositoryConfiguration newConfig = engine.getRepository(name).getConfiguration();
+        assertThat(newConfig.getBinaryStorage().getMinimumBinarySizeInBytes(), is(newLargeValueSizeInBytes));
+    }
+
+    @Test
+    public void shouldAllowUpdatingRepositoryConfigurationWhileRunning() throws Exception {
+        engine.start();
+        JcrRepository repository = engine.deploy(config);
+        String name = repository.getName();
+        assertThat(engine.getRepositoryState(name), is(State.NOT_RUNNING));
+        engine.startRepository(name).get(); // blocks
+        assertThat(engine.getRepositoryState(name), is(State.RUNNING));
+        long defaultLargeValueSize = Default.MINIMUM_BINARY_SIZE_IN_BYTES;
+        assertThat(config.getBinaryStorage().getMinimumBinarySizeInBytes(), is(defaultLargeValueSize));
+        assertThat(repository.repositoryCache().largeValueSizeInBytes(), is(defaultLargeValueSize));
+
+        // Change the configuration. We'll do something simple, like changing the large value size ...
+        long newLargeValueSizeInBytes = defaultLargeValueSize * 2L;
+        Editor editor = repository.getConfiguration().edit();
+        EditableDocument binaryStorage = editor.getOrCreateDocument(FieldName.STORAGE)
+                                               .getOrCreateDocument(FieldName.BINARY_STORAGE);
+        binaryStorage.setNumber(FieldName.MINIMUM_BINARY_SIZE_IN_BYTES, newLargeValueSizeInBytes);
+        Changes changes = editor.getChanges();
+
+        // Apply the changes to the deployed repository ...
+        engine.update(name, changes).get(); // blocks
+        assertThat(engine.getRepositoryState(name), is(State.RUNNING));
+
+        // Verify the running repository and its configuraiton are using the new value ...
+        RepositoryConfiguration newConfig = engine.getRepository(name).getConfiguration();
+        assertThat(newConfig.getBinaryStorage().getMinimumBinarySizeInBytes(), is(newLargeValueSizeInBytes));
+        assertThat(repository.repositoryCache().largeValueSizeInBytes(), is(newLargeValueSizeInBytes));
+    }
+
+    @Test
+    public void shouldAllowUpdatingSequencerInformationWhenRunning() throws Exception {
+        URL configUrl = getClass().getClassLoader().getResource("config/repo-config.json");
+        engine.start();
+        config = RepositoryConfiguration.read(configUrl).with(environment);
+        JcrRepository repository = engine.deploy(config);
+
+        // Obtain an editor ...
+        Editor editor = repository.getConfiguration().edit();
+        EditableDocument sequencing = editor.getDocument(FieldName.SEQUENCING);
+        EditableDocument sequencers = sequencing.getDocument(FieldName.SEQUENCERS);
+        EditableDocument sequencerA = sequencers.getDocument("CND sequencer");
+
+        // Verify the existing value ...
+        List<?> exprs = sequencerA.getArray(FieldName.PATH_EXPRESSIONS);
+        assertThat(exprs.size(), is(1));
+        assertThat((String)exprs.get(0), is("default://(*.cnd)/jcr:content[@jcr:data]"));
+
+        // Set the new value ...
+        sequencerA.setArray(FieldName.PATH_EXPRESSIONS, "//*.ddl", "//*.xml");
+
+        // And apply the changes to the repository's configuration ...
+        Changes changes = editor.getChanges();
+        engine.update(config.getName(), changes).get(); // don't forget to wait!
+
+        // Verify the configuration was changed successfully ...
+        RepositoryConfiguration config2 = engine.getRepositoryConfiguration(config.getName());
+        Document sequencerA2 = (Document)config2.getDocument()
+                                                .getDocument(FieldName.SEQUENCING)
+                                                .getDocument(FieldName.SEQUENCERS)
+                                                .get("CND sequencer");
+        List<?> exprs2 = sequencerA2.getArray(FieldName.PATH_EXPRESSIONS);
+        assertThat(exprs2.size(), is(2));
+        assertThat((String)exprs2.get(0), is("//*.ddl"));
+        assertThat((String)exprs2.get(1), is("//*.xml"));
+    }
+    
+    @Test
+    @FixFor( "MODE-2650" )
+    public void shouldAllowUpdatingConnectorConfigurationWhenRunning() throws Exception {
+        FileUtil.delete("target/persistent_repository");
+        
+        URL configUrl = getClass().getClassLoader().getResource("config/repo-config-federation-persistent-projections.json");
+        engine.start();
+        config = RepositoryConfiguration.read(configUrl).with(environment);
+        JcrRepository repository = engine.deploy(config);
+        // make sure the repo is started
+        JcrSession session = repository.login();
+        assertNotNull(session.getNode("/preconfiguredProjection"));
+        session.logout();
+    
+        // Create a new document for the new sources
+        EditableDocument files = DocumentFactory.newDocument();
+        files.set(FieldName.CLASSNAME, "org.modeshape.connector.filesystem.FileSystemConnector");
+        files.set("directoryPath", "target");
+        files.set("readonly", true);
+        files.set("projections", DocumentFactory.newArray("default:/files => /"));
+
+        // add a new source
+        Editor editor = repository.getConfiguration().edit();
+        EditableDocument externalSources = editor.getDocument(FieldName.EXTERNAL_SOURCES);
+        externalSources.set("files", files.unwrap());
+
+        // change a projection for the current source
+        externalSources.getDocument("mock-source").getArray("projections").add("default:/projection4=> /doc1");
+        
+        // And apply the changes to the repository's configuration ...
+        Changes changes = editor.getChanges();
+        repository = engine.update(config.getName(), changes).get(); // don't forget to wait!
+        
+        // Check that the new information is accessible
+        session = repository.login();
+        try {
+            assertNotNull(session.getNode("/files"));
+            assertNotNull(session.getNode("/projection4"));
+        } finally {
+            session.logout();            
+        }
+    }
+}

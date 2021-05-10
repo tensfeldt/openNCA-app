@@ -1,0 +1,19 @@
+{
+    "name" : "FS Repository",
+    "storage" : {
+        "persistence" : {
+            "type" : "file",
+            "path" : "target/perf_test/db"
+        }
+    },
+    "workspaces" : {
+        "default" : "default",
+        "allowCreation" : true
+    },
+    "security" : {
+        "anonymous" : {
+            "roles" : ["readonly","readwrite","admin"],
+            "useOnFailedLogin" : false
+        }
+    }
+}

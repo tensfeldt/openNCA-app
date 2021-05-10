@@ -1,0 +1,20 @@
+{
+    "name" : "webdav_repo",
+    "jndiName" : "",
+    "workspaces" : {
+        "default" : "default",
+        "allowCreation" : true,
+        "initialContent" : {
+            "default" : "initial-content.xml"
+        }
+    },
+    "security" : {
+        "anonymous" : {
+            "roles" : ["readonly","readwrite","admin"],
+            "useOnFailedLogin" : false
+        },
+        "providers" : [
+            { "classname" : "servlet" }
+        ]
+    }
+}

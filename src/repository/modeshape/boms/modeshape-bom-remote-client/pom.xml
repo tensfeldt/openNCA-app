@@ -1,0 +1,90 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.modeshape.bom</groupId>
+    <artifactId>modeshape-bom-remote-client</artifactId>
+    <version>5.4.0.Final</version>
+
+    <name>ModeShape BOM for remote REST and JDBC clients</name>
+
+    <url>http://www.modeshape.org</url>
+    <packaging>pom</packaging>
+    <description>Bill of Material (BOM) for applications using ModeShape's REST client or remote JDBC driver.</description>
+    <inceptionYear>2008</inceptionYear>
+
+    <organization>
+        <name>JBoss, by Red Hat</name>
+        <url>http://www.jboss.org</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>Apache Software License 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git://github.com/ModeShape/modeshape.git</connection>
+        <developerConnection>scm:git:git@github.com:ModeShape/modeshape.git</developerConnection>
+        <url>http://github.com/ModeShape/modeshape</url>
+    </scm>
+
+    <issueManagement>
+        <system>jira</system>
+        <url>http://issues.jboss.org/browse/MODE</url>
+    </issueManagement>
+
+    <developers>
+        <developer>
+            <id>modeshape.org</id>
+            <name>ModeShape Community</name>
+            <organization>modeshape.org</organization>
+            <organizationUrl>http://modeshape.org</organizationUrl>
+        </developer>
+    </developers>
+
+    <properties>
+        <!-- ***************** -->
+        <!-- Repository Deployment URLs -->
+        <!-- ***************** -->
+        <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
+        <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
+        <jcr.version>2.0</jcr.version>
+    </properties>
+
+    <!--
+         This section defines the default dependency settings inherited by
+         child BOMs. Note that this section does not add dependencies, but
+         rather provide default settings.
+     -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.modeshape</groupId>
+                <artifactId>modeshape-jdbc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.jcr</groupId>
+                <artifactId>jcr</artifactId>
+                <version>${jcr.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <distributionManagement>
+      <repository>
+        <id>jboss-releases-repository</id>
+        <name>JBoss Releases Repository</name>
+        <url>${jboss.releases.repo.url}</url>
+      </repository>
+      <snapshotRepository>
+        <id>jboss-snapshots-repository</id>
+        <name>JBoss Snapshots Repository</name>
+        <url>${jboss.snapshots.repo.url}</url>
+      </snapshotRepository>
+    </distributionManagement>
+</project>

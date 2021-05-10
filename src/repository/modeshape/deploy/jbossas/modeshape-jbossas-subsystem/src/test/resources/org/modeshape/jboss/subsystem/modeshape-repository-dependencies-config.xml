@@ -1,0 +1,6 @@
+<subsystem xmlns="urn:jboss:domain:modeshape:3.0">
+  <repository name="sample" depends-on="deployment.webapp.war, org.module"/>
+</subsystem>
+
+
+                            

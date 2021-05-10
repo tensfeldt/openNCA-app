@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0" >
+
+    <display-name>WebDAV-Test-Servlet</display-name>
+    <description>ModeShape fork of the WebDAV Servlet</description>
+    <servlet>
+        <servlet-name>webdav</servlet-name>
+        <servlet-class>org.modeshape.webdav.WebdavServlet</servlet-class>
+        <init-param>
+            <description>name of the class that implements org.modeshape.webdav.IWebdavStore</description>
+            <param-name>ResourceHandlerImplementation</param-name>
+            <param-value>org.modeshape.webdav.LocalFileSystemStore</param-value>
+        </init-param>
+        <init-param>
+            <description>place where to store the webdavcontent on the filesystem</description>
+            <param-name>rootpath</param-name>
+            <param-value>target</param-value>
+        </init-param>
+
+        <init-param>
+            <description>
+                Overriding RFC 2518, the folders of resources being
+                created, can be created too if they do not exist.
+            </description>
+            <param-name>lazyFolderCreationOnPut</param-name>
+            <param-value>0</param-value>
+        </init-param>
+        <init-param>
+            <param-name>no-content-length-headers</param-name>
+            <param-value>0</param-value>
+        </init-param>
+        <init-param>
+            <param-name>maxUploadSize</param-name>
+            <param-value>2000000000</param-value>
+            <!-- set to 2G -->
+        </init-param>
+
+    </servlet>
+
+    <!-- The mapping for the webdav servlet -->
+    <!-- Using /* as the mapping ensures that jasper, welcome files etc are
+         over-ridden and all requests are processed by the webdav servlet.
+         This also overcomes a number of issues with some webdav clients
+         (including MS Webfolders) that do not respond correctly
+  to the
+         redirects (302) that result from using a mapping of / -->
+    <servlet-mapping>
+        <servlet-name>webdav</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- ================ Security Constraints for Testing =============== -->
+
+    <!--
+         <security-constraint>
+         <web-resource-collection>
+         <web-resource-name>The Entire Web Application</web-resource-name>
+         <url-pattern>/*</url-pattern>
+         </web-resource-collection>
+         <auth-constraint>
+         <role-name>webdav</role-name>
+         </auth-constraint>
+         </security-constraint>
+
+         <login-config>
+         <auth-method>BASIC</auth-method>
+         <realm-name>Tomcat Supported Realm</realm-name>
+         </login-config>
+
+         <security-role>
+         <description>
+         An example role defined in "conf/tomcat-users.xml"
+         </description>
+         <role-name>webdav</role-name>
+         </security-role>
+     -->
+
+    <welcome-file-list>
+        <welcome-file/>
+    </welcome-file-list>
+
+</web-app>

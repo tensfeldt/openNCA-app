@@ -1,0 +1,56 @@
+{
+    "name" : "Thorough",
+    "monitoring" : {
+        "enabled" : true,
+    },
+    "workspaces" : {
+        "predefined" : ["otherWorkspace"],
+        "default" : "default",
+        "allowCreation" : true,
+    },
+    "storage" : {
+        "persistence" : {
+            "type" : "database"
+        },
+        "binaryStorage" : {
+            "type" : "file",
+            "directory" : "Thorough/binaries",
+            "minimumBinarySizeInBytes" : 4096
+        }
+    },
+    "security" : {
+        "anonymous" : {
+            "username" : "<anonymous>",
+            "roles" : ["readonly","readwrite","admin"],
+            "useOnFailedLogin" : false
+        },
+        "providers" : [
+            {
+                "name" : "My Custom Security Provider",
+                "classname" : "com.example.MyAuthenticationProvider",
+            },
+            {
+                "classname" : "jaas",
+                "policyName" : "modeshape-jcr",
+            }
+        ]
+    },
+    "sequencing" : {
+        "threadPool" : "modeshape-workers",
+        "sequencers" : [
+            { 
+                "name" : "zipSequencer",
+                "classname" : "ZipSequencer",
+                "pathExpressions" : ["default:/files(//)(*.zip[*])/jcr:content[@jcr:data] => default:/sequenced/zip/$1"],
+            },
+            {
+                "name" : "delimitedTextSequencer",
+                "classname" : "org.modeshape.sequencer.text.DelimitedTextSequencer",
+                "pathExpressions" : [ 
+                    "default:/files//(*.csv[*])/jcr:content[@jcr:data] => default:/sequenced/text/delimited/$1"
+                ],
+                "splitPattern" : ","
+            }
+        ]
+    }
+}

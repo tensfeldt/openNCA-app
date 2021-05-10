@@ -1,0 +1,17 @@
+{
+    "name" : "Test Repository",
+    "jndiName" : "java:jcr/TestRepository",
+    "workspaces" : {
+        "default" : "default",
+        "allowCreation" : true
+    },
+    "textExtraction": {
+        "extractors": {
+            "tikaExtractor": {
+                "name": "Tika content-based extractor",
+                "classname": "tika",
+                "writeLimit": 100
+            }
+        }
+    }
+}

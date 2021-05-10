@@ -1,0 +1,10 @@
+{
+    "name": "MoveRepository",
+    "workspaces" : {
+        "default" : "default",
+        "allowCreation" : true,
+        "initialContent" : {
+            "default" : "data/move-initial-data.xml"
+        }
+    }
+}

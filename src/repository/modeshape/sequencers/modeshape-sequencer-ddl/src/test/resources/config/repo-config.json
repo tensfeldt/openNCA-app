@@ -1,0 +1,11 @@
+{
+    "name" : "DdlSequencer Test Repository",
+    "sequencing" : {
+        "sequencers" : {
+            "Ddl sequencer test" : {
+                "classname" : "DdlSequencer",
+                "pathExpressions" : [ "default://(*.ddl)/jcr:content[@jcr:data] => default:/ddl" ]
+            }
+        }
+    }
+}

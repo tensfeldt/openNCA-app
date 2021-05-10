@@ -1,0 +1,84 @@
+/*
+ * ModeShape (http://www.modeshape.org)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
+//------------------------------------------------------------------------------
+// N A M E S P A C E S
+//------------------------------------------------------------------------------
+<jcr='http://www.jcp.org/jcr/1.0'>
+<nt='http://www.jcp.org/jcr/nt/1.0'>
+<mix='http://www.jcp.org/jcr/mix/1.0'>
+<mj='http://www.modeshape.org/connector/meta/jdbc/1.0'>
+
+[mj:databaseRoot] mixin
+- mj:databaseProductName (string) mandatory
+- mj:databaseProductVersion (string) mandatory
+- mj:databaseMajorVersion (long) mandatory
+- mj:databaseMinorVersion (long) mandatory
+
+[mj:catalog] mixin
+
+[mj:schema] mixin
+
+[mj:tables] mixin
+
+[mj:table] mixin
+- mj:tableType (string)
+- mj:description (string)  
+- mj:typeCatalogName (string)  
+- mj:typeSchemaName (string)  
+- mj:typeName (string)
+- mj:selfReferencingColumnName (string)  
+- mj:referenceGenerationStrategyName(string)  
+
+[mj:column] mixin
+- mj:jdbcDataType (long)  
+- mj:typeName (string)  
+- mj:columnSize (long) mandatory  
+- mj:decimalDigits (long) mandatory
+- mj:radix (long) mandatory
+- mj:nullable (boolean)
+- mj:description (string)
+- mj:defaultValue (string)
+- mj:length (long) mandatory
+- mj:ordinalPosition(long) mandatory
+- mj:scopeCatalogName (string)
+- mj:scopeSchemaName (string)
+- mj:scopeTableName (string)
+- mj:sourceJdbcDataType (long)
+
+[mj:foreignKeys] mixin
+
+[mj:foreignKey] mixin
+- mj:primaryKeyCatalogName (string)
+- mj:primaryKeySchemaName (string)
+- mj:primaryKeyTableName (string) mandatory
+- mj:primaryKeyColumnName (string) mandatory
+- mj:foreignKeyCatalogName (string)
+- mj:foreignKeySchemaName (string)
+- mj:foreignKeyTableName (string) mandatory
+- mj:foreignKeyColumnName (string) mandatory
+- mj:sequenceNr (long) mandatory
+- mj:updateRule (long) mandatory
+- mj:deleteRule (long) mandatory
+- mj:foreignKeyName (string)
+- mj:primaryKeyName (string)
+- mj:deferrability (long)
+
+[mj:procedures] mixin
+
+[mj:procedure] mixin
+- mj:description (string)
+- mj:returnType (long)  

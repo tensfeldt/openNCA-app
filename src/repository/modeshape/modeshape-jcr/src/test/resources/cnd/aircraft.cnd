@@ -1,0 +1,56 @@
+/*
+ * ModeShape (http://www.modeshape.org)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
+//------------------------------------------------------------------------------
+// N A M E S P A C E S
+//------------------------------------------------------------------------------
+<jcr='http://www.jcp.org/jcr/1.0'>
+<nt='http://www.jcp.org/jcr/nt/1.0'>
+<mix='http://www.jcp.org/jcr/mix/1.0'>
+<air='http://www.modeshape.org/examples/aircraft/1.0'>
+
+//------------------------------------------------------------------------------
+// N O D E T Y P E S
+//------------------------------------------------------------------------------
+
+[air:Aircraft] > nt:unstructured
+  - air:maker (string)
+  - air:model (string)
+  - air:designedBy (string)
+  - air:introduced (string) < "(19|20)\d{2}"                // any 4 digit number starting with '19' or '20'
+  - air:range (string)                                      // any integer (with optional ',' every 1000s place)
+     < "\d{1,3}(,?\d{3})*\s*(nm|m|km|mi|ft)"                // followed by 'nm', 'm', 'km', 'mi', or 'ft'
+  - air:maxSpeed (string)                                   // any integer (with optional ',' every 1000s place)
+    < '\d{1,3}(,?\d{3})*\s*(kt|mph|km/h|kmph)'              // followed by 'kt', 'mph', 'km/h' or 'kmph'
+  - air:takeoffSpeed (string)                               // any integer (with optional ',' every 1000s place)
+    < '\d{1,3}(,?\d{3})*\s*(kt|mph|km/h|kmph)'              // followed by 'kt', 'mph', 'km/h' or 'kmph'
+  - air:cruiseSpeed (string)                                // any integer (with optional ',' every 1000s place)
+    < '\d{1,3}(,?\d{3})*\s*(kt|mph|km/h|kmph)'              // followed by 'kt', 'mph', 'km/h' or 'kmph'
+  - air:emptyWeight (string)                                // any integer (with optional ',' every 1000s place)
+    < '\d{1,3}(,?\d{3})*\s*(lb|kg)'                         // followed by 'lb' or 'kg'
+  - air:maxWeight (string)                                  // any integer (with optional ',' every 1000s place)
+    < '\d{1,3}(,?\d{3})*\s*(lb|kg)'                         // followed by 'lb' or 'kg'
+  - air:rateOfClimb (string)                                // any integer (with optional ',' every 1000s place)
+    < '\d{1,3}(,?\d{3})*\s*(ft|km|m)/(s|min)'               // followed by 'ft/s', 'ft/min', 'km/s', 'km/min', 'm/s', or 'm/min'
+  - air:serviceCeiling (string)                             // any integer (with optional ',' every 1000s place)
+    < '\d{1,3}(,?\d{3})*\s*(nm|m|km|mi|ft)'                 // followed by 'nm', 'm', 'km', 'mi', or 'ft'
+  - air:fuelCapacity (string)                               // any integer (with optional ',' every 1000s place)
+    < '\d{1,3}(,?\d{3})*\s*(lb|kg|gal|L)'                   // followed by 'lb', 'kg', 'gal', or 'L'
+  - air:crew (long) < '[0,)'                                // any non-negative value
+  - air:numberBuilt (string)                                // any integer (with optional ',' every 1000s place)
+    < '\d{1,3}(,?\d{3})*\s*[+]?' ,                          // optionally followed by '+'
+      '([<>]\s*)?\d{1,3}(,?\d{3})*'                         // or prefixed by '<' or '>'
+  - air:url (string)

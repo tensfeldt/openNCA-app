@@ -1,0 +1,18 @@
+{
+    "name" : "Test Repository",
+    "jndiName" : "java:jcr/TestRepository",
+    "workspaces" : {
+        "default" : "default",
+        "allowCreation" : true
+    },
+    "textExtraction": {
+        "extractors" : {
+            "tikaExtractor":{
+                "name" : "Tika content-based extractor",
+                "classname" : "tika",
+                "excludedMimeTypes" : ["text/plain", "text/html, application/xml"],
+                "includedMimeTypes" : ["application/xsd"," application/pdf, audio/wav"]
+            }
+        }
+    }
+}

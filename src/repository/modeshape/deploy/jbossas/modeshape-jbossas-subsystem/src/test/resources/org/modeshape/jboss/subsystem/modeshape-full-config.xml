@@ -1,0 +1,57 @@
+<subsystem xmlns="urn:jboss:domain:modeshape:3.0">
+    <repository name="sample" event-bus-size="2048" lock-timeout-millis="1000">
+        <db-persistence url="jdbc:h2:mem:modeshape;DB_CLOSE_DELAY=0" driver="org.h2.Driver"
+                        username="sa" password="sa"/>
+        <node-types>
+            <node-type>custom.cnd</node-type>
+        </node-types>
+        <workspaces>
+            <workspace name="predefinedWorkspace1"/>
+            <workspace name="predefinedWorkspace2">
+                <initial-content>initial-content-default.xml</initial-content>
+            </workspace>
+            <workspace name="predefinedWorkspace3"/>
+            <initial-content>initial-content-default.xml</initial-content>
+        </workspaces>
+        <journaling max-days-to-keep-records="15"/>
+        <index-providers>
+            <index-provider name="local" classname="local"
+                            path="modeshape/artifacts/indexes/"
+                            relative-to="jboss.server.data.dir"/>
+        </index-providers>
+        <indexes>
+            <index name="valueIndex" provider-name="local" kind="value" node-type="nt:unstructured" columns="test:value(NAME)"
+                   workspaces="*"/>
+        </indexes>
+        <file-binary-storage path="modeshape/compositeBinaryStoreRepository/binaries/fs1"/>
+        <sequencers>
+            <sequencer classname="ddl" name="modeshape-sequencer-ddl" path-expression="//a/b"/>
+            <sequencer classname="java" name="modeshape-sequencer-java" path-expression="//a/b"/>
+        </sequencers>
+        <external-sources>
+            <source cacheable="false"
+                    classname="org.modeshape.connector.filesystem.FileSystemConnector"
+                    directoryPath="." name="filesystem" readonly="true" exposeAsWorkspace="ws-fs">
+                <projection>default:/projection1 =&gt;/</projection>
+                <projection>other:/projection1 =&gt;/</projection>
+            </source>
+            <source cacheable="false"
+                    classname="org.modeshape.connector.git.GitConnector"
+                    directoryPath="." module="org.modeshape.connector.git"
+                    name="git" queryableBranches="master,2.x"
+                    readonly="true" remoteName="upstream,origin"/>
+            <source
+                    classname="org.modeshape.connector.meta.jdbc.JdbcMetadataConnector"
+                    dataSourceJndiName="java:jboss/datasources/ExampleDS"
+                    name="jdbc-metadata">
+                <projection>default:/ModeShapeTestDb =&gt;/</projection>
+            </source>
+        </external-sources>
+        <text-extractors>
+            <text-extractor classname="tika" name="tika-extractor1"/>
+            <text-extractor
+                    classname="org.modeshape.extractor.tika.TikaTextExtractor" name="tika-extractor2"/>
+        </text-extractors>
+    </repository>
+    <webapp name="modeshape-cmis.war"/>
+</subsystem>

@@ -1,0 +1,428 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.modeshape</groupId>
+        <artifactId>modeshape-parent</artifactId>
+        <version>5.4.0.Final</version>
+        <relativePath>../modeshape-parent/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>modeshape-distribution</artifactId>
+    <name>ModeShape Distribution</name>
+    <packaging>pom</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-jcr-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-schematic</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-persistence-relational</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-persistence-file</artifactId>
+        </dependency>
+
+        <!-- 
+        Both 'modeshape-jcr' and 'modeshape-extractor-tika' depend on Tika, but have different transitive dependencies
+        (due to exclusions). Therefore, depend on this directly to pull in all transitive dependencies defined in the parent POM.
+        And do this before 'modeshape-jcr' pulls in only a subset.
+        -->
+        <dependency>
+          <groupId>org.apache.tika</groupId>
+          <artifactId>tika-parsers</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-jcr</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-connector-git</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-connector-jdbc-metadata</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-sequencer-images</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-sequencer-mp3</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-sequencer-java</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-sequencer-msoffice</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-sequencer-text</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-sequencer-xml</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-sequencer-xsd</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-sequencer-wsdl</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-sequencer-sramp</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-sequencer-zip</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-sequencer-ddl</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-sequencer-video</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-sequencer-pdf</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-sequencer-audio</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-sequencer-epub</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-sequencer-odf</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-lucene-index-provider</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-elasticsearch-index-provider</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-extractor-tika</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-jdbc-local</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-jbossas-subsystem</artifactId>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>assembly</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <!-- 
+                        We're building JavaDoc in one pass, using dependencies of this module, versus building aggregates
+                        that involve forking a full JavaDoc build of all modules within this module. One pass is not only
+                        a lot faster, but it also is compatible with Mead builds for productization. The only issue is
+                        that some 'provided' dependencies need to be hacked (see above).
+                        -->
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${version.javadoc.plugin}</version>                         
+                        <configuration>
+                            <!-- JDK 8 turn off doclint -->
+                            <additionalparam>-Xdoclint:none</additionalparam>
+                            <!-- 
+                                Maven JavaDoc doesn't handle provided dependencies so all these have to be explicitly added
+                            -->
+                            <additionalDependencies>
+                                <additionalDependency>
+                                    <groupId>org.slf4j</groupId>
+                                    <artifactId>slf4j-api</artifactId>
+                                    <version>${version.org.slf4j}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>log4j</groupId>
+                                    <artifactId>log4j</artifactId>
+                                    <version>${version.log4j}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>org.jboss.spec.javax.servlet</groupId>
+                                    <artifactId>jboss-servlet-api_3.1_spec</artifactId>
+                                    <version>${version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.1_spec}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>org.jboss.spec.javax.security.jacc</groupId>
+                                    <artifactId>jboss-jacc-api_1.5_spec</artifactId>
+                                    <version>${version.org.jboss.spec.javax.security.jacc}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>org.mongodb</groupId>
+                                    <artifactId>mongo-java-driver</artifactId>
+                                    <version>${version.org.mongodb.mongo-java-driver}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>org.jboss.spec.javax.resource</groupId>
+                                    <artifactId>jboss-connector-api_1.7_spec</artifactId>
+                                    <version>${version.org.jboss.spec.javax.resource.jboss-connector-api_1.7_spec}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>org.wildfly.core</groupId>
+                                    <artifactId>wildfly-controller</artifactId>
+                                    <version>${version.org.wildfly.core}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>org.wildfly.core</groupId>
+                                    <artifactId>wildfly-subsystem-test-framework</artifactId>
+                                    <version>${version.org.wildfly.core}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>org.wildfly</groupId>
+                                    <artifactId>wildfly-naming</artifactId>
+                                    <version>${version.org.wildfly}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>org.wildfly</groupId>
+                                    <artifactId>wildfly-security</artifactId>
+                                    <version>${version.org.wildfly}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>com.datastax.cassandra</groupId>
+                                    <artifactId>cassandra-driver-core</artifactId>
+                                    <version>${version.com.datastax.cassandra}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>org.picketbox</groupId>
+                                    <artifactId>picketbox-bare</artifactId>
+                                    <version>${version.org.picketbox}</version>
+                                </additionalDependency>
+                            </additionalDependencies>
+                            <includeDependencySources>true</includeDependencySources>
+                            <failOnError>true</failOnError>
+                            <dependencySourceIncludes>
+                                <!-- We only want JavaDoc for the modules with a groupId of "org.modeshape" -->
+                                <dependencySourceInclude>org.modeshape:*</dependencySourceInclude>
+                            </dependencySourceIncludes>
+                            <dependencySourceExcludes>
+                                <!-- But want to exclude certain artifacts and modules -->
+                                <dependencySourceExclude>org.modeshape:modeshape-integration-tests:*</dependencySourceExclude>
+                                <dependencySourceExclude>org.modeshape:modeshape-jbossas-integration-tests:*</dependencySourceExclude>
+                                <dependencySourceExclude>org.modeshape:*:test:*</dependencySourceExclude>
+                                <dependencySourceExclude>org.modeshape:modeshape-client:*</dependencySourceExclude>
+                            </dependencySourceExcludes>
+
+                            <links>
+                              <link>http://docs.oracle.com/javase/8/docs/api/</link>
+                              <link>http://docs.oracle.com/javaee/7/api/</link>
+                              <link>http://www.slf4j.org/apidocs/</link>
+                              <link>http://www.day.com/maven/javax.jcr/javadocs/jcr-2.0/</link>
+                              <link>http://api.mongodb.org/java/${version.org.mongodb.mongo-java-driver}/</link>
+                            </links>
+                            <groups>
+                              <group>
+                                <title>ModeShape API (extends JCR API)</title>
+                                <packages>org.modeshape.jcr.api:org.modeshape.jcr.api.monitor*:org.modeshape.jcr.api.nodetype*:org.modeshape.jcr.api.observation*:org.modeshape.jcr.api.query*:org.modeshape.jcr.api.value*</packages>
+                              </group>
+                              <group>
+                                <title>ModeShape JDBC Driver</title>
+                                <packages>org.modeshape.jdbc*</packages>
+                              </group>
+                              <group>
+                                <title>ModeShape engine</title>
+                                <packages>org.modeshape.jcr*:org.modeshape.jcr.bus*:org.modeshape.jcr.cache*:org.modeshape.jcr.clustering*:org.modeshape.jcr.query*:org.modeshape.jcr.security*:org.modeshape.jcr.sequencer*:org.modeshape.jcr.text*:org.modeshape.jcr.value*</packages>
+                              </group>
+                              <group>
+                                <title>ModeShape SPI for Extensions</title>
+                                <packages>org.modeshape.jcr.spi.*:org.modeshape.jcr.federation.spi.*:org.modeshape.jcr.api.sequencer*:org.modeshape.jcr.api.mimetype*:org.modeshape.jcr.api.text*</packages>
+                              </group>
+                              <group>
+                                <title>ModeShape Provided Sequencers</title>
+                                <packages>org.modeshape.sequencer*</packages>
+                              </group>
+                              <group>
+                                <title>ModeShape Provided Connectors</title>
+                                <packages>org.modeshape.connector*</packages>
+                              </group>
+                              <group>
+                                <title>ModeShape Provided Mime Type Detectors</title>
+                                <packages>org.modeshape.jcr.mimetype*</packages>
+                              </group>
+                              <group>
+                                <title>ModeShape Provided Text Extractors</title>
+                                <packages>org.modeshape.extractor*</packages>
+                              </group>
+                              <group>
+                                <title>ModeShape Web services</title>
+                                <packages>org.modeshape.web*</packages>
+                              </group>
+                              <group>
+                                <title>ModeShape Subsystem for JBoss AS</title>
+                                <packages>org.modeshape.jboss.*</packages>
+                              </group>
+                            </groups>
+                            <excludePackageNames>org.modeshape.test*</excludePackageNames>
+                            <attach>false</attach>
+                            <useStandardDocletOptions>true</useStandardDocletOptions>
+                            <charset>UTF-8</charset>
+                            <docencoding>UTF-8</docencoding>
+                            <encoding>UTF-8</encoding>
+                            <locale>en_US</locale>
+                            <breakiterator>true</breakiterator>
+                            <version>true</version>
+                            <author>false</author>
+                            <keywords>true</keywords>
+                            <overview>${basedir}/src/javadoc/overview.html</overview>
+                            <maxmemory>1024m</maxmemory>
+                        </configuration>
+
+                        <executions>
+                            <execution>
+                                <id>javadoc-all</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>javadoc</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/api</outputDirectory>
+                                    <reportOutputDirectory>${project.build.directory}/api</reportOutputDirectory>
+                                    <destDir>api</destDir>
+                                    <doctitle>${project.name} Library Reference (${project.version})</doctitle>
+                                    <windowtitle>${project.name} Library Reference (${project.version})</windowtitle>
+                                    <detectOfflineLinks>false</detectOfflineLinks>
+                                </configuration>
+                            </execution>
+                        </executions>
+
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <executions>
+                            <!--This builds the javadoc, binary & source distributions (which are not attached & deployed) -->
+                            <execution>
+                                <id>default</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <configuration>
+                                    <finalName>modeshape-${project.version}</finalName>
+                                    <attach>false</attach>
+                                    <descriptorRefs>
+                                        <descriptorRef>binary-distribution</descriptorRef>
+                                        <descriptorRef>source-distribution</descriptorRef>
+                                    </descriptorRefs>
+                                    <descriptors>
+                                        <descriptor>src/assembly/javadoc.xml</descriptor>
+                                    </descriptors>                                    
+                                </configuration>
+                            </execution>
+                            <!--
+                                This builds the WF kit which *must* be attached & installed so that it's resolved by the
+                                integration tests.
+                            -->
+                            <execution>
+                                <id>build-wf-kit</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <configuration>
+                                    <finalName>modeshape-${project.version}</finalName>
+                                    <attach>true</attach>
+                                    <descriptorRefs>
+                                        <descriptorRef>${wf.dist.id}</descriptorRef>
+                                    </descriptorRefs>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <!--
+              This profile is enabled by default and only builds the distributions required 
+              by the integration tests.
+            -->
+            <id>integration</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <configuration>
+                            <finalName>modeshape-${project.version}</finalName>
+                            <!--This must be attached so that it's resolved by the integration tests modules-->
+                            <attach>true</attach>
+                            <descriptorRefs>
+                                <descriptorRef>${wf.dist.id}</descriptorRef>
+                            </descriptorRefs>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

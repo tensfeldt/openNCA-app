@@ -1,0 +1,114 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.modeshape</groupId>
+    <artifactId>modeshape-parent</artifactId>
+	<version>5.4.0.Final</version>
+    <relativePath>modeshape-parent/pom.xml</relativePath>
+  </parent>
+
+	<groupId>org.modeshape</groupId>
+	<artifactId>modeshape</artifactId>
+
+	<packaging>pom</packaging>
+	<name>ModeShape</name>
+	<description>Builds the entire ModeShape distribution.</description>
+
+	<modules>
+        <!-- Order is important -->
+
+        <!-- First these -->
+        <module>checkstyle</module>
+        <module>modeshape-parent</module>
+        <module>modeshape-assembly-descriptors</module>
+        <!-- Order is important -->
+        <module>modeshape-jcr-api</module>
+        <module>modeshape-common</module>
+        <module>modeshape-schematic</module>
+        <module>persistence</module>
+        <module>modeshape-jcr</module>
+        <module>modeshape-unit-test</module>
+        <module>sequencers</module>
+        <module>extractors</module>
+        <module>index-providers</module>
+
+        <!--Connectors-->
+        <module>connectors</module>
+        <!--
+          The REST client needs the JDBC driver
+        -->
+        <module>web</module>
+        <module>modeshape-jdbc-local</module>
+        <module>modeshape-jdbc</module>
+        <!-- 
+          JCA Resource adapter
+    	-->
+    	<module>modeshape-jca</module>
+
+        <!--
+          The JBoss AS7 subsystem needs the web components and (local) JDBC drivers.
+        -->
+        <module>deploy/jbossas</module>
+        <module>modeshape-distribution</module>
+
+        <!-- Finally the BOMs -->
+        <module>boms/modeshape-bom-embedded</module>
+        <module>boms/modeshape-bom-jbossas</module>
+        <module>boms/modeshape-bom-remote-client</module>
+    </modules>
+	<properties>
+		<rootDir>${project.basedir}</rootDir>
+	</properties>
+
+	<profiles>
+		<!-- 
+		  This profile is used to run the build plus the integration tests
+			and must be activated manually, as in "mvn ... -Pintegration ..."
+		-->
+		<profile>
+			<id>integration</id>
+			<modules>
+			  <!-- 
+			    Build the distribution before running the integration tests, 
+			    as some of the integration tests rely upon the distributions
+			  -->
+				<module>integration</module>
+			</modules>
+		</profile>
+		
+		<!-- 
+		  This profile is used to run longer-running performance tests,
+		  and must be activated manually, as in "mvn ... -Pperformance ..."
+		-->
+        <profile>
+            <id>performance</id>
+            <modules>
+                <!--
+                    The JBoss AS7 subsystem needs the web components and (local) JDBC drivers.
+                -->
+                <module>modeshape-performance-tests</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>persistence-integration</id>
+            <modules>
+                <module>modeshape-persistence-tests</module>
+            </modules>
+        </profile>
+                		
+		<!-- 
+		  This profile is used to build everything for a release, including all assemblies,
+			and must be activated manually, as in "mvn ... -Passembly ..."
+		-->
+        <profile>
+            <id>assembly</id>
+            <modules>
+                <module>modeshape-jca-rar</module>
+                <module>modeshape-client</module>
+                <module>integration</module>
+            </modules>
+        </profile>
+	</profiles>
+</project>

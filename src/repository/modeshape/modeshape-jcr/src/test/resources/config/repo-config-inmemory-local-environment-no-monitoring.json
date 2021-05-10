@@ -1,0 +1,21 @@
+{
+    "name" : "No Monitoring Repository",
+    "monitoring" : {
+        "enabled" : false
+    },
+    "storage" : {
+        "persistence" : {
+            "type" : "mem"
+        }
+    },
+    "workspaces" : {
+        "default" : "default",
+        "allowCreation" : true
+    },
+    "security" : {
+        "anonymous" : {
+            "roles" : ["readonly","readwrite","admin"],
+            "useOnFailedLogin" : false
+        }
+    }
+}

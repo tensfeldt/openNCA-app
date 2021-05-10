@@ -1,0 +1,11 @@
+{
+    "name" : "WSDL Sequencer Test Repository",
+    "sequencing" : {
+        "sequencers" : {
+            "WSDL sequencer" : {
+                "classname" : "wsdlsequencer",
+                "pathExpressions" : [ "default:/(*.wsdl)/jcr:content[@jcr:data] => /wsdl" ]
+            }
+        }
+    }
+}

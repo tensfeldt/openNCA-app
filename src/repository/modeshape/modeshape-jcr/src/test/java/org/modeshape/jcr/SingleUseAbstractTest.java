@@ -1,0 +1,315 @@
+/*
+ * ModeShape (http://www.modeshape.org)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.modeshape.jcr;
+
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertThat;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+import javax.jcr.ImportUUIDBehavior;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Workspace;
+import org.junit.After;
+import org.junit.Before;
+import org.modeshape.jcr.api.JcrTools;
+import org.modeshape.schematic.document.Changes;
+import org.modeshape.schematic.document.Document;
+import org.modeshape.schematic.document.EditableArray;
+import org.modeshape.schematic.document.EditableDocument;
+import org.modeshape.schematic.document.Editor;
+import org.modeshape.schematic.document.Json;
+import junit.framework.AssertionFailedError;
+
+/**
+ * A base class for tests that require a new JcrSession and JcrRepository for each test method.
+ */
+public abstract class SingleUseAbstractTest extends AbstractJcrRepositoryTest {
+
+    protected static final String REPO_NAME = "testRepo";
+
+    /**
+     * Flag that will signal to {@link #beforeEach()} whether to automatically start the repository using the
+     * {@link #createRepositoryConfiguration(String) default configuration}.
+     * <p>
+     * There are two ways to run tests with this class:
+     * <ol>
+     * <li>All tests runs against a fresh repository created from the same configuration. In this case, the
+     * {@link #startRepositoryAutomatically} variable should be set to true, and the
+     * {@link #createRepositoryConfiguration(String)} should be overridden if a non-default configuration is to be
+     * used for all the tests.</li>
+     * <li>Each test requires a fresh repository with a different configuration. In this case, the
+     * {@link #startRepositoryAutomatically} variable should be set to <code>false</code>, and each test should then call one of
+     * the {@link #startRepositoryWithConfiguration(RepositoryConfiguration)} methods before using the repository.</li>
+     * </ol>
+     */
+    private boolean startRepositoryAutomatically = true;
+
+    protected JcrRepository repository;
+    protected JcrSession session;
+    protected JcrTools tools;
+    
+    protected void startRepository() throws Exception {
+        RepositoryConfiguration repositoryConfiguration = createRepositoryConfiguration(REPO_NAME);
+        repositoryConfiguration = repositoryConfiguration.with(new TestingEnvironment());
+        repository = new JcrRepository(repositoryConfiguration);
+        repository.start();
+        session = repository.login();
+    }
+
+    protected void stopRepository() throws Exception {
+        try {
+            try {
+                if (session != null && session.isLive()) session.logout();
+            } finally {
+                TestingUtil.killRepositories(repository);
+            }
+        } finally {
+            repository = null;
+        }
+    }
+
+    @Override
+    @Before
+    public void beforeEach() throws Exception {
+        super.beforeEach();
+        if (startRepositoryAutomatically()) {
+            startRepository();
+        }
+        tools = new JcrTools();
+    }
+
+    @After
+    public void afterEach() throws Exception {
+        stopRepository();
+    }
+
+    @Override
+    protected JcrSession session() {
+        return session;
+    }
+
+    protected Session newSession() throws RepositoryException {
+        return repository.login();
+    }
+
+    protected Session jcrSession() {
+        return session;
+    }
+
+    @Override
+    protected JcrRepository repository() {
+        return repository;
+    }
+
+    /**
+     * Subclasses can override this method to define the RepositoryConfiguration that will be used for the given repository name
+     * By default, this method simply returns an empty configuration:
+     *
+     * @param repositoryName the name of the repository to create; never null
+     * @return the repository configuration
+     * @throws Exception if there is a problem creating the configuration
+     */
+    protected RepositoryConfiguration createRepositoryConfiguration(String repositoryName) throws Exception {
+        return new RepositoryConfiguration(repositoryName);
+    }
+
+    /**
+     * Subclasses can call this method at the beginning of each test to shutdown any currently-running repository and to start up
+     * a new repository with the given JSON configuration content.
+     * 
+     * @param configContent the JSON string containing the configuration for the repository (note that single quotes can be used
+     *        in place of double quote, making it easier for to specify a JSON content as a Java string)
+     * @throws Exception if there was a problem starting the repository
+     * @see #startRepositoryWithConfiguration(Document)
+     * @see #startRepositoryWithConfiguration(InputStream)
+     * @see #startRepositoryWithConfiguration(RepositoryConfiguration)
+     * @see #startRepositoryAutomatically
+     */
+    protected void startRepositoryWithConfiguration( String configContent ) throws Exception {
+        assertThat(configContent, is(notNullValue()));
+        Document doc = Json.read(configContent);
+        startRepositoryWithConfiguration(doc);
+    }
+
+    /**
+     * Subclasses can call this method at the beginning of each test to shutdown any currently-running repository and to start up
+     * a new repository with the given JSON configuration document.
+     * 
+     * @param doc the JSON document containing the configuration for the repository
+     * @throws Exception if there was a problem starting the repository
+     * @see #startRepositoryWithConfiguration(String)
+     * @see #startRepositoryWithConfiguration(InputStream)
+     * @see #startRepositoryWithConfiguration(RepositoryConfiguration)
+     * @see #startRepositoryAutomatically
+     */
+    protected void startRepositoryWithConfiguration( Document doc ) throws Exception {
+        assertThat(doc, is(notNullValue()));
+        RepositoryConfiguration config = new RepositoryConfiguration(doc, REPO_NAME);
+        startRepositoryWithConfiguration(config);
+    }
+
+    /**
+     * Subclasses can call this method at the beginning of each test to shutdown any currently-running repository and to start up
+     * a new repository with the given JSON configuration content.
+     * 
+     * @param configInputStream the input stream containing the JSON content defining the configuration for the repository
+     * @throws Exception if there was a problem starting the repository
+     * @see #startRepositoryWithConfiguration(String)
+     * @see #startRepositoryWithConfiguration(Document)
+     * @see #startRepositoryWithConfiguration(RepositoryConfiguration)
+     * @see #startRepositoryAutomatically
+     */
+    protected void startRepositoryWithConfiguration( InputStream configInputStream ) throws Exception {
+        assertThat(configInputStream, is(notNullValue()));
+        RepositoryConfiguration config = RepositoryConfiguration.read(configInputStream, REPO_NAME);
+        startRepositoryWithConfiguration(config);
+    }
+ 
+    protected void startRepositoryWithConfigurationFrom(String pathToConfiguration) throws Exception {
+        startRepositoryWithConfiguration(getClass().getClassLoader().getResourceAsStream(pathToConfiguration));
+    }
+
+    /**
+     * Subclasses can call this method at the beginning of each test to shutdown any currently-running repository and to start up
+     * a new repository with the given repository configuration
+     * 
+     * @param configuration the repository configuration object; may not be null can be used in place of double quote, making it
+     *        easier for to specify a JSON content as a Java string)
+     * @throws Exception if there was a problem starting the repository
+     * @see #startRepositoryWithConfiguration(String)
+     * @see #startRepositoryWithConfiguration(Document)
+     * @see #startRepositoryWithConfiguration(InputStream)
+     * @see #startRepositoryAutomatically
+     */
+    protected void startRepositoryWithConfiguration( RepositoryConfiguration configuration ) throws Exception {
+        // always use the test environment to provide some persistence defaults...
+        configuration = configuration.with(new TestingEnvironment());
+        assertThat(configuration, is(notNullValue()));
+        if (repository != null) {
+            try {
+                repository.shutdown().get(10, TimeUnit.SECONDS);
+            } finally {
+                repository = null;
+            }
+        }
+        repository = new JcrRepository(configuration);
+        repository.start();
+        session = repository.login();
+    }
+
+    /**
+     * Make sure that a workspace with the supplied name exists.
+     * 
+     * @param workspaceName the name of the workspace; may not be null
+     */
+    protected void predefineWorkspace( RepositoryConfiguration configuration, String workspaceName ) {
+        assertThat(workspaceName, is(notNullValue()));
+        // Edit the configuration ...
+        Editor editor = configuration.edit();
+        EditableDocument workspaces = editor.getOrCreateDocument("workspaces");
+        EditableArray predefined = workspaces.getOrCreateArray("predefined");
+        predefined.addStringIfAbsent(workspaceName);
+
+        // And apply the changes ...
+        Changes changes = editor.getChanges();
+        if (changes.isEmpty()) return;
+        try {
+            repository.apply(changes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new AssertionFailedError("Unexpected error while predefining the \"" + workspaceName + "\" workspace:"
+                                           + e.getMessage());
+        }
+    }
+
+    /**
+     * Utility method to get the resource on the classpath given by the supplied name
+     * 
+     * @param name the name (or path) of the classpath resource
+     * @return the input stream to the content; may be null if the resource does not exist
+     */
+    protected InputStream resourceStream( String name ) {
+        return getClass().getClassLoader().getResourceAsStream(name);
+    }
+
+    /**
+     * Register the node types in the CND file at the given location on the classpath.
+     * 
+     * @param resourceName the name of the CND file on the classpath
+     * @throws RepositoryException if there is a problem registering the node types
+     * @throws IOException if the CND file could not be read
+     */
+    protected void registerNodeTypes( String resourceName ) throws RepositoryException, IOException {
+        InputStream stream = resourceStream(resourceName);
+        assertThat(stream, is(notNullValue()));
+        Workspace workspace = session().getWorkspace();
+        org.modeshape.jcr.api.nodetype.NodeTypeManager ntMgr = (org.modeshape.jcr.api.nodetype.NodeTypeManager)workspace.getNodeTypeManager();
+        ntMgr.registerNodeTypes(stream, true);
+    }
+
+    /**
+     * Import under the supplied parent node the repository content in the XML file at the given location on the classpath.
+     * 
+     * @param parent the node under which the content should be imported; may not be null
+     * @param resourceName the name of the XML file on the classpath
+     * @param uuidBehavior the UUID behavior; see {@link ImportUUIDBehavior} for values
+     * @throws RepositoryException if there is a problem importing the content
+     * @throws IOException if the XML file could not be read
+     */
+    protected void importContent( Node parent,
+                                  String resourceName,
+                                  int uuidBehavior ) throws RepositoryException, IOException {
+        InputStream stream = resourceStream(resourceName);
+        assertThat(stream, is(notNullValue()));
+        parent.getSession().getWorkspace().importXML(parent.getPath(), stream, uuidBehavior);
+    }
+
+    /**
+     * Import under the supplied parent node the repository content in the XML file at the given location on the classpath.
+     * 
+     * @param parentPath the path to the node under which the content should be imported; may not be null
+     * @param resourceName the name of the XML file on the classpath
+     * @param uuidBehavior the UUID behavior; see {@link ImportUUIDBehavior} for values
+     * @throws RepositoryException if there is a problem importing the content
+     * @throws IOException if the XML file could not be read
+     */
+    protected void importContent( String parentPath,
+                                  String resourceName,
+                                  int uuidBehavior ) throws RepositoryException, IOException {
+        InputStream stream = resourceStream(resourceName);
+        assertThat(stream, is(notNullValue()));
+        session().getWorkspace().importXML(parentPath, stream, uuidBehavior);
+    }
+
+    protected boolean startRepositoryAutomatically() {
+        return startRepositoryAutomatically;
+    }
+
+    protected InputStream resource( String path ) {
+        InputStream stream = getClass().getClassLoader().getResourceAsStream(path);
+        assertThat(stream, is(notNullValue()));
+        return stream;
+    }
+    
+    protected <R> R runInTransaction(Callable<R> operation, String...keysToLock) {
+        return repository.runningState().documentStore().localStore().runInTransaction(operation, 0, keysToLock);
+    }
+}

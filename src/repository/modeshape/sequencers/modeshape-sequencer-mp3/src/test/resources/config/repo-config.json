@@ -1,0 +1,15 @@
+{
+    "name" : "Mp3 Sequencers Test Repository",
+    "sequencing" : {
+        "sequencers" : {
+            "Mp3s in the same location" : {
+                "classname" : "mp3",
+                "pathExpressions" : [ "default://(*.mp3)/jcr:content[@jcr:data]" ]
+            },
+            "Mp3s in different location" : {
+                "classname" : "org.modeshape.sequencer.mp3.Mp3MetadataSequencer",
+                "pathExpressions" : [ "default://(*.mp3)/jcr:content[@jcr:data] => /mp3s" ]
+            }
+        }
+    }
+}

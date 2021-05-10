@@ -1,0 +1,21 @@
+{
+    "name" : "Federated repository",
+    "workspaces" : {
+        "predefined" : ["ws1", "ws2"],
+        "default" : "default",
+        "allowCreation" : true
+    },
+    "storage" : {
+        "persistence" : {
+            "type" : "file",
+            "path": "target/persistent_repository/db"
+        }
+    },
+    "externalSources" : {
+        "mock-source" : {
+            "classname" : "org.modeshape.connector.mock.MockConnector",
+            "persistentDataAcrossRestarts" : true,
+            "cacheable" : false
+        }
+    },
+}

@@ -1,0 +1,17 @@
+{
+    "name" : "Persistent Repository",
+    "jndiName" : "",
+    "monitoring" : {
+        "enabled" : false
+    },
+    "workspaces" : {
+        "default" : "default",
+        "allowCreation" : true
+    },
+    "security" : {
+        "anonymous" : {
+            "roles" : ["readonly","readwrite","admin"],
+            "useOnFailedLogin" : false
+        }
+    }
+}

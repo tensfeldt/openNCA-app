@@ -1,0 +1,67 @@
+{
+    "name" : "My Repository",
+    "jndiName" : "java:jcr/local/MyRepository",
+    "monitoring" : {
+        "enabled" : true
+    },
+    "storage" : {
+        "persistence" : {
+            "type" : "mycustom",
+            "prop1" : "value",
+            "prop2" : true
+        },
+        "binaryStorage" : {
+            "minimumBinarySizeInBytes" : 10240
+        }
+    },
+    "workspaces" : {
+        "predefined" : ["ws1","ws2"],
+        "default" : "default",
+        "allowCreation" : true,
+        "initialContent" : {
+            "default" : "file1.xml",
+            "*" : "default.xml"
+        }
+    },
+    "node-types" : ["file1.cnd", "file2.cnd"],
+    "security" : {
+        "anonymous" : {
+            "roles" : ["readonly","readwrite","admin"],
+            "useOnFailedLogin" : false
+        },
+        "providers" : [
+            {
+                "name" : "My Custom Security Provider",
+                "classname" : "com.example.MyAuthenticationProvider",
+                "description" : "A custom security provider used for authentication and authorization."
+            },
+            {
+                "classname" : "JAAS",
+                "policyName" : "modeshape-jcr"
+            }
+        ]
+    },
+    "textExtraction": {
+        "extractors" : {
+            "tikaExtractor":{
+                "name" : "Tika content-based extractor",
+                "classname" : "tika"
+            }
+        }
+    },
+    "sequencing" : {
+        "sequencers" : {
+            "ZIP Sequencer" : {
+                "classname" : "ZipSequencer",
+                "pathExpressions" : ["default:/files(//)(*.zip[*])/jcr:content[@jcr:data] => default:/sequenced/zip/$1"],
+            },
+            "Delimited Text File Sequencer" : {
+                "classname" : "org.modeshape.sequencer.text.DelimitedTextSequencer",
+                "pathExpressions" : [ 
+                    "default:/files//(*.csv[*])/jcr:content[@jcr:data] => default:/sequenced/text/delimited/$1"
+                ],
+                "splitPattern" : ","
+            }
+        }
+    }
+}

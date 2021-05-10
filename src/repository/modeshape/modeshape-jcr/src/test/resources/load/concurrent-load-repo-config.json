@@ -1,0 +1,24 @@
+{
+    "name" : "config",
+    "jndiName" : "",
+    "workspaces" : {
+        "default" : "load",
+        "predefined" : ["load"],
+        "allowCreation" : true
+    },
+    "storage" : {
+        "binaryStorage" : {
+            "type" : "file",
+            "directory": "../modeshape-jcr/target/concurrent_load_non_clustered/binary/",
+            "minimumBinarySizeInBytes" : 999
+        }
+    },
+    "security" : {
+        "anonymous" : {
+            "username" : "<anonymous>",
+            "roles" : ["readonly","readwrite","admin"],
+            "useOnFailedLogin" : false
+        }
+    },
+    "node-types" : ["load/deck-cards-resource.cnd"]
+}

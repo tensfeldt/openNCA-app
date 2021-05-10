@@ -1,0 +1,11 @@
+{
+    "name" : "MS Office Test Repository",
+    "sequencing" : {
+        "sequencers" : {
+            "Office sequencer" : {
+                "classname" : "msoffice",
+                "pathExpressions" : [ "default://(*.(xls|doc|ppt))/jcr:content[@jcr:data]" ]
+            }
+        }
+    }
+}
