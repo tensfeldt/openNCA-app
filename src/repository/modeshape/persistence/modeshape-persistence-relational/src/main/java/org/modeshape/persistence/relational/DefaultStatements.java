@@ -24,12 +24,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-// import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-// import java.util.stream.IntStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import org.modeshape.common.annotation.NotThreadSafe;
@@ -124,35 +122,6 @@ public class DefaultStatements implements Statements {
         }
     }
     
-    // WPH - replaced with latest from source repository.
-    //
-    // @Override
-    // public <R> List<R> load(Connection connection, Collection<String> ids, Function<Document, R> parser) throws SQLException {
-    //     if (logger.isDebugEnabled()) {
-    //         logger.debug("Loading ids {0} from {1}", ids.toString(), tableName());
-    //     }
-    //     if (ids.isEmpty()) {
-    //         return new ArrayList<>();
-    //     }
-    //     String getMultipleStatement = statements.get(GET_MULTIPLE);
-    //     String formattedStatement = formatStatementWithMultipleParams(getMultipleStatement, ids.size());
-    //     try (PreparedStatement ps = connection.prepareStatement(formattedStatement)) {
-    //         int paramIdx = 1;
-    //         for (String id : ids) {
-    //             ps.setString(paramIdx++, id);
-    //         }
-        
-    //         try (ResultSet rs = ps.executeQuery()) {
-    //             List<R> results = new ArrayList<>();
-    //             while (rs.next()) {
-    //                 Document document = readDocument(rs.getBinaryStream(1));
-    //                 results.add(parser.apply(document));
-    //             }
-    //             return results;
-    //         }
-    //     }
-    // }
-
     @Override
     public <R> List<R> load( Connection connection, List<String> ids, Function<Document, R> parser ) throws SQLException {
         if (logger.isDebugEnabled()) {
@@ -171,7 +140,11 @@ public class DefaultStatements implements Statements {
 
     private <R> List<R> loadIDs( Connection connection, String statement, List<String> ids, Function<Document, R> parser) 
             throws SQLException {
-        String statementString = formatStatementWithMultipleParams(statement, ids);
+        String multipleSelectionClause = statements.get(MULTIPLE_SELECTION);
+
+        String statementString = formatStatementWithMultipleParams(
+            statement.replace(PLACEHOLDER_STRING, multipleSelectionClause),
+            ids);
         try (PreparedStatement ps = connection.prepareStatement(statementString)) {
             int paramIdx = 1;
             for (String id : ids) {
@@ -189,77 +162,11 @@ public class DefaultStatements implements Statements {
         }
     }
 
-    // WPH - replaced with latest from source repository.
-    //
-    // private String formatStatementWithMultipleParams(String statement, int paramCount) {
-    //     String multipleSelectionClause = statements.get(MULTIPLE_SELECTION);
-        
-    //     int maxStatementParamCount = maxStatementParamCount();
-    //     int inClauseSegments = paramCount / maxStatementParamCount;
-    //     int lastInClauseSize = paramCount % maxStatementParamCount;
-    //     StringBuilder multipleSelectionStatement = new StringBuilder();
-        
-    //     if (inClauseSegments > 0) {
-    //         String multipleSelectionSegment = multipleSelectionClause.replace(PLACEHOLDER_STRING,
-    //                                                                           IntStream.range(0, maxStatementParamCount)
-    //                                                                                    .mapToObj(nr -> "?")
-    //                                                                                    .collect(Collectors.joining(",")));     
-    //         IntStream.range(0, inClauseSegments).forEach(i -> {
-    //             if (multipleSelectionStatement.length() > 0) {
-    //                 multipleSelectionStatement.append(" OR ");
-    //             }
-    //             multipleSelectionStatement.append(multipleSelectionSegment);   
-    //         });
-    //     }
-      
-    //     if (lastInClauseSize > 0) {
-    //         String lastSelectionSegment = multipleSelectionClause.replace(PLACEHOLDER_STRING,
-    //                                                                       IntStream.range(0, lastInClauseSize)
-    //                                                                                .mapToObj(nr -> "?")
-    //                                                                                .collect(Collectors.joining(",")));
-    //         if (multipleSelectionStatement.length() > 0) {
-    //             multipleSelectionStatement.append(" OR ");
-    //         } 
-    //         multipleSelectionStatement.append(lastSelectionSegment);
-    //     }
-        
-    //     return statement.replaceAll(PLACEHOLDER_STRING, multipleSelectionStatement.toString());
-    // }
-
     String formatStatementWithMultipleParams(String statement, List<String> ids) {
         String params = ids.stream().map(id -> "?").collect(Collectors.joining(","));
         return statement.replaceAll(PLACEHOLDER_STRING, params);
     }    
     
-    // @Override
-    // public boolean lockForWriting( Connection connection, List<String> ids ) throws SQLException {
-    //     if (logger.isDebugEnabled()) {
-    //         logger.debug("Attempting to lock ids {0} from {1}", ids.toString(), tableName());
-    //     }
-    //     String lockContentStatement = statements.get(LOCK_CONTENT);
-    //     if (ids.isEmpty()) {
-    //         return false;
-    //     }
-    //     String formattedStatement = formatStatementWithMultipleParams(lockContentStatement, ids.size());
-    //     try (PreparedStatement ps = connection.prepareStatement(formattedStatement)) {
-    //         int paramIdx = 1;
-    //         for (String id : ids) {
-    //             ps.setString(paramIdx++, id);
-    //         }
-        
-    //         try (ResultSet rs = ps.executeQuery()) {
-    //             // any failed lock should result in a timeout being eventually thrown by the DB
-    //             // ModeShape will frequently try to lock new nodes before inserting them, so it's important that this method 
-    //             // returns 'true' for those nodes
-    //             logger.debug("successfully locked ids");
-    //             return true;
-    //         } catch (SQLException e) {
-    //             logger.debug(e, " cannot lock ids");
-    //             return false;
-    //         }
-    //     }
-    // }
-
     @Override
     public boolean lockForWriting( Connection connection, List<String> ids ) throws SQLException {
         if (logger.isDebugEnabled()) {
@@ -291,150 +198,6 @@ public class DefaultStatements implements Statements {
             }
         } 
     }
-
-    // @Override
-    // public DefaultBatchUpdate batchUpdate( Connection connection ) {
-    //     return new DefaultBatchUpdate(connection);
-    // }
-
-    // @Override
-    // public boolean exists( Connection connection, String id ) throws SQLException {
-    //     if (logger.isDebugEnabled()) {
-    //         logger.debug("Checking if the content with ID {0} exists in {1}", id, tableName());
-    //     }
-        
-    //     try (PreparedStatement ps = connection.prepareStatement(statements.get(CONTENT_EXISTS))) {
-    //         ps.setString(1, id);
-    //         ResultSet rs = ps.executeQuery();
-    //         return rs.next();
-    //     }
-    // }
-
-    // @Override
-    // public Void removeAll( Connection connection ) throws SQLException {
-    //     logTableInfo("Removing all content from {0}");
-    //     try (PreparedStatement ps = connection.prepareStatement(statements.get(REMOVE_ALL_CONTENT))) {
-    //         ps.executeUpdate();
-    //     }
-    //     return null;
-    // }
-    
-    // protected int maxStatementParamCount() {
-    //     return DEFAULT_MAX_STATEMENT_PARAM_COUNT;
-    // }
-   
-    // protected void logTableInfo( String message ) {
-    //     if (logger.isDebugEnabled()) {
-    //         logger.debug(message, tableName());
-    //     }
-    // }
-
-    // protected String tableName() {
-    //     return config.tableName();
-    // }
-
-    // protected Document readDocument(InputStream is) {
-    //     try (InputStream contentStream = config.compress() ? new GZIPInputStream(is) : is) {
-    //         return Bson.read(contentStream);
-    //     } catch (IOException e) {
-    //         throw new RelationalProviderException(e);
-    //     }
-    // }
-
-    // protected byte[] writeDocument(Document content)  {
-    //     try {
-    //         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    //         try (OutputStream out = config.compress() ? new GZIPOutputStream(bos) : bos) {
-    //             Bson.write(content, out);
-    //         }
-    //         return bos.toByteArray();
-    //     } catch (IOException e) {
-    //         throw new RelationalProviderException(e);
-    //     }
-    // }    
-
-    // @NotThreadSafe
-    // protected class DefaultBatchUpdate implements BatchUpdate{
-    //     private final Connection connection;
-     
-    //     protected DefaultBatchUpdate( Connection connection ) {
-    //         this.connection = connection;
-    //     }
-
-    //     @Override
-    //     public void insert( Map<String, Document> documentsById ) throws SQLException {   
-    //         if (documentsById.isEmpty()) {
-    //             return;
-    //         }
-    //         String sql = statements.get(INSERT_CONTENT);
-    //         PreparedStatement insert = connection.prepareStatement(sql);
-    //         documentsById.forEach(( id, document ) -> {
-    //             if (logger.isDebugEnabled()) {
-    //                 logger.debug("adding batch statement: {0}", sql.replaceFirst("\\?", id));
-    //             }
-    //             insertDocument(insert, id, document);
-    //         });
-    //         insert.executeBatch();
-    //     }
-        
-    //     protected void insertDocument(PreparedStatement statement, String id, Document document) {
-    //         try {
-    //             statement.setString(1, id);
-    //             byte[] content = writeDocument(document);
-    //             statement.setBytes(2, content);
-    //             statement.addBatch();
-    //         } catch (SQLException e) {
-    //             throw new RelationalProviderException(e);
-    //         }    
-    //     }
-
-    //     @Override
-    //     public void update( Map<String, Document> documentsById ) throws SQLException {
-    //         if (documentsById.isEmpty()) {
-    //             return;
-    //         }
-    //         String sql = statements.get(UPDATE_CONTENT);
-    //         PreparedStatement update = connection.prepareStatement(sql);
-    //         documentsById.forEach(( id, document ) -> {
-    //             if (logger.isDebugEnabled()) {
-    //                 logger.debug("adding batch statement: {0}", sql.replaceFirst(" ID.*=.*\\?", " ID = " + id));
-    //             }
-    //             updateDocument(update, id, document);
-    //         });
-    //         update.executeBatch();
-    //     }
-
-    //     protected void updateDocument(PreparedStatement statement, String id, Document document) {
-    //         try {
-    //             byte[] content = writeDocument(document);
-    //             statement.setBytes(1, content);
-    //             statement.setString(2, id);
-    //             statement.addBatch();
-    //         } catch (SQLException e) {
-    //             throw new RelationalProviderException(e);
-    //         }
-    //     }
-
-    //     @Override
-    //     public void remove( List<String> ids ) throws SQLException {
-    //         if (ids.isEmpty()) {
-    //             return;
-    //         }
-    //         String removeStatement = statements.get(REMOVE_CONTENT);
-    //         String formattedStatement = formatStatementWithMultipleParams(removeStatement, ids.size());
-    //         if (logger.isDebugEnabled()) {
-    //             logger.debug("running statement: {0}", formattedStatement);
-    //         }
-    //         try (PreparedStatement remove = connection.prepareStatement(formattedStatement)) {
-    //             int paramIdx = 1;
-    //             for (String id : ids) {
-    //                 remove.setString(paramIdx++, id);
-    //             }
-    //             remove.executeUpdate();
-    //         }             
-    //     }
-    // }
-
 
     @Override
     public DefaultBatchUpdate batchUpdate( Connection connection ) {
